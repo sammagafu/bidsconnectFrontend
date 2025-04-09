@@ -61,7 +61,7 @@
                 </Column>
                 <Column :exportable="false" style="min-width: 12rem">
                     <template #body="slotProps">
-                        <Button v-if="slotProps.data.status === 'pending'" icon="pi pi-check" 
+                        <Button v-if="!slotProps.data.is_verified" icon="pi pi-check" 
                             outlined rounded class="mr-2" @click="approveCompany(slotProps.data)" 
                             v-tooltip="'Approve Company'" />
                         <Button icon="pi pi-pencil" outlined rounded class="mr-2" 
@@ -164,7 +164,7 @@ onMounted(async () => {
 const fetchCompanies = async () => {
     try {
         loading.value = true;
-        const response = await api.get('accounts/companies/');
+        const response = await api.get('accounts/companies/admin/');
         companies.value = response.data;
     } catch (error) {
         console.error('Failed to fetch companies:', error);

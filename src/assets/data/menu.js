@@ -51,34 +51,24 @@ const ADMIN_MENU_ITEMS = [
     label: 'Tenders',
     isTitle: true,
   },
+
   {
-    key: 'apps-chat',
+          key: 'tender-categories',
+          label: 'Manage Categories',
+          icon: 'solar:checklist-outline',
+          route: { name: 'admin.categories-management' },
+        },
+  {
+    key: 'apps-tender-procurement',
+    label: 'Procurement Process',
     icon: 'solar:document-add-bold',
-    label: 'Create Tender',
-    route: { name: 'apps.chat' },
+    route: { name: 'admin.procurement-process-management' },
   },
   {
-    key: 'apps-email',
-    icon: 'solar:letter-broken',
+    key: 'tenders',
+    icon: 'solar:document-add-bold',
     label: 'Manage Tender',
-    route: { name: 'apps.email' },
-  },
-  {
-    key: 'apps-tender-categories',
-    icon: 'solar:checklist-outline',
-    label: 'Tender Categories',
-    children: [
-      {
-        key: 'tender-categories',
-        label: 'Manage Categories',
-        route: { name: 'apps.calendar.schedule' },
-      },
-      {
-        key: 'tender-subcategories',
-        label: 'Manage Subcategories',
-        route: { name: 'apps.calendar.integration' },
-      },
-    ],
+    route: { name: 'admin.tenders-management' },
   },
   {
     key: 'apps-todo',
@@ -660,8 +650,8 @@ const NORMAL_MENU_ITEMS = [
     route: { name: 'dashboards.index' },
   },
   {
-    key: 'apps',
-    label: 'APPS',
+    key: 'company',
+    label: 'My Company',
     isTitle: true,
   },
   {
@@ -677,24 +667,78 @@ const NORMAL_MENU_ITEMS = [
     route: { name: 'apps.email' },
   },
   {
-    key: 'apps-todo',
-    icon: 'solar:list-heart-minimalistic-broken',
-    label: 'Todo',
-    route: { name: 'apps.todo' },
-  },
-  {
-    key: 'pages',
-    label: 'Pages',
+    key: 'company-management',
+    label: 'Manage Company',
     isTitle: false,
     icon: 'solar:folder-with-files-broken',
     children: [
       {
-        key: 'page-welcome',
-        label: 'Welcome',
+        key: 'Compny-users',
+        label: 'Management Users',
         route: { name: 'pages.welcome' },
-        parentKey: 'pages',
+        parentKey: 'company-management',
+      },
+      {
+        key: 'Open-tenders',
+        label: 'Company Documents',
+        route: { name: 'company.tenders-list' },
+        parentKey: 'company-management',
+      },
+      {
+        key: 'previous-tenders',
+        label: 'Update Company Details',
+        route: { name: 'pages.welcome' },
+        parentKey: 'company-management',
       },
     ],
+  },
+  {
+    key: 'user-tenders',
+    label: 'Manage Tenders',
+    isTitle: false,
+    icon: 'solar:folder-with-files-broken',
+    children: [
+      {
+        key: 'Open-tenders',
+        label: 'Open Tenders',
+        route: { name: 'company.tenders-list' },
+        parentKey: 'user-tenders',
+      },
+      {
+        key: 'Open-tenders',
+        label: 'Digest Tenders',
+        route: { name: 'pages.welcome' },
+        parentKey: 'user-tenders',
+      },
+      {
+        key: 'previous-tenders',
+        label: 'Previous Tenders',
+        route: { name: 'pages.welcome' },
+        parentKey: 'user-tenders',
+      },
+    ],
+  },
+  {
+    key: 'bids',
+    label: 'My Bids',
+    isTitle: true,
+  },
+  {
+    key: 'apps-email',
+    icon: 'solar:letter-broken',
+    label: 'My Bids',
+    route: { name: 'apps.email' },
+  },
+  {
+    key: 'bids',
+    label: 'My ',
+    isTitle: true,
+  },
+  {
+    key: 'apps-email',
+    icon: 'solar:letter-broken',
+    label: 'My Bids',
+    route: { name: 'apps.email' },
   },
 ];
 

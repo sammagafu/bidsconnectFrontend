@@ -39,6 +39,7 @@
     "moment": "^2.30.1",
     "nouislider": "^15.8.1",
     "pinia": "^2.1.7",
+    "primeicons": "^7.0.0",
     "primevue": "^4.3.3",
     "rater-js": "^1.0.1",
     "simplebar": "^6.2.7",

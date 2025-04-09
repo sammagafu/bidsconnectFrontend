@@ -1,18 +1,24 @@
 import axios from 'axios';
+import { useAuthStore } from '@/stores/auth';
 
 const API_URL = 'http://localhost:8000/api/v1/';
 const TOKEN_KEY = 'auth_token';
 const REFRESH_TOKEN_KEY = 'refresh_token';
 const USER_KEY = 'user_data';
 
+// Create axios instance for API requests
 export const api = axios.create({
   baseURL: API_URL,
   headers: {
     'Content-Type': 'application/json',
-  }
+  },
 });
 
-// Add request interceptor for debugging
+// State for managing token refresh
+let isRefreshing = false;
+let refreshPromise = null;
+
+// Request interceptor for debugging
 api.interceptors.request.use(
   (config) => {
     console.log('Request URL:', config.baseURL + config.url);
@@ -27,7 +33,7 @@ api.interceptors.request.use(
   }
 );
 
-// Add response interceptor for handling 401 errors and debugging
+// Response interceptor for handling 401 errors and token refresh
 api.interceptors.response.use(
   (response) => {
     console.log('Response Status:', response.status);
@@ -45,44 +51,64 @@ api.interceptors.response.use(
     } else {
       console.error('Error setting up request:', error.message);
     }
+
     const originalRequest = error.config;
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
-      try {
+
+      if (!isRefreshing) {
+        isRefreshing = true;
         const refreshToken = localStorage.getItem(REFRESH_TOKEN_KEY) || sessionStorage.getItem(REFRESH_TOKEN_KEY);
-        if (refreshToken) {
-          console.log('Attempting to refresh token with:', refreshToken);
-          const response = await api.post('accounts/jwt/refresh/', { refresh: refreshToken });
-          const { access } = response.data;
+        if (!refreshToken) {
+          console.error('No refresh token available');
+          await logoutAndRedirect();
+          return Promise.reject(error);
+        }
 
-          const storage = localStorage.getItem(TOKEN_KEY) ? localStorage : sessionStorage;
-          storage.setItem(TOKEN_KEY, access);
+        console.log('Attempting to refresh token with:', refreshToken);
+        refreshPromise = api.post('accounts/jwt/refresh/', { refresh: refreshToken })
+          .then((response) => {
+            const { access } = response.data;
+            const storage = localStorage.getItem(TOKEN_KEY) ? localStorage : sessionStorage;
+            storage.setItem(TOKEN_KEY, access);
+            api.defaults.headers.common['Authorization'] = `Bearer ${access}`;
+            console.log('Token refreshed successfully:', access);
+            return access;
+          })
+          .catch(async (refreshError) => {
+            console.error('Token refresh failed:', refreshError.response?.data || refreshError.message);
+            await logoutAndRedirect();
+            throw refreshError;
+          })
+          .finally(() => {
+            isRefreshing = false;
+            refreshPromise = null;
+          });
+      }
 
-          api.defaults.headers.common['Authorization'] = `Bearer ${access}`;
+      return refreshPromise
+        .then((access) => {
           originalRequest.headers['Authorization'] = `Bearer ${access}`;
-
           console.log('Retrying original request with new token:', access);
           return api(originalRequest);
-        }
-      } catch (refreshError) {
-        console.error('Token refresh failed:', refreshError);
-        await authService.logout(); // Fixed reference from this.logout() to authService.logout()
-      }
+        })
+        .catch((refreshError) => {
+          return Promise.reject(refreshError);
+        });
     }
     return Promise.reject(error);
   }
 );
 
+// Authentication service object
 const authService = {
+  /** Login user and store tokens and user data */
   async login(credentials, rememberMe) {
     try {
       console.log('Attempting login with:', credentials);
-      console.log('Before sending request...');
       const tokenResponse = await api.post('accounts/jwt/create/', credentials);
-      console.log('After sending request...');
       const { access, refresh } = tokenResponse.data;
 
-      // Set the Authorization header
       api.defaults.headers.common['Authorization'] = `Bearer ${access}`;
       console.log('Set Authorization header:', api.defaults.headers.common['Authorization']);
 
@@ -103,6 +129,7 @@ const authService = {
     }
   },
 
+  /** Refresh access token using refresh token */
   async refreshToken() {
     try {
       const refreshToken = localStorage.getItem(REFRESH_TOKEN_KEY) || sessionStorage.getItem(REFRESH_TOKEN_KEY);
@@ -115,25 +142,25 @@ const authService = {
 
       const storage = localStorage.getItem(TOKEN_KEY) ? localStorage : sessionStorage;
       storage.setItem(TOKEN_KEY, access);
-
       api.defaults.headers.common['Authorization'] = `Bearer ${access}`;
       return access;
     } catch (error) {
       console.error('Token refresh failed:', error.response?.data || error.message);
       await this.logout();
+      const authStore = useAuthStore();
+      authStore.logout();
+      window.location.href = '/auth/sign-in';
       throw error.response?.data || { message: 'Token refresh failed' };
     }
   },
 
+  /** Logout user and clear all stored data */
   async logout() {
     try {
       console.log('Logging out...');
-      // Optionally call a logout endpoint if Djoser is configured to have one
-      // await api.post('accounts/jwt/logout/');
     } catch (error) {
       console.error('Logout failed:', error);
     } finally {
-      // Clear tokens and user data from storage
       localStorage.removeItem(TOKEN_KEY);
       localStorage.removeItem(REFRESH_TOKEN_KEY);
       localStorage.removeItem(USER_KEY);
@@ -145,29 +172,42 @@ const authService = {
     }
   },
 
+  /** Get the current access token */
   getToken() {
     return localStorage.getItem(TOKEN_KEY) || sessionStorage.getItem(TOKEN_KEY);
   },
 
+  /** Get the current refresh token */
   getRefreshToken() {
     return localStorage.getItem(REFRESH_TOKEN_KEY) || sessionStorage.getItem(REFRESH_TOKEN_KEY);
   },
 
+  /** Get the current user data */
   getUser() {
     const userData = localStorage.getItem(USER_KEY) || sessionStorage.getItem(USER_KEY);
     return userData ? JSON.parse(userData) : null;
   },
 
+  /** Check if the user is authenticated */
   isAuthenticated() {
     return !!this.getToken();
   },
 
+  /** Initialize authentication with existing token */
   initializeAuth() {
     const token = this.getToken();
     if (token) {
       api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
     }
-  }
+  },
 };
+
+// Helper function to handle logout and redirect
+async function logoutAndRedirect() {
+  await authService.logout();
+  const authStore = useAuthStore();
+  authStore.logout();
+  window.location.href = '/sign-in';
+}
 
 export default authService;

@@ -1,3 +1,5 @@
+import path from 'path';
+
 const setTitle = (title) => {
   return title ? `${title} | Bidsconnect - Responsive Admin Dashboard Template` : 'Bidsconnect - Responsive Admin Dashboard Template';
 };
@@ -778,6 +780,15 @@ const adminRoutes = [
     component: () => import('@/views/admin/companies-management.vue')
   },
   {
+    path: '/admin/companies/:id',
+    name: 'admin.companies-management-detail',
+    meta: {
+      title: setTitle('Companies Management'),
+      authRequired: true
+    },
+    component: () => import('@/views/admin/companies-management.vue')
+  },
+  {
     path: '/admin/users',
     name: 'admin.users',
     meta: {
@@ -794,7 +805,38 @@ const adminRoutes = [
       authRequired: true
     },
     component: () => import('@/views/admin/settings.vue')
-  }
+  },
+  {
+    path: '/admin/tenders',
+    name: 'admin.tenders-management',
+    meta: {
+      title: setTitle('Tenders Management'),
+      authRequired: true
+    },
+    component: () => import('@/views/admin/create-tenders-admin.vue')  
+  },
+  {
+    path: '/admin/tenders/categories/create',
+    name: 'admin.categories-management',
+    meta: {
+      title: setTitle('Tenders Categories Management'),
+      authRequired: true
+    },
+    component: () => import('@/views/admin/CategorySubcategoryCreate.vue')  
+  },
+  {
+    path: '/admin/tenders/procurement-process/create',
+    name: 'admin.procurement-process-management',
+    meta: {
+      title: setTitle('Procurement Process Management'),
+      authRequired: true
+    },
+    meta: {
+      title: setTitle('Tenders Procurement Process Management'),
+      authRequired: true
+    },
+    component: () => import('@/views/admin/ProcurementProcessCreate.vue')  
+  },
 ];
 
 // Staff routes
@@ -807,6 +849,37 @@ const staffRoutes = [
       authRequired: true
     },
     component: () => import('@/views/staff/tasks.vue')
+  }
+];
+
+// User routes
+const userRoutes = [
+  {
+    path: '/company/create-company',
+    name: 'user.create-company',
+    meta: {
+      title: setTitle('Create Company'),
+      authRequired: true
+    },
+    component: () => import('@/views/user/create-company.vue')
+  },
+  {
+    path: '/company/:id',
+    name: 'company.detail',
+    component: () => import('@/views/user/company-detail.vue'),
+    meta: {
+      title: setTitle('Company Detail'),
+      authRequired: true
+    },
+  },
+  {
+    path: '/company/tenders',
+    name: 'company.tenders-list', 
+    component: () => import('@/views/user/company-tender-list.vue'),
+    meta: {
+      title: setTitle('Company Tenders'),
+      authRequired: true
+    },
   }
 ];
 
@@ -824,5 +897,6 @@ export const allRoutes = [
   ...iconsRoutes,
   ...mapsRoutes,
   ...adminRoutes,
-  ...staffRoutes
+  ...staffRoutes,
+  ...userRoutes
 ];

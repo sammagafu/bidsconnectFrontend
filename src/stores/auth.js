@@ -23,10 +23,12 @@ export const useAuthStore = defineStore('auth', {
         throw error;
       }
     },
-    
+
     async register(credentials) {
       try {
         const response = await api.post('accounts/users/', {
+          first_name: credentials.first_name,
+          last_name: credentials.last_name,
           email: credentials.email,
           phone_number: credentials.phone_number,
           password: credentials.password
@@ -87,6 +89,13 @@ export const useAuthStore = defineStore('auth', {
 
     isNormalUser() {
       return this.isAuthenticated && !this.user?.is_superuser && !this.user?.is_staff;
+    },
+
+    hasCompanies() {
+      return this.user && this.user.companies && this.user.companies.length > 0;
+    },
+    shouldShowCompanyModal() {
+      return this.isAuthenticated && this.isNormalUser() && !this.hasCompanies();
     }
   }
 });

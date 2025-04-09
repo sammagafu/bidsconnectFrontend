@@ -1,6 +1,6 @@
 
 <template>
-    <MainLayout>
+    <VerticalLayout>
       <b-container>
         <b-row>
           <b-col>
@@ -21,15 +21,16 @@
           </b-col>
         </b-row>
       </b-container>
-    </MainLayout>
+    </VerticalLayout>
   </template>
   
   <script setup>
-  import MainLayout from '@/layouts/MainLayout.vue';
+import VerticalLayout from "@/layouts/VerticalLayout.vue";
   import { ref, onMounted } from 'vue';
   import { useRoute } from 'vue-router';
-  import api from '@/services/api';
-  import { useToast } from 'vue-toastification';
+  import api from '@/services/authService';
+  import { useToast } from 'primevue/usetoast';
+  import { useAuthStore } from '@/stores/auth';
   
   const route = useRoute();
   const toast = useToast();
