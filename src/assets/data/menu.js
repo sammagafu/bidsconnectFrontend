@@ -36,7 +36,6 @@ const ADMIN_MENU_ITEMS = [
   },
   {
     key: 'companies',
-    // icon: 'solar:building-2-broken',
     label: 'Companies Management',
     isTitle: true,
   },
@@ -51,13 +50,12 @@ const ADMIN_MENU_ITEMS = [
     label: 'Tenders',
     isTitle: true,
   },
-
   {
-          key: 'tender-categories',
-          label: 'Manage Categories',
-          icon: 'solar:checklist-outline',
-          route: { name: 'admin.categories-management' },
-        },
+    key: 'tender-categories',
+    label: 'Manage Categories',
+    icon: 'solar:checklist-outline',
+    route: { name: 'admin.categories-management' },
+  },
   {
     key: 'apps-tender-procurement',
     label: 'Procurement Process',
@@ -675,7 +673,7 @@ const NORMAL_MENU_ITEMS = [
       {
         key: 'Compny-users',
         label: 'Management Users',
-        route: { name: 'pages.welcome' },
+        route: { name: 'user.user-management' },
         parentKey: 'company-management',
       },
       {
@@ -785,11 +783,11 @@ export const MENU_ITEMS = NORMAL_MENU_ITEMS;
 export const getMenuItems = () => {
   const authStore = useAuthStore();
 
-  if (authStore.isAdmin()) {
+  if (authStore.isAdmin) { // Use as a property
     return ADMIN_MENU_ITEMS;
-  } else if (authStore.isStaff()) {
+  } else if (authStore.isStaff) { // Use as a property
     return STAFF_MENU_ITEMS;
-  } else if (authStore.isNormalUser()) {
+  } else if (authStore.isNormalUser) { // Use as a property
     return NORMAL_MENU_ITEMS;
   } else {
     return UNAUTHENTICATED_MENU_ITEMS;
@@ -797,6 +795,8 @@ export const getMenuItems = () => {
 };
 
 // Menu logic functions for active item tracking
+let activeMenuItem = [];
+
 const getMatchingMenuItems = (data, currentRouteName) => {
   const matchingItems = [];
 
@@ -822,16 +822,16 @@ export const menuItemActive = (key, currentRouteName) => {
   const authStore = useAuthStore();
   let menuItems;
 
-  if (authStore.isAdmin()) {
+  if (authStore.isAdmin) { // Use as a property
     menuItems = ADMIN_MENU_ITEMS;
-  } else if (authStore.isStaff()) {
+  } else if (authStore.isStaff) { // Use as a property
     menuItems = STAFF_MENU_ITEMS;
-  } else if (authStore.isNormalUser()) {
+  } else if (authStore.isNormalUser) { // Use as a property
     menuItems = NORMAL_MENU_ITEMS;
   } else {
     menuItems = UNAUTHENTICATED_MENU_ITEMS;
   }
 
   activeMenuItem = getMatchingMenuItems(menuItems, currentRouteName);
-  return activeMenuItem && Object.values(activeMenuItem).includes(key);
+  return activeMenuItem && activeMenuItem.includes(key);
 };

@@ -864,11 +864,29 @@ const userRoutes = [
     component: () => import('@/views/user/create-company.vue')
   },
   {
+    path: '/company/user-management',
+    name: 'user.user-management',
+    meta: {
+      title: setTitle('User Management'),
+      authRequired: true
+    },
+    component: () => import('@/views/user/company-manage-user.vue')
+  },
+  {
     path: '/company/:id',
     name: 'company.detail',
     component: () => import('@/views/user/company-detail.vue'),
     meta: {
       title: setTitle('Company Detail'),
+      authRequired: true
+    },
+  },
+  {
+    path: '/company/:id/documents',
+    name: 'company.documents',
+    component: () => import('@/views/user/company-documents-management.vue'),
+    meta: {
+      title: setTitle('Company Documents'),
       authRequired: true
     },
   },

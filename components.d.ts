@@ -55,6 +55,7 @@ declare module 'vue' {
     BRow: typeof import('bootstrap-vue-next')['BRow']
     BSpinner: typeof import('bootstrap-vue-next')['BSpinner']
     BTab: typeof import('bootstrap-vue-next')['BTab']
+    BTable: typeof import('bootstrap-vue-next')['BTable']
     BTableSimple: typeof import('bootstrap-vue-next')['BTableSimple']
     BTabs: typeof import('bootstrap-vue-next')['BTabs']
     BTbody: typeof import('bootstrap-vue-next')['BTbody']

@@ -17,10 +17,25 @@ export const api = axios.create({
 // State for managing token refresh
 let isRefreshing = false;
 let refreshPromise = null;
+let isRedirecting = false;
 
-// Request interceptor for debugging
+// Request interceptor for debugging and token validation
 api.interceptors.request.use(
-  (config) => {
+  async (config) => {
+    const token = localStorage.getItem(TOKEN_KEY) || sessionStorage.getItem(TOKEN_KEY);
+    if (token && !config.headers.Authorization) {
+      config.headers.Authorization = `Bearer ${token}`;
+      try {
+        await api.get('accounts/users/me/', { headers: { Authorization: `Bearer ${token}` } });
+      } catch (error) {
+        console.warn('Token validation failed before request:', error.response?.data || error.message);
+        if (error.response?.status === 401) {
+          console.log('Access token invalid, clearing tokens');
+          await logoutAndRedirect();
+          throw error;
+        }
+      }
+    }
     console.log('Request URL:', config.baseURL + config.url);
     console.log('Request Method:', config.method);
     console.log('Request Headers:', config.headers);
@@ -54,6 +69,11 @@ api.interceptors.response.use(
 
     const originalRequest = error.config;
     if (error.response?.status === 401 && !originalRequest._retry) {
+      // Skip token refresh for login requests
+      if (originalRequest.url.includes('jwt/create')) {
+        return Promise.reject(error);
+      }
+
       originalRequest._retry = true;
 
       if (!isRefreshing) {
@@ -73,10 +93,15 @@ api.interceptors.response.use(
             storage.setItem(TOKEN_KEY, access);
             api.defaults.headers.common['Authorization'] = `Bearer ${access}`;
             console.log('Token refreshed successfully:', access);
+            // Update authStore with new token
+            const authStore = useAuthStore();
+            authStore.isAuthenticated = true;
+            authStore.updateRoles();
             return access;
           })
           .catch(async (refreshError) => {
             console.error('Token refresh failed:', refreshError.response?.data || refreshError.message);
+            console.log('Logging out and redirecting due to refresh failure');
             await logoutAndRedirect();
             throw refreshError;
           })
@@ -93,6 +118,7 @@ api.interceptors.response.use(
           return api(originalRequest);
         })
         .catch((refreshError) => {
+          console.error('Failed to retry request after refresh:', refreshError);
           return Promise.reject(refreshError);
         });
     }
@@ -102,7 +128,6 @@ api.interceptors.response.use(
 
 // Authentication service object
 const authService = {
-  /** Login user and store tokens and user data */
   async login(credentials, rememberMe) {
     try {
       console.log('Attempting login with:', credentials);
@@ -122,14 +147,21 @@ const authService = {
       storage.setItem(REFRESH_TOKEN_KEY, refresh);
       storage.setItem(USER_KEY, JSON.stringify(user));
 
+      const authStore = useAuthStore();
+      authStore.updateUser(user);
+      authStore.isAuthenticated = true;
+      authStore.updateRoles(); // Ensure roles are updated after login
+
       return { access, refresh, user };
     } catch (error) {
       console.error('Login failed:', error.response?.data || error.message);
+      if (error.response?.status === 401 && error.response?.data?.detail) {
+        throw error.response.data;
+      }
       throw error.response?.data || { message: 'Login failed' };
     }
   },
 
-  /** Refresh access token using refresh token */
   async refreshToken() {
     try {
       const refreshToken = localStorage.getItem(REFRESH_TOKEN_KEY) || sessionStorage.getItem(REFRESH_TOKEN_KEY);
@@ -143,18 +175,24 @@ const authService = {
       const storage = localStorage.getItem(TOKEN_KEY) ? localStorage : sessionStorage;
       storage.setItem(TOKEN_KEY, access);
       api.defaults.headers.common['Authorization'] = `Bearer ${access}`;
+      console.log('Token refreshed successfully:', access);
+
+      // Update authStore state after refresh
+      const authStore = useAuthStore();
+      authStore.isAuthenticated = true;
+      authStore.updateRoles();
+
       return access;
     } catch (error) {
       console.error('Token refresh failed:', error.response?.data || error.message);
       await this.logout();
       const authStore = useAuthStore();
       authStore.logout();
-      window.location.href = '/auth/sign-in';
+      await logoutAndRedirect();
       throw error.response?.data || { message: 'Token refresh failed' };
     }
   },
 
-  /** Logout user and clear all stored data */
   async logout() {
     try {
       console.log('Logging out...');
@@ -172,42 +210,58 @@ const authService = {
     }
   },
 
-  /** Get the current access token */
   getToken() {
     return localStorage.getItem(TOKEN_KEY) || sessionStorage.getItem(TOKEN_KEY);
   },
 
-  /** Get the current refresh token */
   getRefreshToken() {
     return localStorage.getItem(REFRESH_TOKEN_KEY) || sessionStorage.getItem(REFRESH_TOKEN_KEY);
   },
 
-  /** Get the current user data */
   getUser() {
     const userData = localStorage.getItem(USER_KEY) || sessionStorage.getItem(USER_KEY);
     return userData ? JSON.parse(userData) : null;
   },
 
-  /** Check if the user is authenticated */
-  isAuthenticated() {
-    return !!this.getToken();
+  async isAuthenticated() {
+    const token = this.getToken();
+    if (!token) return false;
+
+    try {
+      await api.get('accounts/users/me/');
+      return true;
+    } catch (error) {
+      console.warn('Token validation failed:', error.response?.data || error.message);
+      return false;
+    }
   },
 
-  /** Initialize authentication with existing token */
   initializeAuth() {
     const token = this.getToken();
     if (token) {
       api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      // Restore authStore state
+      const authStore = useAuthStore();
+      authStore.user = this.getUser();
+      authStore.isAuthenticated = !!token && !!authStore.user;
+      authStore.updateRoles();
     }
   },
 };
 
 // Helper function to handle logout and redirect
 async function logoutAndRedirect() {
-  await authService.logout();
+  if (isRedirecting) return;
+  isRedirecting = true;
+
   const authStore = useAuthStore();
+  await authService.logout();
   authStore.logout();
-  window.location.href = '/sign-in';
+
+  setTimeout(() => {
+    window.location.href = '/auth/sign-in';
+    isRedirecting = false;
+  }, 2000);
 }
 
 export default authService;

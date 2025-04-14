@@ -1,123 +1,151 @@
 <template>
-<VerticalLayout>
-<div class="card">
-        <!-- Filters -->
-        <div class="filters mb-6">
-            <h4 class="mb-3">Filter Tenders</h4>
-            <div class="flex flex-wrap gap-4">
-                <div class="flex flex-col">
-                    <label for="filter-category" class="font-bold mb-2">Category</label>
-                    <Select id="filter-category" v-model="filters.category" :options="categories" 
-                        optionLabel="name" optionValue="id" placeholder="All Categories" fluid 
-                        @change="applyFilters" />
+    <VerticalLayout>
+        <div class="card p-3">
+            <!-- Filters -->
+            <div class="filters mb-4 p-3 bg-light rounded">
+                <div class="row g-3 align-items-center">
+                    <!-- Search by Keyword -->
+                    <div class="col-auto">
+                        <input type="text" v-model="filters.keyword" class="form-control form-control-sm" placeholder="Search by keyword" />
+                    </div>
+                    <!-- Tender Category -->
+                    <div class="col-auto">
+                        <select v-model="filters.category" class="form-select form-select-sm" @change="applyFilters">
+                            <option v-for="category in categories" :key="category.id" :value="category.id">
+                                {{ category.name }}
+                            </option>
+                        </select>
+                    </div>
+                    <!-- Status -->
+                    <div class="col-auto">
+                        <select v-model="filters.status" class="form-select form-select-sm" @change="applyFilters">
+                            <option v-for="status in statuses" :key="status.value" :value="status.value">
+                                {{ status.label }}
+                            </option>
+                        </select>
+                    </div>
+                    <!-- Country Type -->
+                    <div class="col-auto">
+                        <select v-model="filters.tender_type_country" class="form-select form-select-sm" @change="applyFilters">
+                            <option v-for="country in tenderTypeCountries" :key="country.value" :value="country.value">
+                                {{ country.label }}
+                            </option>
+                        </select>
+                    </div>
+                    <!-- Search and Clear Buttons -->
+                    <div class="col-auto">
+                        <button class="btn btn-sm btn-warning" @click="applyFilters">
+                            <i class="bi bi-search me-1"></i> Search
+                        </button>
+                    </div>
+                    <div class="col-auto">
+                        <button class="btn btn-sm btn-outline-secondary" @click="clearFilters">
+                            <i class="bi bi-x me-1"></i> Clear
+                        </button>
+                    </div>
                 </div>
-                <div class="flex flex-col">
-                    <label for="filter-status" class="font-bold mb-2">Status</label>
-                    <Select id="filter-status" v-model="filters.status" :options="statuses" 
-                        optionLabel="label" optionValue="value" placeholder="All Statuses" fluid 
-                        @change="applyFilters" />
+                <!-- Showing and Sort -->
+                <div class="row mt-3 align-items-center">
+                    <div class="col-auto">
+                        <span class="text-muted small">
+                            Showing {{ paginatedTenders.start }} - {{ paginatedTenders.end }} of {{ totalCount }} items
+                        </span>
+                    </div>
+                    <div class="col-auto ms-auto">
+                        <select v-model="sortOption" class="form-select form-select-sm" @change="applySort">
+                            <option v-for="option in sortOptions" :key="option.value" :value="option.value">
+                                {{ option.label }}
+                            </option>
+                        </select>
+                    </div>
                 </div>
-                <div class="flex flex-col">
-                    <label for="filter-country" class="font-bold mb-2">Country Type</label>
-                    <Select id="filter-country" v-model="filters.tender_type_country" :options="tenderTypeCountries" 
-                        optionLabel="label" optionValue="value" placeholder="All Country Types" fluid 
-                        @change="applyFilters" />
+            </div>
+
+            <!-- Tender List -->
+            <div v-if="loading">
+                <div v-for="i in 6" :key="i" class="d-flex flex-column flex-sm-row align-items-start p-3 border-top">
+                    <div class="placeholder-glow me-3">
+                        <span class="placeholder col-12" style="width: 64px; height: 64px;"></span>
+                    </div>
+                    <div class="flex-grow-1">
+                        <div class="placeholder-glow">
+                            <span class="placeholder col-6 mb-2" style="height: 1.5rem;"></span>
+                            <span class="placeholder col-4 mb-2" style="height: 1rem;"></span>
+                            <span class="placeholder col-8 mb-2" style="height: 1rem;"></span>
+                            <div class="d-flex gap-2">
+                                <span class="placeholder col-2" style="height: 1rem;"></span>
+                                <span class="placeholder col-3" style="height: 1rem;"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ms-auto">
+                        <span class="placeholder col-12" style="width: 100px; height: 2rem;"></span>
+                    </div>
+                </div>
+            </div>
+            <div v-else>
+                <div v-for="(tender, index) in paginatedTenders.data" :key="tender.id" 
+                    class="d-flex flex-column flex-sm-row align-items-start p-3 tender-item" 
+                    :class="{ 'border-top': index !== 0 }">
+                    <!-- Organization Logo -->
+                    <div class="me-3 bg-light d-flex align-items-center justify-content-center" style="width: 64px; height: 64px;">
+                        <i class="bi bi-building text-muted fs-3"></i>
+                    </div>
+                    <!-- Tender Details -->
+                    <div class="flex-grow-1">
+                        <h5 class="fw-bold text-dark mb-1">{{ tender.title }}</h5>
+                        <div class="text-muted small mb-1">{{ tender.organization || 'N/A' }}</div>
+                        <div class="text-muted small mb-1">
+                            Invitation Date: {{ formatDate(tender.invitation_date) }} | 
+                            Submission Deadline: {{ formatDate(tender.submission_deadline) }} | 
+                            Number: {{ tender.reference_number }}
+                        </div>
+                        <div class="d-flex gap-2">
+                            <span class="badge bg-success">{{ tender.tender_type_sector || 'Tender' }}</span>
+                            <span :class="['badge', getStatusClass(tender.status)]">{{ tender.status }}</span>
+                        </div>
+                    </div>
+                    <!-- Actions -->
+                    <div class="ms-auto d-flex gap-2">
+                        <button class="btn btn-sm btn-success" :disabled="tender.status !== 'published'" @click="applyForTender(tender)">
+                            <i class="bi bi-check me-1"></i> Apply/Bid
+                        </button>
+                        <button class="btn btn-sm btn-outline-primary" @click="viewTenderDetails(tender)">
+                            <i class="bi bi-eye me-1"></i> View Details
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
-
-        <!-- DataView with List Layout -->
-        <DataView :value="filteredTenders" layout="list">
-            <template #list>
-                <div v-if="loading" class="flex flex-col">
-                    <div v-for="i in 6" :key="i">
-                        <div class="flex flex-col xl:flex-row xl:items-start p-6 gap-6" 
-                            :class="{ 'border-t border-surface-200 dark:border-surface-700': i !== 0 }">
-                            <Skeleton class="!w-9/12 sm:!w-64 xl:!w-40 !h-24 mx-auto" />
-                            <div class="flex flex-col sm:flex-row justify-between items-center xl:items-start flex-1 gap-6">
-                                <div class="flex flex-col items-center sm:items-start gap-4">
-                                    <Skeleton width="8rem" height="2rem" />
-                                    <Skeleton width="6rem" height="1rem" />
-                                    <div class="flex items-center gap-4">
-                                        <Skeleton width="6rem" height="1rem" />
-                                        <Skeleton width="3rem" height="1rem" />
-                                    </div>
-                                    <Skeleton width="10rem" height="1rem" />
-                                    <Skeleton width="12rem" height="1rem" />
-                                </div>
-                                <div class="flex sm:flex-col items-center sm:items-end gap-4 sm:gap-2">
-                                    <Skeleton width="4rem" height="2rem" />
-                                    <Skeleton size="3rem" shape="circle" />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div v-else class="flex flex-col">
-                    <div v-for="(tender, index) in filteredTenders" :key="tender.id" 
-                        class="flex flex-col xl:flex-row xl:items-start p-6 gap-6 tender-item" 
-                        :class="{ 'border-t border-surface-200 dark:border-surface-700': index !== 0 }">
-                        <!-- Tender Icon/Image -->
-                        <div class="w-9/12 sm:w-64 xl:w-40 h-24 mx-auto bg-gray-200 flex items-center justify-center">
-                            <i class="pi pi-file text-3xl text-gray-500"></i>
-                        </div>
-                        <!-- Tender Details -->
-                        <div class="flex flex-col sm:flex-row justify-between items-center xl:items-start flex-1 gap-6">
-                            <div class="flex flex-col items-center sm:items-start gap-4 text-primary px-6">
-                                <h5 class="text-xl font-bold">{{ tender.title }}</h5>
-                                <div class="text-sm text-gray-600">Ref: {{ tender.reference_number }}</div>
-                                <div class="text-sm">Category: {{ tender.category?.name || 'N/A' }}</div>
-                                <div class="text-sm">Subcategory: {{ tender.subcategory?.name || 'N/A' }}</div>
-                                <div class="text-sm">Country: {{ tender.tender_type_country }}</div>
-                                <div class="text-sm">Sector: {{ tender.tender_type_sector }}</div>
-                                <div class="text-sm">Procurement Process: {{ tender.procurement_process?.name || 'N/A' }}</div>
-                                <div class="text-sm">Description: {{ tender.tenderdescription || 'No description available' }}</div>
-                                <div class="text-sm">Budget: {{ tender.estimated_budget ? `${tender.estimated_budget} ${tender.currency}` : 'N/A' }}</div>
-                                <div class="text-sm">Bid Bond: {{ tender.bid_bond_percentage ? `${tender.bid_bond_percentage}%` : 'N/A' }}</div>
-                                <div class="text-sm">Address: {{ tender.address || 'N/A' }}</div>
-                                <div class="flex items-center gap-4">
-                                    <Tag :value="tender.status" :severity="getStatusLabel(tender.status)" />
-                                    <span>Deadline: {{ formatDate(tender.submission_deadline) }}</span>
-                                </div>
-                                <div class="text-sm">Clarification Deadline: {{ formatDate(tender.clarification_deadline) || 'N/A' }}</div>
-                                <div class="text-sm">Evaluation: {{ formatDate(tender.evaluation_start_date) || 'N/A' }} - {{ formatDate(tender.evaluation_end_date) || 'N/A' }}</div>
-                            </div>
-                            <!-- Actions -->
-                            <div class="flex sm:flex-col items-center sm:items-end gap-4 sm:gap-2">
-                                <Button label="Apply/Bid" icon="pi pi-check" class="p-button-success p-button-rounded" 
-                                    :disabled="tender.status !== 'published'" @click="applyForTender(tender)" />
-                                <Button label="Details" icon="pi pi-eye" class="p-button-rounded" 
-                                    @click="viewTenderDetails(tender)" />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </template>
-        </DataView>
-    </div>
-</VerticalLayout>
-    
+    </VerticalLayout>
 </template>
 
 <script setup>
-import VerticalLayout from "@/layouts/VerticalLayout.vue";
-
 import { ref, onMounted, computed } from 'vue';
-import { useToast } from 'primevue/usetoast';
+import VerticalLayout from '@/layouts/VerticalLayout.vue'; // Import the layout component
 import { api } from '@/services/authService'; // Pre-configured axios instance
 
-const toast = useToast();
 const tenders = ref([]);
+const totalCount = ref(0);
 const categories = ref([]);
 const loading = ref(false);
 const filters = ref({
+    keyword: '',
     category: null,
     status: null,
     tender_type_country: null
 });
+const sortOption = ref('invitation_date_desc');
+const sortOptions = ref([
+    { label: 'Sort by: Invitation Date (New First)', value: 'invitation_date_desc' },
+    { label: 'Sort by: Invitation Date (Old First)', value: 'invitation_date_asc' },
+    { label: 'Sort by: Submission Deadline (New First)', value: 'submission_deadline_desc' },
+    { label: 'Sort by: Submission Deadline (Old First)', value: 'submission_deadline_asc' }
+]);
 
 // Tender statuses
 const statuses = ref([
+    { label: 'All Statuses', value: null },
     { label: 'Published', value: 'published' },
     { label: 'Under Evaluation', value: 'evaluation' },
     { label: 'Awarded', value: 'awarded' },
@@ -126,6 +154,7 @@ const statuses = ref([
 
 // Tender Type Country options
 const tenderTypeCountries = ref([
+    { label: 'All Country Types', value: null },
     { label: 'National Tendering', value: 'National' },
     { label: 'International Tendering', value: 'International' }
 ]);
@@ -146,9 +175,10 @@ const fetchTenders = async () => {
             params: { status: 'published' } // Client view typically shows only published tenders initially
         });
         tenders.value = response.data.results || response.data || [];
+        totalCount.value = response.data.count || tenders.value.length;
     } catch (error) {
         console.error('Failed to fetch tenders:', error);
-        toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to fetch tenders', life: 3000 });
+        showToast('danger', 'Error', 'Failed to fetch tenders');
     } finally {
         loading.value = false;
     }
@@ -158,97 +188,130 @@ const fetchTenders = async () => {
 const fetchCategories = async () => {
     try {
         const response = await api.get('tenders/categories/');
-        categories.value = [{ id: null, name: 'All Categories' }, ...(response.data || [])];
+        categories.value = [{ id: null, name: 'All Tender Categories' }, ...(response.data || [])];
     } catch (error) {
         console.error('Failed to fetch categories:', error);
-        toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to fetch categories', life: 3000 });
+        showToast('danger', 'Error', 'Failed to fetch categories');
     }
 };
 
 // Computed property for filtered tenders
 const filteredTenders = computed(() => {
     let filtered = [...tenders.value];
+    
+    // Keyword filter
+    if (filters.value.keyword) {
+        const keyword = filters.value.keyword.toLowerCase();
+        filtered = filtered.filter(tender => 
+            tender.title?.toLowerCase().includes(keyword) ||
+            tender.organization?.toLowerCase().includes(keyword) ||
+            tender.reference_number?.toLowerCase().includes(keyword)
+        );
+    }
+    
+    // Category filter
     if (filters.value.category) {
         filtered = filtered.filter(tender => tender.category?.id === filters.value.category);
     }
+    
+    // Status filter
     if (filters.value.status) {
         filtered = filtered.filter(tender => tender.status === filters.value.status);
     }
+    
+    // Country Type filter
     if (filters.value.tender_type_country) {
         filtered = filtered.filter(tender => tender.tender_type_country === filters.value.tender_type_country);
     }
+    
+    // Apply sorting
+    if (sortOption.value === 'invitation_date_desc') {
+        filtered.sort((a, b) => new Date(b.invitation_date) - new Date(a.invitation_date));
+    } else if (sortOption.value === 'invitation_date_asc') {
+        filtered.sort((a, b) => new Date(a.invitation_date) - new Date(b.invitation_date));
+    } else if (sortOption.value === 'submission_deadline_desc') {
+        filtered.sort((a, b) => new Date(b.submission_deadline) - new Date(a.submission_deadline));
+    } else if (sortOption.value === 'submission_deadline_asc') {
+        filtered.sort((a, b) => new Date(a.submission_deadline) - new Date(b.submission_deadline));
+    }
+    
     return filtered;
 });
 
-// Apply filters (triggered by filter changes)
+// Pagination (showing 10 items per page for simplicity)
+const paginatedTenders = computed(() => {
+    const pageSize = 10;
+    const start = 0;
+    const end = Math.min(start + pageSize, filteredTenders.value.length);
+    const data = filteredTenders.value.slice(start, end);
+    return { start: start + 1, end, data };
+});
+
+// Apply filters (triggered by filter changes or search button)
 const applyFilters = () => {
     // No additional action needed as filteredTenders recomputes automatically
 };
 
-// Format date for display
-const formatDate = (dateString) => {
-    return dateString ? new Date(dateString).toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' }) : 'N/A';
+// Apply sort (triggered by sort dropdown change)
+const applySort = () => {
+    // No additional action needed as filteredTenders recomputes automatically
 };
 
-// Get status label for Tag severity
-const getStatusLabel = (status) => {
+// Clear filters
+const clearFilters = () => {
+    filters.value = {
+        keyword: '',
+        category: null,
+        status: null,
+        tender_type_country: null
+    };
+    sortOption.value = 'invitation_date_desc';
+};
+
+// Format date for display
+const formatDate = (dateString) => {
+    return dateString ? new Date(dateString).toLocaleString('en-US', { dateStyle: 'medium' }) : 'N/A';
+};
+
+// Get status class for badge
+const getStatusClass = (status) => {
     switch (status) {
-        case 'published': return 'success';
-        case 'evaluation': return 'info';
-        case 'awarded': return 'info';
-        case 'closed': return 'danger';
-        default: return null;
+        case 'published': return 'bg-success';
+        case 'evaluation': return 'bg-info';
+        case 'awarded': return 'bg-info';
+        case 'closed': return 'bg-danger';
+        default: return 'bg-secondary';
     }
 };
 
-// Apply/Bid for tender (placeholder)
+// Show Bootstrap toast
+const showToast = (type, title, message) => {
+    const toastEl = document.createElement('div');
+    toastEl.className = `toast align-items-center text-bg-${type} border-0`;
+    toastEl.innerHTML = `
+        <div class="d-flex">
+            <div class="toast-body">
+                <strong>${title}</strong>: ${message}
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+        </div>
+    `;
+    document.body.appendChild(toastEl);
+    const toast = new bootstrap.Toast(toastEl, { delay: 3000 });
+    toast.show();
+};
+
+// Apply/Bid for tender
 const applyForTender = (tender) => {
     if (tender.status === 'published') {
-        toast.add({ severity: 'info', summary: 'Apply/Bid', detail: `Applying for ${tender.title}`, life: 3000 });
+        showToast('info', 'Apply/Bid', `Applying for ${tender.title}`);
         // Add logic for bid submission here (e.g., API call or navigation)
     }
 };
 
-// View tender details (placeholder for navigation or modal)
+// View tender details
 const viewTenderDetails = (tender) => {
-    toast.add({ severity: 'info', summary: 'View Tender', detail: `Viewing details for ${tender.title}`, life: 3000 });
+    showToast('info', 'View Tender', `Viewing details for ${tender.title}`);
     // Add logic for navigation (e.g., router.push('/tenders/' + tender.id)) or modal
 };
 </script>
-
-<style scoped>
-.card {
-    padding: 1rem;
-}
-
-.filters {
-    padding: 1rem;
-    background: #f8f9fa;
-    border-radius: 0.375rem;
-}
-
-/* Adjust list item spacing and styling */
-.p-dataview .p-dataview-content > div > div {
-    border-top: 1px solid #e5e7eb;
-}
-
-.p-dataview .p-dataview-content > div > div:first-child {
-    border-top: none;
-}
-
-.tender-item {
-    background: #fff;
-    border-radius: 0.375rem;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-    .tender-item {
-        padding: 1rem;
-    }
-    .tender-item > div:first-child {
-        margin-bottom: 1rem;
-    }
-}
-</style>

@@ -10,10 +10,15 @@
 
             <div class="px-4">
               <b-form @submit.prevent="handleSignIn" class="authentication-form">
-                <div v-if="error.length > 0" class="mb-2 text-danger">{{ error }}</div>
+                <div v-if="error" class="mb-2 text-danger">{{ error }}</div>
                 <b-form-group label="Email" class="mb-3">
-                  <b-form-input type="email" id="example-email" name="example-email" placeholder="Enter your Email"
-                    v-model="v.email.$model" />
+                  <b-form-input
+                    type="email"
+                    id="example-email"
+                    name="example-email"
+                    placeholder="Enter your Email"
+                    v-model="v.email.$model"
+                  />
                   <div v-if="v.email.$error" class="text-danger">
                     <span v-for="(err, idx) in v.email.$errors" :key="idx">
                       {{ err.$message }}
@@ -21,11 +26,22 @@
                   </div>
                 </b-form-group>
                 <div class="mb-3">
-                  <router-link :to="{ name: 'auth.reset-password' }"
-                    class="float-end text-muted text-unline-dashed ms-1">Reset password</router-link>
+                  <router-link :to="{ name: 'auth.reset-password' }" class="float-end text-muted text-unline-dashed ms-1">
+                    Reset password
+                  </router-link>
                   <label class="form-label" for="example-password">Password</label>
-                  <input type="password" id="example-password" class="form-control" placeholder="Enter your password"
-                    v-model="v.password.$model">
+                  <div class="position-relative d-flex align-items-center">
+                    <InputText
+                      id="example-password"
+                      :type="showPassword ? 'text' : 'password'"
+                      class="form-control"
+                      placeholder="Enter your password"
+                      v-model="v.password.$model"
+                    />
+                    <span class="position-absolute end-0 me-3" style="cursor: pointer;" @click="togglePassword">
+                      <i :class="showPassword ? 'pi pi-eye-slash' : 'pi pi-eye'" />
+                    </span>
+                  </div>
                   <div v-if="v.password.$errors" class="text-danger">
                     <span v-for="(err, idx) in v.password.$errors" :key="idx">
                       {{ err.$message }}
@@ -48,17 +64,16 @@
               <p class="mt-3 fw-semibold no-span">OR sign with</p>
 
               <div class="text-center">
-                <a href="javascript:void(0);" class="btn btn-light shadow-none"><i
-                    class='bx bxl-google fs-20'></i></a>{{ ' ' }}
-                <a href="javascript:void(0);" class="btn btn-light shadow-none"><i
-                    class='bx bxl-facebook fs-20'></i></a>{{ ' ' }}
+                <a href="javascript:void(0);" class="btn btn-light shadow-none"><i class='bx bxl-google fs-20'></i></a>{{ ' ' }}
+                <a href="javascript:void(0);" class="btn btn-light shadow-none"><i class='bx bxl-facebook fs-20'></i></a>{{ ' ' }}
                 <a href="javascript:void(0);" class="btn btn-light shadow-none"><i class='bx bxl-github fs-20'></i></a>
               </div>
             </div>
           </b-card-body>
         </b-card>
-        <p class="mb-0 text-center">New here? <router-link :to="{ name: 'auth.sign-up' }"
-            class="text-reset fw-bold ms-1">Sign Up</router-link></p>
+        <p class="mb-0 text-center">
+          New here? <router-link :to="{ name: 'auth.sign-up' }" class="text-reset fw-bold ms-1">Sign Up</router-link>
+        </p>
       </b-col>
     </b-row>
   </AuthLayout>
@@ -71,18 +86,21 @@ import { useVuelidate } from '@vuelidate/core';
 import { ref, reactive, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
+import { useToast } from 'primevue/usetoast';
+import InputText from 'primevue/inputtext';
 
 const router = useRouter();
 const authStore = useAuthStore();
+const toast = useToast();
 
 const credentials = reactive({
   email: '',
-  password: ''
+  password: '',
 });
 
 const vuelidateRules = computed(() => ({
   email: { required, email },
-  password: { required }
+  password: { required },
 }));
 
 const v = useVuelidate(vuelidateRules, credentials);
@@ -90,6 +108,11 @@ const v = useVuelidate(vuelidateRules, credentials);
 const error = ref('');
 const checked = ref(false);
 const loading = ref(false);
+const showPassword = ref(false);
+
+const togglePassword = () => {
+  showPassword.value = !showPassword.value;
+};
 
 const handleSignIn = async () => {
   try {
@@ -98,6 +121,12 @@ const handleSignIn = async () => {
     if (v.value.$invalid) {
       console.log('Validation failed:', v.value.$errors);
       error.value = 'Please fill in all required fields correctly';
+      toast.add({
+        severity: 'error',
+        summary: 'Validation Error',
+        detail: 'Please fill in all required fields correctly',
+        life: 3000,
+      });
       return;
     }
 
@@ -108,7 +137,7 @@ const handleSignIn = async () => {
     await authStore.login(
       {
         email: credentials.email,
-        password: credentials.password
+        password: credentials.password,
       },
       checked.value
     );
@@ -119,30 +148,55 @@ const handleSignIn = async () => {
     // Add a slight delay to ensure state updates propagate
     await new Promise(resolve => setTimeout(resolve, 100));
 
-    const redirect = router.currentRoute.value.query.redirectedFrom || { name: 'dashboards.index' };
+    const redirect = router.currentRoute.value.query.redirect || { name: 'dashboards.index' };
     console.log('Redirecting to:', redirect);
 
     // Check if the redirect route exists
     const resolvedRoute = router.resolve(redirect);
     if (!resolvedRoute.matched.length) {
       console.error('Redirect route not found, redirecting to a fallback route');
-      await router.push('/'); // Fallback route
+      await router.push('/');
     } else {
       await router.push(redirect);
     }
   } catch (err) {
     console.error('Login error:', err);
-    if (err.detail) {
-      error.value = err.detail;
-    } else if (err.message) {
-      error.value = err.message;
-    } else if (err.non_field_errors) {
-      error.value = err.non_field_errors.join(', ');
+    if (err.message === 'Token refresh failed') {
+      toast.add({
+        severity: 'error',
+        summary: 'Session Expired',
+        detail: 'Your session has expired. Please log in again.',
+        life: 3000,
+      });
+      // Redirect is handled by authService.js
     } else {
-      error.value = 'Invalid credentials';
+      error.value = err.detail || err.message || 'Invalid credentials';
+      toast.add({
+        severity: 'error',
+        summary: 'Login Failed',
+        detail: error.value,
+        life: 3000,
+      });
     }
   } finally {
     loading.value = false;
   }
 };
 </script>
+
+<style scoped>
+/* Ensure the toggle icon aligns properly */
+.position-relative {
+  position: relative;
+}
+
+.position-absolute {
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+/* Optional: Adjust input padding to accommodate the icon */
+.form-control {
+  padding-right: 40px; /* Space for the toggle icon */
+}
+</style>
