@@ -837,6 +837,33 @@ const adminRoutes = [
     },
     component: () => import('@/views/admin/ProcurementProcessCreate.vue')  
   },
+  {
+    path: '/admin/marketplace',
+    name: 'admin.marketplace',
+    meta: {
+      title: setTitle('Marketplace'),
+      authRequired: true
+    },
+    component: () => import('@/views/marketplace/admin/admin-market-place.vue')
+  },
+  {
+    path: '/admin/marketplace/categories-management',
+    name: 'admin.marketplace.categories-management',
+    meta: {
+      title: setTitle('Marketplace Categories Management'),
+      authRequired: true
+    },
+    component: () => import('@/views/marketplace/admin/admin-marketplace-categories.vue')
+  },
+  {
+    path: '/admin/marketplace/products-management',
+    name: 'admin.marketplace.products-management',
+    meta: {
+      title: setTitle('Marketplace Products Management'),
+      authRequired: true
+    },
+    component: () => import('@/views/marketplace/admin/admin-marketplace-products.vue')
+  }
 ];
 
 // Staff routes
@@ -896,6 +923,15 @@ const userRoutes = [
     component: () => import('@/views/user/company-tender-list.vue'),
     meta: {
       title: setTitle('Company Tenders'),
+      authRequired: true
+    },
+  },
+  {
+    path: '/marketplace/',
+    name: 'user.marketplace-list', 
+    component: () => import('@/views/marketplace/user/user-marketplace-productlist.vue'),
+    meta: {
+      title: setTitle('Marketplace'),
       authRequired: true
     },
   }

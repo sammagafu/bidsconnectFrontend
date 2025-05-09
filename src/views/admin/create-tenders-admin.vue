@@ -503,3 +503,6 @@ const saveButtonLabel = computed(() => {
     }
 }
 </style>
+
+<!-- change number to tender number -->
+ //TODO: add a new field for tender number

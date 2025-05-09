@@ -205,6 +205,7 @@ const authService = {
       sessionStorage.removeItem(TOKEN_KEY);
       sessionStorage.removeItem(REFRESH_TOKEN_KEY);
       sessionStorage.removeItem(USER_KEY);
+      sessionStorage.removeItem('dismissedCompanyModal');
       delete api.defaults.headers.common['Authorization'];
       console.log('Logout completed, tokens and user data cleared');
     }

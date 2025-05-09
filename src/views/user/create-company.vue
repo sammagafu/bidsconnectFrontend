@@ -366,3 +366,5 @@
     }
   };
   </script>
+  
+  //TODO: add a dropdown for the country field to have taznania and when pick others he can write his/her own country

@@ -28,12 +28,12 @@ const ADMIN_MENU_ITEMS = [
     label: 'User Management',
     route: { name: 'admin.users' },
   },
-  {
-    key: 'admin-settings',
-    icon: 'solar:settings-broken',
-    label: 'System Settings',
-    route: { name: 'admin.settings' },
-  },
+  // {
+  //   key: 'admin-settings',
+  //   icon: 'solar:settings-broken',
+  //   label: 'System Settings',
+  //   route: { name: 'admin.settings' },
+  // },
   {
     key: 'companies',
     label: 'Companies Management',
@@ -74,10 +74,16 @@ const ADMIN_MENU_ITEMS = [
     label: 'Todo',
     route: { name: 'apps.todo' },
   },
+
+  {
+    key: 'marketplace',
+    label: 'Marketplace',
+    isTitle: true,
+  },
   {
     key: 'apps-invoices',
     icon: 'solar:bill-list-broken',
-    label: 'Invoices',
+    label: 'Price Lists',
     children: [
       {
         key: 'invoices',
@@ -93,34 +99,30 @@ const ADMIN_MENU_ITEMS = [
       },
     ],
   },
+
   {
-    key: 'companies',
-    label: 'Manage Companies',
-    isTitle: true,
-  },
-  {
-    key: 'pages',
-    label: 'Pages',
+    key: 'markertplace',
+    label: 'Marketplaces',
     isTitle: false,
     icon: 'solar:folder-with-files-broken',
     children: [
       {
-        key: 'page-welcome',
-        label: 'Welcome',
-        route: { name: 'pages.welcome' },
-        parentKey: 'pages',
+        key: 'marketplace-categories',
+        label: 'Manage Categories',
+        route: { name: 'admin.marketplace.categories-management' },
+        parentKey: 'markertplace',
       },
       {
-        key: 'page-faqs',
-        label: 'FAQs',
-        route: { name: 'pages.faqs' },
-        parentKey: 'pages',
+        key: 'marketplace-products',
+        label: 'Manage Products',
+        route: { name: 'admin.marketplace.products-management' },
+        parentKey: 'markertplace',
       },
       {
         key: 'page-coming-soon',
         label: 'Coming Soon',
         route: { name: 'pages.coming-soon' },
-        parentKey: 'pages',
+        parentKey: 'markertplace',
         target: '_blank',
       },
       {
@@ -728,15 +730,15 @@ const NORMAL_MENU_ITEMS = [
     route: { name: 'apps.email' },
   },
   {
-    key: 'bids',
-    label: 'My ',
+    key: 'marketpalce',
+    label: 'Marketplace',
     isTitle: true,
   },
   {
-    key: 'apps-email',
-    icon: 'solar:letter-broken',
-    label: 'My Bids',
-    route: { name: 'apps.email' },
+    key: 'apps-marketplace',
+    icon: 'solar:cart-large-2-bold',
+    label: 'Market Place',
+    route: { name: 'user.marketplace-list' },
   },
 ];
 
