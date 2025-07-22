@@ -1,123 +1,194 @@
 import { defineStore } from 'pinia';
 import authService from '@/services/authService';
+import { useRouter } from 'vue-router';
+// Removed useToast from store due to inject() context issues
+
+// Token refresh interval (e.g., every 15 minutes)
+const TOKEN_REFRESH_INTERVAL = 15 * 60 * 1000;
 
 export const useAuthStore = defineStore('auth', {
   state: () => {
-    // Initialize state from storage
     const user = authService.getUser();
     const token = authService.getToken();
+    const companies = user?.companies || [];
+
+    // Determine initial role flags
+    const isSuperAdmin = user?.is_superuser === true;
+    const isStaffUser = user?.is_staff === true;
+    const isCompanyOwner = companies.some(c =>
+      c.company_users.some(cu => cu.user.id === user.id && cu.role === 'owner')
+    );
+    const isCompanyAdmin = companies.some(c =>
+      c.company_users.some(cu => cu.user.id === user.id && cu.role === 'admin')
+    );
+    const isCompanyMember = companies.length > 0;
+    const isNormalUser = isCompanyMember && !isCompanyOwner && !isCompanyAdmin;
+
     return {
-      user: user,
-      isAuthenticated: !!token && !!user, // Set based on token and user presence
-      isAdmin: false,
-      isStaff: false,
-      isNormalUser: false,
+      user,
+      token,
+      companies,
+      isAuthenticated: !!token && !!user,
+      isSuperAdmin,
+      isStaffUser,
+      isCompanyOwner,
+      isCompanyAdmin,
+      isCompanyMember,
+      isNormalUser,
+      loading: false,
     };
   },
 
   actions: {
     async login(credentials, rememberMe) {
+      this.loading = true;
       try {
         const data = await authService.login(credentials, rememberMe);
         this.user = data.user;
+        this.token = data.access;
+        this.companies = data.user.companies || [];
+        this.updateRoles();  // renamed
         this.isAuthenticated = true;
-        this.updateRoles();
-        console.log('Auth state updated:', {
-          user: this.user,
-          isAuthenticated: this.isAuthenticated,
-        });
+        this.startTokenRefresh();
         return data;
       } catch (error) {
-        console.error('Login failed in store:', error);
+        console.error('Login failed:', error);
+        // Error handling here; consider handling toast in component
         throw error;
+      } finally {
+        this.loading = false;
       }
     },
 
     async register(credentials) {
+      this.loading = true;
       try {
-        const response = await api.post('accounts/users/', {
-          first_name: credentials.first_name,
-          last_name: credentials.last_name,
-          email: credentials.email,
-          phone_number: credentials.phone_number,
-          password: credentials.password,
-        });
-
-        const loginResponse = await authService.login(
-          {
-            email: credentials.email,
-            password: credentials.password,
-          },
-          true
-        );
-
-        this.user = loginResponse.user;
+        const response = await authService.register(credentials);
+        this.user = response.user;
+        this.token = response.access;
+        this.companies = response.user.companies || [];
+        this.updateRoles();  // renamed
         this.isAuthenticated = true;
-        this.updateRoles();
-        return loginResponse;
+        this.startTokenRefresh();
+        return response;
       } catch (error) {
-        throw error.response?.data || { message: 'Registration failed' };
+        console.error('Registration failed:', error);
+        throw error;
+      } finally {
+        this.loading = false;
       }
     },
 
     async logout() {
-      await authService.logout();
-      this.user = null;
-      this.isAuthenticated = false;
-      this.isAdmin = false;
-      this.isStaff = false;
-      this.isNormalUser = false;
-      console.log('Logged out, auth state updated:', {
-        user: this.user,
-        isAuthenticated: this.isAuthenticated,
-      });
+      this.loading = true;
+      try {
+        await authService.logout();
+        this.user = null;
+        this.token = null;
+        this.companies = [];
+        this.isAuthenticated = false;
+        this.isSuperAdmin = false;
+        this.isStaffUser = false;
+        this.isCompanyOwner = false;
+        this.isCompanyAdmin = false;
+        this.isCompanyMember = false;
+        this.isNormalUser = false;
+        localStorage.clear();
+        sessionStorage.clear();
+        const router = useRouter();
+        router.push('/login');
+      } catch (error) {
+        console.error('Logout failed:', error);
+        throw error;
+      } finally {
+        this.loading = false;
+      }
     },
 
     async initialize() {
+      this.loading = true;
       try {
         authService.initializeAuth();
-        this.user = authService.getUser();
+        const user = authService.getUser();
+        this.user = user;
+        this.token = authService.getToken();
+        this.companies = user?.companies || [];
         this.isAuthenticated = await authService.isAuthenticated();
-        this.updateRoles();
-        console.log('Auth state initialized:', {
-          user: this.user,
-          isAuthenticated: this.isAuthenticated,
-          isAdmin: this.isAdmin,
-          isStaff: this.isStaff,
-          isNormalUser: this.isNormalUser,
-        });
+        this.updateRoles();  // renamed
+        if (this.isAuthenticated) {
+          this.startTokenRefresh();
+        }
       } catch (error) {
-        console.error('Failed to initialize auth state:', error);
+        console.error('Initialization failed:', error);
         this.user = null;
+        this.token = null;
+        this.companies = [];
         this.isAuthenticated = false;
-        this.isAdmin = false;
-        this.isStaff = false;
+        this.isSuperAdmin = false;
+        this.isStaffUser = false;
+        this.isCompanyOwner = false;
+        this.isCompanyAdmin = false;
+        this.isCompanyMember = false;
         this.isNormalUser = false;
-        // Optionally clear storage and redirect to login
         await authService.logout();
+      } finally {
+        this.loading = false;
       }
     },
 
     updateUser(user) {
       this.user = user;
+      this.token = authService.getToken();
+      this.companies = user.companies || [];
+      this.updateRoles();  // renamed
       const storage = localStorage.getItem('auth_token') ? localStorage : sessionStorage;
       storage.setItem('user_data', JSON.stringify(user));
-      this.updateRoles();
-      console.log('User updated:', this.user);
     },
 
-    updateRoles() {
-      this.isAdmin = this.isAuthenticated && this.user?.is_superuser === true;
-      this.isStaff = this.isAuthenticated && this.user?.is_staff === true && !this.user?.is_superuser;
-      this.isNormalUser = this.isAuthenticated && !this.user?.is_superuser && !this.user?.is_staff;
+    updateRoles() {  // renamed from _updateRoles
+      this.isSuperAdmin = this.user?.is_superuser === true;
+      this.isStaffUser = this.user?.is_staff === true;
+      this.isCompanyOwner = this.companies.some(c =>
+        c.company_users.some(cu => cu.user.id === this.user.id && cu.role === 'owner')
+      );
+      this.isCompanyAdmin = this.companies.some(c =>
+        c.company_users.some(cu => cu.user.id === this.user.id && cu.role === 'admin')
+      );
+      this.isCompanyMember = this.companies.length > 0;
+      this.isNormalUser = this.isCompanyMember && !this.isCompanyOwner && !this.isCompanyAdmin;
     },
 
     hasCompanies() {
-      return this.user && this.user.companies && this.user.companies.length > 0;
+      return this.companies.length > 0;
     },
 
     shouldShowCompanyModal() {
-      return this.isAuthenticated && this.isNormalUser && !this.hasCompanies();
+      return this.isAuthenticated && !this.isCompanyAdmin && !this.hasCompanies();
+    },
+
+    startTokenRefresh() {
+      setInterval(async () => {
+        if (this.isAuthenticated) {
+          try {
+            await authService.refreshToken();
+            console.log('Token refreshed successfully');
+          } catch (error) {
+            console.error('Token refresh failed:', error);
+            this.logout();
+          }
+        }
+      }, TOKEN_REFRESH_INTERVAL);
+    },
+
+    handleError(error, title) {
+      console.error(`${title}:`, error);
+    },
+
+    ensureAuthenticated() {
+      if (!this.isAuthenticated) {
+        const router = useRouter();
+        router.push('/login');
+      }
     },
   },
 });

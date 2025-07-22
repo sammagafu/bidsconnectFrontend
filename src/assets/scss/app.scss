@@ -3,15 +3,13 @@
 //
 
 // Core files
-@import "./node_modules/bootstrap/scss/functions";
-@import "./node_modules/bootstrap/scss/variables";
+@import "bootstrap/scss/functions";
+@import "bootstrap/scss/variables";
 @import "config/variables";
 @import "config/variables-dark";
-
 @import "config/variables-custom";
 @import "config/theme-mode";
-
-@import "./node_modules/bootstrap/scss/bootstrap";
+@import "bootstrap/scss/bootstrap";
 
 // Structure
 @import "structure/topbar";

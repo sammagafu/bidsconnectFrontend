@@ -116,7 +116,7 @@
   const documentFields = [
     { key: 'name', label: 'Document Name' },
     { key: 'uploaded_at', label: 'Uploaded At', formatter: value => new Date(value).toLocaleDateString() },
-    { key: 'size', label: 'Size (KB)', formatter: value => (value / 1024).toFixed(2) },
+    { key: 'size', label: 'Size (KB)', formatter: value => (value / 2024).toFixed(2) },
     { key: 'file', label: 'File' },
     { key: 'actions', label: 'Actions' },
   ];
@@ -173,13 +173,9 @@
     try {
       const formData = new FormData();
       formData.append('name', newDocument.value.name);
-      formData.append('file', newDocument.value.file);
+      formData.append('file', newDocument.value.file);  
   
-      await api.post(`companies/${route.params.id}/documents/`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
+      await api.post(`companies/${route.params.id}/documents/`, formData);
       toast.add({
         severity: 'success',
         summary: 'Success',

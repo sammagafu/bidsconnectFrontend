@@ -897,8 +897,29 @@ const userRoutes = [
       title: setTitle('User Management'),
       authRequired: true
     },
-    component: () => import('@/views/user/company-manage-user.vue')
+    component: () => import('@/views/companymanagement/users/user-management.vue')
   },
+
+   {
+    path: '/company/document',
+    name: 'user.company-management',
+    meta: {
+      title: setTitle('Company Documents'),
+      authRequired: true
+    },
+    component: () => import('@/views/companymanagement/documents/managecompanydocument.vue')
+  },
+
+  {
+    path: '/company/',
+    name: 'user.company',
+    meta: {
+      title: setTitle('Company Details'),
+      authRequired: true
+    },
+    component: () => import('@/views/companymanagement/company/company-Details.vue')
+  },
+
   {
     path: '/company/:id',
     name: 'company.detail',
@@ -918,11 +939,20 @@ const userRoutes = [
     },
   },
   {
-    path: '/company/tenders',
+    path: '/tenders',
     name: 'company.tenders-list', 
     component: () => import('@/views/user/company-tender-list.vue'),
     meta: {
-      title: setTitle('Company Tenders'),
+      title: setTitle('Tenders'),
+      authRequired: true
+    },
+  },
+  {
+    path: '/tenders/:slug',
+    name: 'company.tenders-detail', 
+    component: () => import('@/views/tenders/users/tenders-detail.vue'),
+    meta: {
+      title: setTitle('Tenders'),
       authRequired: true
     },
   },
@@ -934,7 +964,16 @@ const userRoutes = [
       title: setTitle('Marketplace'),
       authRequired: true
     },
-  }
+  },
+  {
+    path: '/bids',
+    name: 'company.bids-list', 
+    component: () => import('@/views/bids/users/users-bids-list.vue'),
+    meta: {
+      title: setTitle('Tenders'),
+      authRequired: true
+    },
+  },
 ];
 
 export const allRoutes = [

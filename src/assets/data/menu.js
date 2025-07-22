@@ -666,6 +666,13 @@ const NORMAL_MENU_ITEMS = [
     label: 'Email',
     route: { name: 'apps.email' },
   },
+
+    {
+    key: 'company-management',
+    label: 'Company Management',
+    isTitle: true,
+  },
+  
   {
     key: 'company-management',
     label: 'Manage Company',
@@ -674,61 +681,131 @@ const NORMAL_MENU_ITEMS = [
     children: [
       {
         key: 'Compny-users',
-        label: 'Management Users',
+        label: 'Team Management',
         route: { name: 'user.user-management' },
         parentKey: 'company-management',
       },
       {
-        key: 'Open-tenders',
+        key: 'company-documents',
         label: 'Company Documents',
-        route: { name: 'company.tenders-list' },
+        route: { name: 'user.company-management' },
         parentKey: 'company-management',
       },
       {
-        key: 'previous-tenders',
-        label: 'Update Company Details',
-        route: { name: 'pages.welcome' },
+        key: 'comapny-details',
+        label: 'Company Details',
+        route: { name: 'user.company' },
         parentKey: 'company-management',
       },
     ],
   },
+    {
+    key: 'tenders',
+    label: 'Tenders',
+    isTitle: true,
+  },
   {
     key: 'user-tenders',
-    label: 'Manage Tenders',
+    label: 'Tenders',
     isTitle: false,
     icon: 'solar:folder-with-files-broken',
     children: [
       {
         key: 'Open-tenders',
-        label: 'Open Tenders',
+        label: 'Current Advertised',
         route: { name: 'company.tenders-list' },
         parentKey: 'user-tenders',
       },
       {
-        key: 'Open-tenders',
-        label: 'Digest Tenders',
+        key: 'previous-tenders',
+        label: 'Awarded',
         route: { name: 'pages.welcome' },
         parentKey: 'user-tenders',
       },
       {
-        key: 'previous-tenders',
-        label: 'Previous Tenders',
+        key: 'Open-tenders',
+        label: 'My Unsuccessful',
         route: { name: 'pages.welcome' },
         parentKey: 'user-tenders',
       },
+      {
+        key: 'Open-tenders',
+        label: 'My Submissions',
+        route: { name: 'pages.welcome' },
+        parentKey: 'user-tenders',
+      },
+      
+      
     ],
   },
-  {
-    key: 'bids',
-    label: 'My Bids',
+    {
+    key: 'qualifications',
+    label: 'Qualifications Information',
     isTitle: true,
   },
   {
+    key: 'qualifications',
+    label: 'Qualification',
+    isTitle: false,
+
+    children: [
+      {
     key: 'apps-email',
-    icon: 'solar:letter-broken',
-    label: 'My Bids',
-    route: { name: 'apps.email' },
+    // icon: 'solar:letter-broken',
+    label: 'Annual Turnovers',
+    route: { name: 'company.bids-list' },
   },
+  {
+    key: 'apps-email',
+    // icon: 'solar:letter-broken',
+    label: 'Financial Statements',
+    route: { name: 'company.bids-list' },
+  },
+  {
+    key: 'apps-email',
+    // icon: 'solar:letter-broken',
+    label: 'Sources Of Funds',
+    route: { name: 'company.bids-list' },
+  },
+  {
+    key: 'apps-email',
+    // icon: 'solar:letter-broken',
+    label: 'Litigations History',
+    route: { name: 'company.bids-list' },
+  },
+  {
+    key: 'apps-email',
+    // icon: 'solar:letter-broken',
+    label: 'Offices Locations',
+    route: { name: 'company.bids-list' },
+  },
+  {
+    key: 'apps-email',
+    // icon: 'solar:letter-broken',
+    label: 'Personnel Information',
+    route: { name: 'company.bids-list' },
+  },
+  {
+    key: 'apps-email',
+    // icon: 'solar:letter-broken',
+    label: 'Work Experience',
+    route: { name: 'company.bids-list' },
+  },
+  {
+    key: 'apps-email',
+    // icon: 'solar:letter-broken',
+    label: 'Work Equipment',
+    route: { name: 'company.bids-list' },
+  },
+  {
+    key: 'apps-email',
+    // icon: 'solar:letter-broken',
+    label: 'Key Activities',
+    route: { name: 'company.bids-list' },
+  },
+    ]
+  },
+  
   {
     key: 'marketpalce',
     label: 'Marketplace',
@@ -785,7 +862,7 @@ export const MENU_ITEMS = NORMAL_MENU_ITEMS;
 export const getMenuItems = () => {
   const authStore = useAuthStore();
 
-  if (authStore.isAdmin) { // Use as a property
+  if (authStore.isSuperAdmin) { // Use as a property
     return ADMIN_MENU_ITEMS;
   } else if (authStore.isStaff) { // Use as a property
     return STAFF_MENU_ITEMS;
@@ -803,37 +880,37 @@ const getMatchingMenuItems = (data, currentRouteName) => {
   const matchingItems = [];
 
   const traverse = (item) => {
-    if (item.children && item.children.some((child) => child.route?.name && child.route.name === currentRouteName)) {
+    if (
+      item.children &&
+      item.children.some(
+        (child) => child.route?.name === currentRouteName
+      )
+    ) {
       matchingItems.push(item.key);
       if (item.parentKey) {
         matchingItems.push(item.parentKey);
       }
     }
-
     if (item.children) {
-      item.children.forEach((child) => traverse(child));
+      item.children.forEach(traverse);
     }
   };
 
   data.forEach(traverse);
-
   return matchingItems;
 };
 
-export const menuItemActive = (key, currentRouteName) => {
-  const authStore = useAuthStore();
-  let menuItems;
+/**
+ * Returns true if the given `key` is in the active trail
+ * for the current route name.
+ */
+export function menuItemActive(key, currentRouteName) {
+  // grab whichever menu is appropriate for this user
+  const menuItems = getMenuItems();
 
-  if (authStore.isAdmin) { // Use as a property
-    menuItems = ADMIN_MENU_ITEMS;
-  } else if (authStore.isStaff) { // Use as a property
-    menuItems = STAFF_MENU_ITEMS;
-  } else if (authStore.isNormalUser) { // Use as a property
-    menuItems = NORMAL_MENU_ITEMS;
-  } else {
-    menuItems = UNAUTHENTICATED_MENU_ITEMS;
-  }
-
+  // figure out the “trail” of matching keys
   activeMenuItem = getMatchingMenuItems(menuItems, currentRouteName);
-  return activeMenuItem && activeMenuItem.includes(key);
-};
+
+  // return whether our key is in that trail
+  return activeMenuItem.includes(key);
+}
