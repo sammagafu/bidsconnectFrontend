@@ -748,62 +748,44 @@ const NORMAL_MENU_ITEMS = [
     label: 'Qualification',
     isTitle: false,
 
-    children: [
+   children: [
       {
-    key: 'apps-email',
-    // icon: 'solar:letter-broken',
-    label: 'Annual Turnovers',
-    route: { name: 'company.bids-list' },
-  },
-  {
-    key: 'apps-email',
-    // icon: 'solar:letter-broken',
-    label: 'Financial Statements',
-    route: { name: 'company.bids-list' },
-  },
-  {
-    key: 'apps-email',
-    // icon: 'solar:letter-broken',
-    label: 'Sources Of Funds',
-    route: { name: 'company.bids-list' },
-  },
-  {
-    key: 'apps-email',
-    // icon: 'solar:letter-broken',
-    label: 'Litigations History',
-    route: { name: 'company.bids-list' },
-  },
-  {
-    key: 'apps-email',
-    // icon: 'solar:letter-broken',
-    label: 'Offices Locations',
-    route: { name: 'company.bids-list' },
-  },
-  {
-    key: 'apps-email',
-    // icon: 'solar:letter-broken',
-    label: 'Personnel Information',
-    route: { name: 'company.bids-list' },
-  },
-  {
-    key: 'apps-email',
-    // icon: 'solar:letter-broken',
-    label: 'Work Experience',
-    route: { name: 'company.bids-list' },
-  },
-  {
-    key: 'apps-email',
-    // icon: 'solar:letter-broken',
-    label: 'Work Equipment',
-    route: { name: 'company.bids-list' },
-  },
-  {
-    key: 'apps-email',
-    // icon: 'solar:letter-broken',
-    label: 'Key Activities',
-    route: { name: 'company.bids-list' },
-  },
-    ]
+        key: 'profile-financial',
+        label: 'Financial Information',
+        route: { name: 'profile.financial' },
+        parentKey: 'qualifications',
+      },
+      {
+        key: 'profile-litigation',
+        label: 'Litigation',
+        route: { name: 'profile.litigation' },
+        parentKey: 'qualifications',
+      },
+      {
+        key: 'profile-officelocation',
+        label: 'Office Location',
+        route: { name: 'profile.officelocation' },
+        parentKey: 'qualifications',
+      },
+      {
+        key: 'profile-personalinformation',
+        label: 'Personal Information',
+        route: { name: 'profile.personalinformation' },
+        parentKey: 'qualifications',
+      },
+      {
+        key: 'profile-source-of-funds',
+        label: 'Source of Funds',
+        route: { name: 'profile.source-of-funds' },
+        parentKey: 'qualifications',
+      },
+      {
+        key: 'profile-turnover',
+        label: 'Turnover',
+        route: { name: 'profile.turnover' },
+        parentKey: 'qualifications',
+      },
+    ],
   },
   
   {

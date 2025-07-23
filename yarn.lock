@@ -819,6 +819,11 @@ fill-range@^7.1.1:
   dependencies:
     to-regex-range "^5.0.1"
 
+flatpickr@^2.3.0-3:
+  version "2.6.3"
+  resolved "https://registry.npmjs.org/flatpickr/-/flatpickr-2.6.3.tgz"
+  integrity sha512-+Mm/LJPFoAGwjZ+Ash4+IMIYMGelEJnspSu1+USuPV9stv51F+/C8wo3SKE7CRco+jKgZe3rsI7/87msCh/QkQ==
+
 flatpickr@^4.6.13:
   version "4.6.13"
   resolved "https://registry.npmjs.org/flatpickr/-/flatpickr-4.6.13.tgz"
@@ -837,6 +842,11 @@ form-data@^4.0.0:
     asynckit "^0.4.0"
     combined-stream "^1.0.8"
     mime-types "^2.1.12"
+
+fsevents@~2.3.2, fsevents@~2.3.3:
+  version "2.3.3"
+  resolved "https://registry.npmjs.org/fsevents/-/fsevents-2.3.3.tgz"
+  integrity sha512-5xoDfX+fL7faATnagmWPpbFtwh/R77WmMMqqHGS65C3vvB0YHrgF+B1YmZ3441tMj5n63k0212XNoJwzlhffQw==
 
 function-bind@^1.1.2:
   version "1.1.2"
@@ -1647,6 +1657,13 @@ vue-demi@>=0.14.10:
   version "0.14.10"
   resolved "https://registry.npmjs.org/vue-demi/-/vue-demi-0.14.10.tgz"
   integrity sha512-nMZBOwuzabUO0nLgIcc6rycZEebF6eeUfaiQx9+WSk8e29IbLvPU9feI6tqW4kTo3hvoYAJkMh8n8D0fuISphg==
+
+vue-flatpickr@^2.3.0:
+  version "2.3.0"
+  resolved "https://registry.npmjs.org/vue-flatpickr/-/vue-flatpickr-2.3.0.tgz"
+  integrity sha512-NY1YEvn4dVO4xUYiZmWQhupC9MAuqE34PIyzmxrNEJdtiU23wXdA3qtvpxm+Hka2xfBbDfmAXjsrAFFz9oG7IA==
+  dependencies:
+    flatpickr "^2.3.0-3"
 
 vue-router@^4.3.3:
   version "4.4.3"

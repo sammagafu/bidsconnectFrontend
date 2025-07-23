@@ -807,13 +807,22 @@ const adminRoutes = [
     component: () => import('@/views/admin/settings.vue')
   },
   {
+    path: '/admin/tenders/create',
+    name: 'admin.tenders-create',
+    meta: {
+      title: setTitle('Tenders Create'),
+      authRequired: true
+    },
+    component: () => import('@/views/admin/create-tenders-admin.vue')  
+  },
+  {
     path: '/admin/tenders',
     name: 'admin.tenders-management',
     meta: {
       title: setTitle('Tenders Management'),
       authRequired: true
     },
-    component: () => import('@/views/admin/create-tenders-admin.vue')  
+    component: () => import('@/views/admin/tender-management-admin.vue')  
   },
   {
     path: '/admin/tenders/categories/create',
@@ -973,6 +982,42 @@ const userRoutes = [
       title: setTitle('Tenders'),
       authRequired: true
     },
+  },
+  {
+    path: '/profile/financial',
+    name: 'profile.financial',
+    meta: { title: setTitle('Financial Information'), authRequired: true },
+    component: () => import('@/views/companymanagement/qualification/financial/list-create.vue')
+  },
+  {
+    path: '/profile/litigation',
+    name: 'profile.litigation',
+    meta: { title: setTitle('Litigation'), authRequired: true },
+    component: () => import('@/views/companymanagement/qualification/litigation/list-create.vue')
+  },
+  {
+    path: '/profile/officelocation',
+    name: 'profile.officelocation',
+    meta: { title: setTitle('Office Location'), authRequired: true },
+    component: () => import('@/views/companymanagement/qualification/officelocation/list-create.vue')
+  },
+  {
+    path: '/profile/personalinformation',
+    name: 'profile.personalinformation',
+    meta: { title: setTitle('Personal Information'), authRequired: true },
+    component: () => import('@/views/companymanagement/qualification/personalinformation/list-create.vue')
+  },
+  {
+    path: '/profile/source-of-funds',
+    name: 'profile.source-of-funds',
+    meta: { title: setTitle('Source of Funds'), authRequired: true },
+    component: () => import('@/views/companymanagement/qualification/sourcefunds/list-create.vue')
+  },
+  {
+    path: '/profile/turnover',
+    name: 'profile.turnover',
+    meta: { title: setTitle('Turnover'), authRequired: true },
+    component: () => import('@/views/companymanagement/qualification/turnover/list-create.vue')
   },
 ];
 
