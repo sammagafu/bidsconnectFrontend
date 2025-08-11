@@ -136,14 +136,16 @@ export const useAuthStore = defineStore('auth', {
       }
     },
 
-    updateUser(user) {
-      this.user = user;
-      this.token = authService.getToken();
-      this.companies = user.companies || [];
-      this.updateRoles();  // renamed
-      const storage = localStorage.getItem('auth_token') ? localStorage : sessionStorage;
-      storage.setItem('user_data', JSON.stringify(user));
-    },
+updateUser(user) {
+  if (JSON.stringify(this.user) !== JSON.stringify(user)) {
+    this.user = user;
+    this.token = authService.getToken();
+    this.companies = user.companies || [];
+    this.updateRoles();
+    const storage = localStorage.getItem('auth_token') ? localStorage : sessionStorage;
+    storage.setItem('user_data', JSON.stringify(user));
+  }
+},
 
     updateRoles() {  // renamed from _updateRoles
       this.isSuperAdmin = this.user?.is_superuser === true;

@@ -816,6 +816,15 @@ const adminRoutes = [
     component: () => import('@/views/admin/create-tenders-admin.vue')  
   },
   {
+  path: '/admin/tenders/:slug/edit',
+  name: 'admin.tenders-edit',
+   meta: {
+      title: setTitle('Tenders Edit'),
+      authRequired: true
+    },
+  component: () => import('@/views/admin/edit-tenders-admin.vue')  
+  },
+  {
     path: '/admin/tenders',
     name: 'admin.tenders-management',
     meta: {
@@ -897,8 +906,19 @@ const userRoutes = [
       title: setTitle('Create Company'),
       authRequired: true
     },
-    component: () => import('@/views/user/create-company.vue')
+    component: () => import('@/views/companymanagement/company/create-companyandlocation.vue')
   },
+
+  {
+    path: '/company/:companyId/edit',
+    name: 'company.edit',
+    meta: {
+      title: setTitle('Create Company'),
+      authRequired: true
+    },
+    component: () => import('@/views/companymanagement/company/create-companyandlocation.vue')
+  },
+  
   {
     path: '/company/user-management',
     name: 'user.user-management',
@@ -978,6 +998,15 @@ const userRoutes = [
     path: '/bids',
     name: 'company.bids-list', 
     component: () => import('@/views/bids/users/users-bids-list.vue'),
+    meta: {
+      title: setTitle('Tenders'),
+      authRequired: true
+    },
+  },
+    {
+    path: '/tenders/:slug/bid',
+    name: 'company.bids-create', 
+    component: () => import('@/views/bids/users/bid-for-tender.vue'),
     meta: {
       title: setTitle('Tenders'),
       authRequired: true

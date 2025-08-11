@@ -1,314 +1,289 @@
 <template>
   <VerticalLayout>
-    <!-- Document Form -->
-    <b-form
-      class="row g-3 mb-4"
-      @submit.prevent="submit"
-      enctype="multipart/form-data"
+    <b-card class="mb-4">
+      <!-- header toolbar -->
+      <template #header>
+        <div class="d-flex justify-content-between align-items-center">
+          <h3 class="mb-0">Documents</h3>
+          <div>
+            <b-button size="sm" variant="outline-primary" @click="openModal()">
+              <i class="bx bx-plus"></i> Create
+            </b-button>
+            <b-button
+              size="sm"
+              variant="outline-secondary"
+              class="ms-2"
+              @click="fetchDocs()"
+            >
+              <i class="bx bx-refresh"></i>
+            </b-button>
+          </div>
+        </div>
+      </template>
+
+      <!-- list -->
+      <b-list-group flush>
+        <b-list-group-item
+          v-for="doc in docs"
+          :key="doc.id"
+          class="d-flex justify-content-between align-items-center"
+        >
+          <div>
+            <strong>{{ doc.document_type }}</strong>
+            <small class="text-muted d-block">
+              Expires: {{ formatDate(doc.expires_at) }}
+            </small>
+          </div>
+          <div>
+            <a
+              v-if="doc.document_file"
+              :href="doc.document_file"
+              target="_blank"
+              class="me-3"
+            >
+              Download
+            </a>
+            <b-button
+              size="sm"
+              variant="outline-primary"
+              class="me-2"
+              @click="openModal(doc)"
+            >
+              <i class="bx bx-pencil"></i>
+            </b-button>
+            <b-button
+              size="sm"
+              variant="outline-danger"
+              @click="removeDocument(doc.id)"
+            >
+              <i class="bx bx-trash"></i>
+            </b-button>
+          </div>
+        </b-list-group-item>
+
+        <b-list-group-item v-if="!docs.length" class="text-center text-muted">
+          No documents.
+        </b-list-group-item>
+      </b-list-group>
+    </b-card>
+
+    <!-- create/edit modal -->
+    <b-modal
+      v-model="showModal"
+      :title="editing ? 'Edit Document' : 'Upload Document'"
+      hide-footer
+      @hide="resetForm()"
     >
-      <h4>{{ editingDoc ? 'Edit Document' : 'Upload Document' }}</h4>
+      <b-form @submit.prevent="submit">
+        <div class="mb-3 text-danger" v-if="error">{{ error }}</div>
 
-      <!-- validation error -->
-      <div v-if="error" class="col-12 text-danger">{{ error }}</div>
-
-      <!-- Document Type -->
-      <b-col md="4">
-        <b-form-group label="Document Type*">
-          <Dropdown
+        <!-- Document Type -->
+        <b-form-group label="Document Type*" label-for="dt">
+          <b-form-select
+            id="dt"
             v-model="form.document_type"
             :options="typeOptions"
-            optionLabel="label"
-            optionValue="value"
-            placeholder="Select a type"
+            required
           />
         </b-form-group>
-      </b-col>
 
-      <!-- Expiry Date -->
-      <b-col md="4">
-        <b-form-group label="Expiry Date*">
-          <Calendar
+        <!-- Expiry Date -->
+        <b-form-group label="Expiry Date*" label-for="ex">
+          <b-form-input
+            id="ex"
             v-model="form.expires_at"
-            showIcon
-            dateFormat="yy-mm-dd"
-            placeholder="YYYY-MM-DD"
+            type="date"
+            required
           />
         </b-form-group>
-      </b-col>
 
-      <!-- File Picker -->
-      <b-col md="4">
-        <b-form-group
-          :label="editingDoc
-            ? 'Replace File (PDF <5MB)'
-            : 'Document File* (PDF <5MB)'"
-        >
+        <!-- File Picker -->
+        <b-form-group :label="editing ? 'Replace File' : 'File (PDF <5MB)'">
           <input
             type="file"
             accept="application/pdf"
             @change="onFileChange"
             class="form-control"
           />
-          <small v-if="form.document_file">{{ form.document_file.name }}</small>
+          <small v-if="form.file">{{ form.file.name }}</small>
         </b-form-group>
-      </b-col>
 
-      <!-- Buttons -->
-      <b-col cols="12">
-        <b-button
-          variant="primary"
-          type="submit"
-          :disabled="loading || !companyId"
-        >
-          <i v-if="loading" class="pi pi-spin pi-spinner me-2"></i>
-          {{ editingDoc ? 'Update Document' : 'Upload Document' }}
-        </b-button>
-        <b-button
-          v-if="editingDoc"
-          variant="secondary"
-          class="ms-2"
-          @click="cancelEdit"
-          :disabled="loading"
-        >
-          Cancel
-        </b-button>
-      </b-col>
-    </b-form>
-
-    <!-- Documents Table -->
-    <div v-if="docs.length">
-      <h3>Existing Documents</h3>
-      <DataTable
-        :value="docs"
-        scrollable
-        scrollHeight="400px"
-        tableStyle="min-width: 800px"
-        class="mt-2"
-      >
-        <Column field="document_type" header="Type" style="width:15%" />
-        <Column field="document_category" header="Category" style="width:15%" />
-        <Column header="Uploaded At" style="width:20%">
-          <template #body="{ data }">
-            {{ formatDate(data.uploaded_at) }}
-          </template>
-        </Column>
-        <Column header="Expires At" style="width:20%">
-          <template #body="{ data }">
-            {{ formatDate(data.expires_at) }}
-          </template>
-        </Column>
-        <Column header="Link" style="width:15%">
-          <template #body="{ data }">
-            <a :href="data.document_file" target="_blank">
-              {{ getFileName(data.document_file) }}
-            </a>
-          </template>
-        </Column>
-        <Column header="Actions" style="width:15%">
-          <template #body="{ data }">
-            <Button icon="pi pi-eye" class="p-button-text me-2" @click="preview(data)" />
-            <Button icon="pi pi-pencil" class="p-button-text me-2" @click="editDocument(data)" />
-            <Button icon="pi pi-trash" class="p-button-text p-button-danger" @click="removeDocument(data.id)" />
-          </template>
-        </Column>
-      </DataTable>
-    </div>
-
-    <!-- Preview Dialog -->
-    <Dialog
-      v-model:visible="showPreview"
-      modal
-      header="Preview Document"
-      :style="{ width: '80vw', height: '80vh' }"
-      closable
-      :dismissable-mask="true"
-    >
-      <iframe
-        v-if="previewDoc"
-        :src="previewDoc.document_file"
-        style="width:100%; height:100%; border:none;"
-      ></iframe>
-    </Dialog>
+        <div class="d-flex justify-content-end mt-4">
+          <b-button variant="secondary" class="me-2" @click="closeModal()">
+            Cancel
+          </b-button>
+          <b-button variant="primary" type="submit" :disabled="loading">
+            <i v-if="loading" class="bx bx-loader bx-spin me-2"></i>
+            Save
+          </b-button>
+        </div>
+      </b-form>
+    </b-modal>
   </VerticalLayout>
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watch } from 'vue';
-import { useToast } from 'primevue/usetoast';
-import { useAuthStore } from '@/stores/auth';
-import { api } from '@/services/authService';
+import { ref, computed, onMounted } from 'vue'
+import { useToast } from 'primevue/usetoast'
+import { useAuthStore } from '@/stores/auth'
+import { api } from '@/services/authService'
+import VerticalLayout from '@/layouts/VerticalLayout.vue'
+import {
+  BCard, BButton, BListGroup, BListGroupItem,
+  BModal, BForm, BFormGroup, BFormSelect, BFormInput
+} from 'bootstrap-vue-next'
 
-import VerticalLayout from '@/layouts/VerticalLayout.vue';
-import Dropdown from 'primevue/dropdown';
-import Calendar from 'primevue/calendar';
-import Button from 'primevue/button';
-import DataTable from 'primevue/datatable';
-import Column from 'primevue/column';
-import Dialog from 'primevue/dialog';
+const toast      = useToast()
+const auth       = useAuthStore()
+const companyId  = computed(() => auth.user?.companies?.[0]?.id || null)
 
-const toast = useToast();
-const authStore = useAuthStore();
+const docs       = ref([])
+const showModal  = ref(false)
+const editing    = ref(false)
+const loading    = ref(false)
+const error      = ref('')
 
-// companyId from authStore
-const companyId = computed(() => {
-  const list = authStore.user?.companies || [];
-  return list.length ? list[0].id : null;
-});
-
-const loading = ref(false);
-const error = ref('');
-const docs = ref([]);
-const editingDoc = ref(null);
-const showPreview = ref(false);
-const previewDoc = ref(null);
-
-const form = ref({
+// our reactive form
+const form       = ref({
+  id:            null,
   document_type: null,
-  expires_at: null,
-  document_file: null,
-});
+  expires_at:    '',
+  file:          null
+})
 
-// match backend DOCUMENT_TYPE_CHOICES values
+// **Use `text` (not `label`)** for b-form-select
 const typeOptions = [
-  { label: 'Business License', value: 'Business License' },
-  { label: 'BRELA', value: 'BRELA' },
-  { label: 'TIN', value: 'TIN' },
-  { label: 'Tax Clearance', value: 'Tax Clearance' },
-  { label: 'Bank Statement', value: 'Bank Statement' },
-];
+  { value: 'Business License', text: 'Business License' },
+  { value: 'BRELA',            text: 'BRELA' },
+  { value: 'TIN',              text: 'TIN' },
+  { value: 'Tax Clearance',    text: 'Tax Clearance' },
+  { value: 'Bank Statement',   text: 'Bank Statement' }
+]
 
-function formatDate(dt) {
-  return dt ? new Date(dt).toLocaleString() : '';
+function formatDate(d) {
+  return d ? new Date(d).toLocaleDateString() : '—'
 }
 
-function getFileName(url) {
-  return url.split('/').pop();
-}
-
-async function fetchDocs(id) {
-  if (!id) return;
+async function fetchDocs() {
+  if (!companyId.value) return
   try {
-    const resp = await api.get(`accounts/companies/${id}/documents/`);
-    docs.value = resp.data;
+    const { data } = await api.get(
+      `accounts/companies/${companyId.value}/documents/`
+    )
+    docs.value = data
   } catch {
-    toast.add({ severity: 'error', summary: 'Error', detail: 'Could not load documents.' });
+    toast.add({ severity:'error', summary:'Error', detail:'Could not load documents.' })
   }
+}
+
+function openModal(doc = null) {
+  error.value = ''
+  editing.value = !!doc
+  if (doc) {
+    // edit
+    form.value.id            = doc.id
+    form.value.document_type = doc.document_type
+    form.value.expires_at    = doc.expires_at.slice(0,10)
+    form.value.file          = null
+  } else {
+    // new
+    Object.assign(form.value, {
+      id: null,
+      document_type: null,
+      expires_at: '',
+      file: null
+    })
+  }
+  showModal.value = true
+}
+
+function closeModal() {
+  showModal.value = false
+}
+
+// clear form on modal hide
+function resetForm() {
+  editing.value = false
+  error.value = ''
+  form.value = { id:null, document_type:null, expires_at:'', file:null }
 }
 
 function onFileChange(e) {
-  const file = e.target.files[0];
-  error.value = '';
-  if (!file) return;
-  if (file.type !== 'application/pdf') {
-    error.value = 'Only PDF files are allowed.';
-    form.value.document_file = null;
-    return;
+  const f = e.target.files[0]
+  error.value = ''
+  if (!f) return
+  if (f.type !== 'application/pdf') {
+    error.value = 'Only PDFs allowed.'
+    return
   }
-  if (file.size > 5 * 1024 * 1024) {
-    error.value = 'File must be less than 5MB.';
-    form.value.document_file = null;
-    return;
+  if (f.size > 5*1024*1024) {
+    error.value = 'Max 5 MB.'
+    return
   }
-  form.value.document_file = file;
-}
-
-function startEdit(doc) {
-  editingDoc.value = doc;
-  form.value.document_type = doc.document_type;
-  form.value.expires_at = new Date(doc.expires_at);
-  form.value.document_file = null;
-  error.value = '';
-}
-
-function editDocument(doc) {
-  startEdit(doc);
-}
-
-function cancelEdit() {
-  editingDoc.value = null;
-  form.value.document_type = null;
-  form.value.expires_at = null;
-  form.value.document_file = null;
-  error.value = '';
-}
-
-function preview(doc) {
-  previewDoc.value = doc;
-  showPreview.value = true;
+  form.value.file = f
 }
 
 async function submit() {
-  error.value = '';
+  // basic validation
   if (!form.value.document_type || !form.value.expires_at) {
-    error.value = 'Please fill all required fields.';
-    return;
+    error.value = 'All fields required.'
+    return
   }
-  if (!editingDoc.value && !form.value.document_file) {
-    error.value = 'Please select a PDF file.';
-    return;
-  }
-  if (!companyId.value) {
-    error.value = 'No company selected.';
-    return;
+  if (!editing.value && !form.value.file) {
+    error.value = 'Please select a PDF.'
+    return
   }
 
-  const payload = new FormData();
-  payload.append('document_type', form.value.document_type);
-  payload.append('expires_at', form.value.expires_at.toISOString().slice(0,10));
-  payload.append('document_category', 'other');
-  if (form.value.document_file) {
-    payload.append('document_file', form.value.document_file);
+  loading.value = true
+  const payload = new FormData()
+  payload.append('document_type',    form.value.document_type)
+  payload.append('expires_at',       form.value.expires_at)
+  payload.append('document_category','other')
+  if (form.value.file) {
+    payload.append('document_file', form.value.file)
   }
 
-  loading.value = true;
   try {
-    let resp;
-    if (editingDoc.value) {
-      resp = await api.put(
-        `accounts/companies/${companyId.value}/documents/${editingDoc.value.id}/`,
-        payload
-      );
-      docs.value = docs.value.map(d => d.id === resp.data.id ? resp.data : d);
-      toast.add({ severity: 'success', summary: 'Updated', detail: 'Document updated.' });
+    const base = `accounts/companies/${companyId.value}/documents/`
+    const cfg  = { headers: { 'Content-Type': 'multipart/form-data' } }
+    let res
+
+    if (editing.value) {
+      res = await api.put(`${base}${form.value.id}/`, payload, cfg)
     } else {
-      resp = await api.post(
-        `accounts/companies/${companyId.value}/documents/`,
-        payload
-      );
-      docs.value.unshift(resp.data);
-      toast.add({ severity: 'success', summary: 'Uploaded', detail: 'Document uploaded.' });
+      res = await api.post(base, payload, cfg)
     }
-    cancelEdit();
-  } catch (err) {
-    const data = err.response?.data;
-    error.value = data?.document_type?.[0] || data?.document_file?.[0] || data?.detail || JSON.stringify(data) || 'Operation failed';
-    toast.add({ severity: 'error', summary: 'Error', detail: error.value });
+
+    toast.add({
+      severity:  'success',
+      summary:   editing.value ? 'Updated' : 'Uploaded',
+      detail:    editing.value ? 'Document updated.' : 'Document uploaded.'
+    })
+    closeModal()
+    fetchDocs()
+  } catch (e) {
+    error.value = e.response?.data?.detail || 'Operation failed.'
   } finally {
-    loading.value = false;
+    loading.value = false
   }
 }
 
 async function removeDocument(id) {
-  if (!companyId.value) return;
-  if (!confirm('Are you sure you want to delete this document?')) return;
+  if (!confirm('Delete this document?')) return
   try {
-    await api.delete(`accounts/companies/${companyId.value}/documents/${id}/`);
-    docs.value = docs.value.filter(d => d.id !== id);
-    toast.add({ severity: 'success', summary: 'Deleted', detail: 'Document removed.' });
-    if (editingDoc.value?.id === id) cancelEdit();
+    await api.delete(
+      `accounts/companies/${companyId.value}/documents/${id}/`
+    )
+    toast.add({ severity:'success', summary:'Deleted', detail:'Document removed.' })
+    fetchDocs()
   } catch {
-    toast.add({ severity: 'error', summary: 'Error', detail: 'Delete failed.' });
+    toast.add({ severity:'error', summary:'Error', detail:'Delete failed.' })
   }
 }
 
-watch(companyId, fetchDocs);
-
-onMounted(() => {
-  fetchDocs(companyId.value);
-});
+onMounted(fetchDocs)
 </script>
 
 <style scoped>
-.row.g-3 { margin-top: 1rem; }
-.mb-4    { margin-bottom: 1.5rem; }
+.mb-4 { margin-bottom: 1.5rem; }
 </style>

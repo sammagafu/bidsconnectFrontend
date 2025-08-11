@@ -1,121 +1,222 @@
 <template>
   <VerticalLayout>
-    <div class="card">
-      <div class="card-body">
-        <h2 class="card-title mb-4">Company Details</h2>
-        <!-- Company Info -->
-        <b-row v-if="company" class="mb-4">
-          <!-- Logo and Basic -->
+    <!-- loading spinner -->
+    <div v-if="!company" class="text-center py-5">
+      <b-spinner label="Loading…"></b-spinner>
+    </div>
+
+    <div v-else>
+      <!-- Core Company Info -->
+      <b-card class="mb-4">
+        <template #header>
+          <div class="d-flex justify-content-between align-items-center">
+            <h3 class="mb-0">Company Details</h3>
+            <router-link
+              :to="{ name: 'company.edit', params: { companyId } }"
+              class="btn btn-sm btn-outline-primary"
+            >
+              <i class="bx bx-pencil"></i> Edit
+            </router-link>
+          </div>
+        </template>
+
+        <b-row>
           <b-col md="4" class="text-center">
-            <img
-              v-if="company.logo"
-              :src="company.logo"
-              :alt="company.name"
-              class="rounded mb-3"
-              style="width: 150px; height: 150px; object-fit: cover;"
+            <img 
+              v-if="company.logo" 
+              :src="company.logo" 
+              :alt="company.name" 
+              class="rounded mb-3" 
+              style="width:150px;height:150px;object-fit:cover" 
             />
-            <p v-else class="text-muted">No Logo Available</p>
+            <p v-else class="text-muted">No Logo</p>
             <h4>{{ company.name }}</h4>
-            <b-badge
-              :variant="company.status === 'active' ? 'success' : company.status === 'pending' ? 'warning' : 'danger'"
+            <b-badge 
+              :variant="company.status === 'active' ? 'success' : 'danger'"
               class="mt-2"
             >
-              {{ company.status.charAt(0).toUpperCase() + company.status.slice(1) }}
+              {{ capitalize(company.status) }}
             </b-badge>
           </b-col>
-
-          <!-- Details List -->
           <b-col md="8">
-            <div class="mb-3"><strong>Description:</strong> <p>{{ company.description || 'N/A' }}</p></div>
-            <div class="mb-3"><strong>Industry:</strong> <p>{{ company.industry || 'N/A' }}</p></div>
-            <div class="mb-3"><strong>Email:</strong> <p>{{ company.email || 'N/A' }}</p></div>
-            <div class="mb-3"><strong>Phone Number:</strong> <p>{{ company.phone_number || 'N/A' }}</p></div>
-            <div class="mb-3">
-              <strong>Website:</strong>
-              <p v-if="company.website"><a :href="company.website" target="_blank">{{ company.website }}</a></p>
-              <p v-else>N/A</p>
-            </div>
-            <div class="mb-3"><strong>Address:</strong> <p>{{ company.address || 'N/A' }}</p></div>
-            <div class="mb-3"><strong>Tax ID:</strong> <p>{{ company.tax_id || 'N/A' }}</p></div>
-            <div class="mb-3"><strong>Registration Number:</strong> <p>{{ company.registration_number || 'N/A' }}</p></div>
-            <div class="mb-3"><strong>Founded Date:</strong> <p>{{ company.founded_date ? formatDate(company.founded_date) : 'N/A' }}</p></div>
-            <div class="mb-3"><strong>Country:</strong> <p>{{ company.country || 'N/A' }}</p></div>
-            <div class="mb-3"><strong>Employee Count:</strong> <p>{{ company.employee_count || 'N/A' }}</p></div>
-            <div class="mb-3"><strong>Owner Email:</strong> <p>{{ company.owner_email || 'N/A' }}</p></div>
-            <div class="mb-3"><strong>Verified:</strong> <p>{{ company.is_verified ? 'Yes' : 'No' }}</p></div>
-            <div class="mb-3"><strong>Verification Date:</strong> <p>{{ company.verification_date ? formatDate(company.verification_date) : 'N/A' }}</p></div>
-            <div class="mb-3"><strong>Created At:</strong> <p>{{ company.created_at ? formatDate(company.created_at) : 'N/A' }}</p></div>
-            <div class="mb-3"><strong>Updated At:</strong> <p>{{ company.updated_at ? formatDate(company.updated_at) : 'N/A' }}</p></div>
-            <div v-if="company.decline_reason" class="mb-3"><strong>Decline Reason:</strong> <p>{{ company.decline_reason }}</p></div>
-            <div v-if="company.declined_by" class="mb-3"><strong>Declined By:</strong> <p>{{ company.declined_by }}</p></div>
+            <ul class="list-unstyled mb-0">
+              <li><strong>Description:</strong> {{ company.description || 'N/A' }}</li>
+              <li><strong>Industry:</strong> {{ company.industry || 'N/A' }}</li>
+              <li>
+                <strong>Website:</strong>
+                <span v-if="company.website">
+                  <a :href="company.website" target="_blank">{{ company.website }}</a>
+                </span>
+                <span v-else>N/A</span>
+              </li>
+              <li><strong>Tax ID:</strong> {{ company.tax_id || 'N/A' }}</li>
+              <li><strong>Registration #:</strong> {{ company.registration_number || 'N/A' }}</li>
+              <li><strong>Founded:</strong> {{ company.founded_date ? formatDate(company.founded_date) : 'N/A' }}</li>
+              <li><strong>Country:</strong> {{ company.country || 'N/A' }}</li>
+              <li><strong>Employees:</strong> {{ company.employee_count ?? 'N/A' }}</li>
+              <li><strong>Verified:</strong> {{ company.is_verified ? 'Yes' : 'No' }}</li>
+              <li>
+                <strong>Verified At:</strong> 
+                {{ company.verification_date ? formatDate(company.verification_date) : 'N/A' }}
+              </li>
+            </ul>
           </b-col>
         </b-row>
+      </b-card>
 
-        <!-- No Company Found -->
-        <div v-else class="text-center">
-          <p class="text-muted">Company not found.</p>
-        </div>
+      <!-- Related lists -->
+      <RelatedListCard
+        title="Users"
+        :items="company.company_users"
+        labelFn="user_email"
+        subLabel="role"
+        :createRoute="{ name: 'user.user-management'}"
+        :editRoute="{ name: 'user.user-management'}"
+      />
 
-        <!-- Back Button -->
-        <div class="d-flex justify-content-end">
-          <b-button variant="secondary" @click="goBack">Back</b-button>
-        </div>
-      </div>
+      <RelatedListCard
+        title="Invitations"
+        :items="company.invitations"
+        labelFn="invited_email"
+        subLabel="expires_at"
+        dateSub
+        :createRoute="{ name: 'user.user-management'}"
+        :editRoute="{ name: 'user.user-management'}"
+      />
+
+      <RelatedListCard
+        title="Documents"
+        :items="company.documents"
+        labelFn="document_type"
+        linkField="document_file"
+        linkText="Download"
+        :createRoute="{ name: 'user.user-management'}"
+        :editRoute="{ name: 'user.user-management'}"
+      />
+
+      <RelatedListCard
+        title="Offices"
+        :items="company.offices"
+        labelFn="director_title"
+        subFields="region,district"
+        :createRoute="{ name: 'profile.officelocation'}"
+        :editRoute="{ name: 'user.user-management'}"
+      />
+
+      <RelatedListCard
+        title="Certifications"
+        :items="company.certifications"
+        labelFn="cert_type"
+        linkField="file"
+        linkText="Download"
+        :createRoute="{ name: 'user.user-management'}"
+        :editRoute="{ name: 'user.user-management'}"
+      />
+
+      <RelatedListCard
+        title="Sources of Funds"
+        :items="company.sources_of_funds"
+        labelFn="source_type"
+        subFields="amount,currency"
+        :createRoute="{ name: 'profile.source-of-funds'}"
+        :editRoute="{ name: 'user.user-management'}"
+      />
+
+      <RelatedListCard
+        title="Annual Turnovers"
+        :items="company.annual_turnovers"
+        labelFn="year"
+        subFields="amount,currency"
+        :createRoute="{ name: 'profile.turnover'}"
+        :editRoute="{ name: 'user.user-management'}"
+      />
+
+      <RelatedListCard
+        title="Financial Statements"
+        :items="company.financial_statements"
+        labelFn="year"
+        linkField="file"
+        linkText="FS"
+        extraLinkField="audit_report"
+        extraLinkText="AR"
+        :createRoute="{ name: 'profile.financial'}"
+        :editRoute="{ name: 'user.user-management'}"
+      />
+
+      <RelatedListCard
+        title="Litigations"
+        :items="company.litigations"
+        labelFn="title"
+        subLabel="status"
+        :createRoute="{ name: 'profile.litigation'}"
+        :editRoute="{ name: 'user.user-management'}"
+      />
+
+      <RelatedListCard
+        title="Equipment"
+        :items="company.equipment"
+        labelFn="name"
+        subLabel="quantity"
+        :createRoute="{ name: 'user.user-management'}"
+        :editRoute="{ name: 'user.user-management'}"
+      />
+
+      <RelatedListCard
+        title="Personnel"
+        :items="company.personnel"
+        labelFn="first_name"
+        subLabel="job_title"
+        :createRoute="{ name: 'profile.personalinformation'}"
+        :editRoute="{ name: 'user.user-management'}"
+      />
     </div>
   </VerticalLayout>
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watch } from 'vue';
-import { useRouter } from 'vue-router';
-import { useToast } from 'primevue/usetoast';
-import { useAuthStore } from '@/stores/auth';
-import { api } from '@/services/authService';
-import VerticalLayout from '@/layouts/VerticalLayout.vue';
+import { ref, onMounted } from 'vue'
+import { useToast } from 'primevue/usetoast'
+import { useAuthStore } from '@/stores/auth'
+import { api } from '@/services/authService'
+import VerticalLayout from '@/layouts/VerticalLayout.vue'
 import {
   BRow,
   BCol,
+  BCard,
+  BButton,
   BBadge,
-  BButton
-} from 'bootstrap-vue-next';
+  BSpinner
+} from 'bootstrap-vue-next'
+import RelatedListCard from '@/components/RelatedListCard.vue'
 
-const toast = useToast();
-const router = useRouter();
-const authStore = useAuthStore();
+const toast     = useToast()
+const auth      = useAuthStore()
+const companyId = ref(auth.user?.companies?.[0]?.id || null)
+const company   = ref(null)
 
-// Route back
-function goBack() {
-  router.back();
-}
-
-// Company ID
-const companyId = computed(() => authStore.user?.companies?.[0]?.id || null);
-
-// Company data
-const company = ref(null);
-
-// Fetch company details
 async function fetchCompany() {
-  if (!companyId.value) return;
+  if (!companyId.value) return
   try {
-    const { data } = await api.get(`accounts/companies/${companyId.value}/`);
-    company.value = data;
+    const { data } = await api.get(`accounts/companies/${companyId.value}/`)
+    company.value = data
   } catch {
-    toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to load company.' });
+    toast.add({ severity:'error', summary:'Error', detail:'Could not load company.' })
   }
 }
 
-// Date formatting
-function formatDate(date) {
-  return date ? new Date(date).toLocaleDateString() : '';
+onMounted(fetchCompany)
+
+function formatDate(d) {
+  return d ? new Date(d).toLocaleDateString() : ''
 }
 
-// Watch and mount
-watch(companyId, fetchCompany);
-onMounted(fetchCompany);
+function capitalize(str) {
+  return str.charAt(0).toUpperCase() + str.slice(1)
+}
 </script>
 
 <style scoped>
 .mb-4 { margin-bottom: 1.5rem; }
-.card-title { font-weight: bold; }
+.py-5 { padding-top: 3rem; padding-bottom: 3rem; }
+.text-center { text-align: center; }
 </style>

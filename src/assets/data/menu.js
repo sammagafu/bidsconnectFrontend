@@ -731,7 +731,7 @@ const NORMAL_MENU_ITEMS = [
       {
         key: 'Open-tenders',
         label: 'My Submissions',
-        route: { name: 'pages.welcome' },
+        route: { name: 'company.bids-list' },
         parentKey: 'user-tenders',
       },
       
