@@ -265,7 +265,7 @@
   const fetchCompanies = async () => {
     try {
       loading.value = true;
-      const response = await api.get('accounts/companies/admin/');
+      const response = await api.get('accounts/companies/');
       companies.value = response.data;
     } catch (error) {
       console.error('Failed to fetch companies:', error);

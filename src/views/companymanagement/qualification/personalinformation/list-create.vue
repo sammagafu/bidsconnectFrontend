@@ -11,18 +11,30 @@
 
       <!-- Personnel Table -->
       <b-table :items="items" :fields="tableFields" striped hover small responsive>
-        <template #cell(index)="row">{{ row.index + 1 }}</template>
-        <template #cell(first_name)="row">{{ row.item.first_name }}</template>
-        <template #cell(middle_name)="row">{{ row.item.middle_name || '—' }}</template>
-        <template #cell(last_name)="row">{{ row.item.last_name }}</template>
-        <template #cell(job_title)="row">{{ row.item.job_title }}</template>
-        <template #cell(phone_number)="row">{{ row.item.phone_number }}</template>
-        <template #cell(email)="row">{{ row.item.email }}</template>
-        <template #cell(actions)="row">
-          <b-button size="sm" variant="outline-primary" class="me-2" @click="onEdit(row.item)" v-b-tooltip.hover title="Edit">
+        <template #cell(index)="data">
+          {{ data.index + 1 }}
+        </template>
+        <template #cell(is_verified)="data">
+          {{ data.item.is_verified ? 'Yes' : 'No' }}
+        </template>
+        <template #cell(actions)="data">
+          <b-button
+            size="sm"
+            variant="outline-primary"
+            class="me-2"
+            @click="onEdit(data.item)"
+            v-b-tooltip.hover
+            title="Edit"
+          >
             <i class="bx bx-pencil"></i>
           </b-button>
-          <b-button size="sm" variant="outline-danger" @click="onDelete(row.item)" v-b-tooltip.hover title="Delete">
+          <b-button
+            size="sm"
+            variant="outline-danger"
+            @click="onDelete(data.item)"
+            v-b-tooltip.hover
+            title="Delete"
+          >
             <i class="bx bx-trash"></i>
           </b-button>
         </template>
@@ -34,125 +46,127 @@
       <b-form @submit.prevent="save">
         <b-row>
           <!-- Name fields -->
-          <b-col md="4" class="mb-3">
-            <b-form-group label="First Name*" label-for="first_name">
-              <b-form-input id="first_name" v-model="form.first_name" required />
+          <b-col md="6" class="mb-3">
+            <b-form-group
+              label="First Name*"
+              label-for="first_name"
+              :state="formErrors.first_name === undefined"
+              :invalid-feedback="formErrors.first_name || ''"
+            >
+              <b-form-input
+                id="first_name"
+                v-model="form.first_name"
+                :state="formErrors.first_name === undefined"
+                required
+              />
             </b-form-group>
           </b-col>
-          <b-col md="4" class="mb-3">
-            <b-form-group label="Middle Name" label-for="middle_name">
-              <b-form-input id="middle_name" v-model="form.middle_name" />
-            </b-form-group>
-          </b-col>
-          <b-col md="4" class="mb-3">
-            <b-form-group label="Last Name*" label-for="last_name">
-              <b-form-input id="last_name" v-model="form.last_name" required />
+          <b-col md="6" class="mb-3">
+            <b-form-group
+              label="Last Name*"
+              label-for="last_name"
+              :state="formErrors.last_name === undefined"
+              :invalid-feedback="formErrors.last_name || ''"
+            >
+              <b-form-input
+                id="last_name"
+                v-model="form.last_name"
+                :state="formErrors.last_name === undefined"
+                required
+              />
             </b-form-group>
           </b-col>
 
-          <!-- Personal info -->
-          <b-col md="4" class="mb-3">
-            <b-form-group label="Gender*" label-for="gender">
-              <b-form-select
-                id="gender"
-                v-model="form.gender"
-                :options="genderOptions"
-                required
+          <!-- Contact info -->
+          <b-col md="6" class="mb-3">
+            <b-form-group
+              label="Email"
+              label-for="email"
+              :state="formErrors.email === undefined"
+              :invalid-feedback="formErrors.email || ''"
+            >
+              <b-form-input
+                id="email"
+                v-model="form.email"
+                type="email"
+                :state="formErrors.email === undefined"
               />
             </b-form-group>
           </b-col>
-          <b-col md="4" class="mb-3">
-            <b-form-group label="Date of Birth*" label-for="date_of_birth">
-              <FlatPicker
-                id="date_of_birth"
-                v-model="form.date_of_birth"
-                :options="{ dateFormat: 'Y-m-d' }"
-                placeholder="YYYY-MM-DD"
-                required
+          <b-col md="6" class="mb-3">
+            <b-form-group
+              label="Phone Number"
+              label-for="phone_number"
+              :state="formErrors.phone_number === undefined"
+              :invalid-feedback="formErrors.phone_number || ''"
+            >
+              <b-form-input
+                id="phone_number"
+                v-model="form.phone_number"
+                :state="formErrors.phone_number === undefined"
               />
-            </b-form-group>
-          </b-col>
-          <b-col md="4" class="mb-3">
-            <b-form-group label="Phone*" label-for="phone_number">
-              <b-form-input id="phone_number" v-model="form.phone_number" required />
-            </b-form-group>
-          </b-col>
-          <b-col md="6" class="mb-3">
-            <b-form-group label="Email*" label-for="email">
-              <b-form-input id="email" v-model="form.email" type="email" required />
-            </b-form-group>
-          </b-col>
-          <b-col md="6" class="mb-3">
-            <b-form-group label="Address*" label-for="physical_address">
-              <b-form-textarea id="physical_address" v-model="form.physical_address" rows="2" required />
             </b-form-group>
           </b-col>
 
           <!-- Employment details -->
-          <b-col md="4" class="mb-3">
-            <b-form-group label="Employee Type*" label-for="employee_type">
-              <b-form-select
-                id="employee_type"
-                v-model="form.employee_type"
-                :options="employeeTypeOptions"
-                required
-              />
-            </b-form-group>
-          </b-col>
-          <b-col md="4" class="mb-3">
-            <b-form-group label="Job Title*" label-for="job_title">
-              <b-form-input id="job_title" v-model="form.job_title" required />
-            </b-form-group>
-          </b-col>
-          <b-col md="4" class="mb-3">
-            <b-form-group label="Date of Employment*" label-for="date_of_employment">
-              <FlatPicker
-                id="date_of_employment"
-                v-model="form.date_of_employment"
-                :options="{ dateFormat: 'Y-m-d' }"
-                placeholder="YYYY-MM-DD"
+          <b-col md="6" class="mb-3">
+            <b-form-group
+              label="Position*"
+              label-for="position"
+              :state="formErrors.position === undefined"
+              :invalid-feedback="formErrors.position || ''"
+            >
+              <b-form-input
+                id="position"
+                v-model="form.position"
+                :state="formErrors.position === undefined"
                 required
               />
             </b-form-group>
           </b-col>
           <b-col md="6" class="mb-3">
-            <b-form-group label="Languages Spoken" label-for="language_spoken">
+            <b-form-group
+              label="Years of Experience"
+              label-for="years_of_experience"
+              :state="formErrors.years_of_experience === undefined"
+              :invalid-feedback="formErrors.years_of_experience || ''"
+            >
               <b-form-input
-                id="language_spoken"
-                v-model="form.language_spoken"
-                placeholder="Comma-separated"
-              />
-            </b-form-group>
-          </b-col>
-
-          <!-- Legacy & verification -->
-          <b-col md="3" class="mb-3">
-            <b-form-group label="Education" label-for="education">
-              <b-form-input id="education" v-model="form.education" />
-            </b-form-group>
-          </b-col>
-          <b-col md="3" class="mb-3">
-            <b-form-group label="Years Experience" label-for="years_experience">
-              <b-form-input
-                id="years_experience"
-                v-model="form.years_experience"
+                id="years_of_experience"
+                v-model="form.years_of_experience"
                 type="number"
                 min="0"
+                :state="formErrors.years_of_experience === undefined"
               />
             </b-form-group>
           </b-col>
-          <b-col md="3" class="mb-3">
-            <b-form-group label="Professional Reg." label-for="professional_registration">
-              <b-form-checkbox id="professional_registration" v-model="form.professional_registration">
-                Yes
-              </b-form-checkbox>
+          <b-col cols="12" class="mb-3">
+            <b-form-group
+              label="Qualifications"
+              label-for="qualifications"
+              :state="formErrors.qualifications === undefined"
+              :invalid-feedback="formErrors.qualifications || ''"
+            >
+              <b-form-textarea
+                id="qualifications"
+                v-model="form.qualifications"
+                rows="3"
+                :state="formErrors.qualifications === undefined"
+              />
             </b-form-group>
           </b-col>
-          <b-col md="3" class="mb-3">
-            <b-form-group label="Verified" label-for="is_verified">
-              <b-form-checkbox id="is_verified" v-model="form.is_verified">
-                Verified
-              </b-form-checkbox>
+          <b-col cols="12" class="mb-3">
+            <b-form-group label="Resume" label-for="resume">
+              <b-form-file
+                id="resume"
+                v-model="form.resume"
+                accept=".pdf,.doc,.docx"
+                placeholder="Choose a file or drop it here..."
+                drop-placeholder="Drop file here..."
+              />
+              <small v-if="editing && form.resume_url" class="form-text text-muted">
+                Current file: <a :href="form.resume_url" target="_blank">View</a>
+              </small>
             </b-form-group>
           </b-col>
         </b-row>
@@ -173,7 +187,6 @@ import { useToast } from 'primevue/usetoast'
 import { useAuthStore } from '@/stores/auth'
 import { api } from '@/services/authService'
 import VerticalLayout from '@/layouts/VerticalLayout.vue'
-import FlatPicker from '@/components/FlatPicker.vue'
 
 const toast = useToast()
 const authStore = useAuthStore()
@@ -183,53 +196,50 @@ const items = ref([])
 const showDialog = ref(false)
 const editing = ref(false)
 
-// form model matches your updated model
+// form model
 const form = reactive({
-  id: null,
+  uuid: null,
   first_name: '',
-  middle_name: '',
   last_name: '',
-  gender: '',
-  date_of_birth: null,
-  phone_number: '',
+  position: '',
   email: '',
-  physical_address: '',
-  employee_type: '',
-  job_title: '',
-  date_of_employment: null,
-  language_spoken: '',
-  education: '',
-  years_experience: 0,
-  professional_registration: false,
-  is_verified: false,
+  phone_number: '',
+  years_of_experience: 0,
+  qualifications: '',
+  resume: null,
+  resume_url: null // for display when editing
 })
 
-const genderOptions = [
-  { value: 'male', text: 'Male' },
-  { value: 'female', text: 'Female' },
-  { value: 'other', text: 'Other' },
-]
-const employeeTypeOptions = [
-  { value: 'employee', text: 'Employee' },
-  { value: 'expert',   text: 'Expert' },
-]
+// form errors
+const formErrors = reactive({})
 
 const tableFields = [
-  { key: 'index',        label: 'No',           thStyle: { width: '4em' } },
-  { key: 'first_name',   label: 'First Name' },
-  { key: 'middle_name',  label: 'Middle' },
-  { key: 'last_name',    label: 'Last Name' },
-  { key: 'job_title',    label: 'Job Title' },
+  { key: 'index', label: 'No', thStyle: { width: '4em' } },
+  { key: 'first_name', label: 'First Name' },
+  { key: 'last_name', label: 'Last Name' },
+  { key: 'position', label: 'Position' },
   { key: 'phone_number', label: 'Phone' },
-  { key: 'email',        label: 'Email' },
-  { key: 'actions',      label: '',            thStyle: { width: '8em' } },
+  { key: 'email', label: 'Email' },
+  { key: 'years_of_experience', label: 'Years Exp.' },
+  { key: 'is_verified', label: 'Verified' },
+  { key: 'uploaded_at', label: 'Uploaded At', formatter: 'formatDateTime' },
+  { key: 'actions', label: '', thStyle: { width: '8em' } }
 ]
+
+function formatDateTime(value) {
+  if (!value) return '—'
+  const date = new Date(value)
+  return date.toLocaleString('en-US', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })
+}
 
 async function fetchItems(id) {
   if (!id) return
   try {
     const { data } = await api.get(`accounts/companies/${id}/personnel/`)
-    items.value = data
+    items.value = data.map(item => ({
+      ...item,
+      resume_url: item.resume // assume serializer exposes absolute URL
+    }))
   } catch {
     toast.add({ severity: 'error', summary: 'Error', detail: 'Could not load personnel.' })
   }
@@ -241,57 +251,78 @@ watch(companyId, fetchItems)
 function openNew() {
   editing.value = false
   Object.assign(form, {
-    id: null,
+    uuid: null,
     first_name: '',
-    middle_name: '',
     last_name: '',
-    gender: '',
-    date_of_birth: null,
-    phone_number: '',
+    position: '',
     email: '',
-    physical_address: '',
-    employee_type: '',
-    job_title: '',
-    date_of_employment: null,
-    language_spoken: '',
-    education: '',
-    years_experience: 0,
-    professional_registration: false,
-    is_verified: false,
+    phone_number: '',
+    years_of_experience: 0,
+    qualifications: '',
+    resume: null,
+    resume_url: null
   })
+  Object.assign(formErrors, {})
   showDialog.value = true
 }
 
 function onEdit(item) {
   editing.value = true
-  Object.assign(form, item)
+  Object.assign(form, {
+    uuid: item.uuid,
+    first_name: item.first_name,
+    last_name: item.last_name,
+    position: item.position,
+    email: item.email,
+    phone_number: item.phone_number,
+    years_of_experience: item.years_of_experience,
+    qualifications: item.qualifications,
+    resume: null, // reset file input
+    resume_url: item.resume
+  })
+  Object.assign(formErrors, {})
   showDialog.value = true
 }
 
 async function save() {
-  // minimal required validation
-  if (
-    !form.first_name ||
-    !form.last_name ||
-    !form.gender ||
-    !form.date_of_birth ||
-    !form.phone_number ||
-    !form.email ||
-    !form.employee_type ||
-    !form.job_title ||
-    !form.date_of_employment
-  ) {
-    toast.add({ severity: 'warn', summary: 'Validation', detail: 'Fill all required fields.' })
+  formErrors.first_name = form.first_name ? undefined : 'First name is required'
+  formErrors.last_name = form.last_name ? undefined : 'Last name is required'
+  formErrors.position = form.position ? undefined : 'Position is required'
+  formErrors.email = undefined
+  formErrors.phone_number = undefined
+  formErrors.years_of_experience = undefined
+  formErrors.qualifications = undefined
+
+  if (form.years_of_experience < 0) {
+    formErrors.years_of_experience = 'Years of experience cannot be negative'
+  }
+
+  if (Object.values(formErrors).some(err => err)) {
+    toast.add({ severity: 'warn', summary: 'Validation Error', detail: 'Please fill all required fields correctly.' })
     return
   }
 
   const base = `accounts/companies/${companyId.value}/personnel`
+  const formData = new FormData()
+  formData.append('first_name', form.first_name)
+  formData.append('last_name', form.last_name)
+  formData.append('position', form.position)
+  if (form.email) formData.append('email', form.email)
+  if (form.phone_number) formData.append('phone_number', form.phone_number)
+  formData.append('years_of_experience', form.years_of_experience)
+  if (form.qualifications) formData.append('qualifications', form.qualifications)
+  if (form.resume instanceof File) formData.append('resume', form.resume)
+
   try {
     if (editing.value) {
-      await api.patch(`${base}/${form.id}/`, form)
+      await api.patch(`${base}/${form.uuid}/`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      })
       toast.add({ severity: 'success', summary: 'Updated' })
     } else {
-      await api.post(`${base}/`, form)
+      await api.post(`${base}/`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      })
       toast.add({ severity: 'success', summary: 'Created' })
     }
     showDialog.value = false
@@ -305,7 +336,7 @@ async function onDelete(item) {
   if (!confirm(`Delete ${item.first_name} ${item.last_name}?`)) return
   const base = `accounts/companies/${companyId.value}/personnel`
   try {
-    await api.delete(`${base}/${item.id}/`)
+    await api.delete(`${base}/${item.uuid}/`)
     toast.add({ severity: 'success', summary: 'Deleted' })
     fetchItems(companyId.value)
   } catch {

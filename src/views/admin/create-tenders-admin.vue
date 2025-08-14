@@ -34,6 +34,8 @@
             id="tender_type_country"
             v-model="store.tender.tender_type_country"
             :options="tenderTypeCountries"
+            :state="!errors.tender_type_country"
+            required
           />
         </b-form-group>
 
@@ -42,6 +44,8 @@
             id="tender_type_sector"
             v-model="store.tender.tender_type_sector"
             :options="tenderTypeSectors"
+            :state="!errors.tender_type_sector"
+            required
           />
         </b-form-group>
 
@@ -50,6 +54,7 @@
             id="currency"
             v-model="store.tender.currency"
             :options="currencyOptions"
+            :state="!errors.currency"
             required
           />
         </b-form-group>
@@ -69,7 +74,6 @@
             :options="categories"
             :state="!errors.category_id"
             @change="onCategoryChange"
-            required
           />
         </b-form-group>
 
@@ -79,7 +83,6 @@
             v-model="store.tender.subcategory_id"
             :options="subcategories"
             :state="!errors.subcategory_id"
-            required
           />
         </b-form-group>
 
@@ -89,7 +92,6 @@
             v-model="store.tender.procurement_process_id"
             :options="procurementProcesses"
             :state="!errors.procurement_process_id"
-            required
           />
         </b-form-group>
 
@@ -97,9 +99,9 @@
           <b-form-input
             id="tender_fees"
             type="number"
+            step="0.01"
             v-model.number="store.tender.tender_fees"
             :state="!errors.tender_fees"
-            required
           />
         </b-form-group>
 
@@ -108,6 +110,7 @@
             id="source_of_funds"
             v-model="store.tender.source_of_funds"
             :options="sourceOfFundsOptions"
+            :state="!errors.source_of_funds"
             required
           />
         </b-form-group>
@@ -117,6 +120,17 @@
             id="re_advertisement_count"
             type="number"
             v-model.number="store.tender.re_advertisement_count"
+            readonly
+          />
+        </b-form-group>
+
+        <b-form-group class="mb-3" label="Re-advertised From" label-for="re_advertised_from_id">
+          <b-form-select
+            id="re_advertised_from_id"
+            v-model="store.tender.re_advertised_from_id"
+            :options="tenders"
+            value-field="id"
+            text-field="title"
           />
         </b-form-group>
       </b-form>
@@ -126,14 +140,20 @@
         <b-form-group class="mb-3" label="Publication Date">
           <DatePicker
             v-model="store.tender.publication_date"
-            showIcon showTime dateFormat="yy-mm-dd"
+            showIcon
+            showTime
+            dateFormat="yy-mm-dd"
           />
         </b-form-group>
 
         <b-form-group class="mb-3" label="Submission Deadline">
           <DatePicker
             v-model="store.tender.submission_deadline"
-            showIcon showTime dateFormat="yy-mm-dd"
+            showIcon
+            showTime
+            dateFormat="yy-mm-dd"
+            :state="!errors.submission_deadline"
+            required
           />
         </b-form-group>
       </b-form>
@@ -226,6 +246,7 @@
               type="number"
               step="0.01"
               v-model.number="store.tender.tender_security_percentage"
+              :state="!errors.tender_security_percentage"
             />
           </b-form-group>
           <b-form-group class="mb-3" label="Security Amount">
@@ -233,6 +254,7 @@
               type="number"
               step="0.01"
               v-model.number="store.tender.tender_security_amount"
+              :state="!errors.tender_security_amount"
             />
           </b-form-group>
           <b-form-group class="mb-3" label="Security Currency">
@@ -272,6 +294,12 @@
             <b-form-select
               v-model="requiredDocuments[i].document_type"
               :options="documentTypeOptions"
+            />
+          </b-form-group>
+          <b-form-group class="mb-2" :label="`Document ${i+1} Required`">
+            <b-form-select
+              v-model="requiredDocuments[i].is_required"
+              :options="isRequiredOptions"
             />
           </b-form-group>
           <b-button
@@ -331,6 +359,37 @@
             <b-form-textarea
               v-model="financialRequirements[i].notes"
               rows="2"
+            />
+          </b-form-group>
+          <b-form-group class="mb-2" :label="`Financial Sources`">
+            <b-form-textarea
+              v-model="financialRequirements[i].financial_sources"
+              rows="2"
+            />
+          </b-form-group>
+          <b-form-group class="mb-2" :label="`Start Date`">
+            <DatePicker
+              v-model="financialRequirements[i].start_date"
+              dateFormat="yy-mm-dd"
+            />
+          </b-form-group>
+          <b-form-group class="mb-2" :label="`End Date`">
+            <DatePicker
+              v-model="financialRequirements[i].end_date"
+              dateFormat="yy-mm-dd"
+            />
+          </b-form-group>
+          <b-form-group class="mb-2" :label="`JV Compliance`">
+            <b-form-select
+              v-model="financialRequirements[i].jv_compliance"
+              :options="jvComplianceOptions"
+            />
+          </b-form-group>
+          <b-form-group class="mb-2" :label="`JV Percentage`">
+            <b-form-input
+              type="number"
+              step="0.01"
+              v-model.number="financialRequirements[i].jv_percentage"
             />
           </b-form-group>
           <b-button
@@ -486,6 +545,12 @@
               rows="2"
             />
           </b-form-group>
+          <b-form-group class="mb-2" :label="`Reputation Notes`">
+            <b-form-textarea
+              v-model="experienceRequirements[i].reputation_notes"
+              rows="2"
+            />
+          </b-form-group>
           <b-button
             size="sm"
             variant="danger"
@@ -516,12 +581,13 @@
             />
           </b-form-group>
           <b-form-group class="mb-2" :label="`Min Education`">
-            <b-form-input
+            <b-form-select
               v-model="personnelRequirements[i].min_education"
+              :options="educationLevelOptions"
             />
           </b-form-group>
           <b-form-group class="mb-2" :label="`Professional Registration`">
-            <b-form-checkbox
+            <b-form-input
               v-model="personnelRequirements[i].professional_registration"
             />
           </b-form-group>
@@ -545,6 +611,30 @@
           <b-form-group class="mb-2" :label="`Language Required`">
             <b-form-input
               v-model="personnelRequirements[i].language_required"
+            />
+          </b-form-group>
+          <b-form-group class="mb-2" :label="`Age Minimum`">
+            <b-form-input
+              type="number"
+              v-model.number="personnelRequirements[i].age_min"
+            />
+          </b-form-group>
+          <b-form-group class="mb-2" :label="`Age Maximum`">
+            <b-form-input
+              type="number"
+              v-model.number="personnelRequirements[i].age_max"
+            />
+          </b-form-group>
+          <b-form-group class="mb-2" :label="`Specialized Education`">
+            <b-form-textarea
+              v-model="personnelRequirements[i].specialized_education"
+              rows="2"
+            />
+          </b-form-group>
+          <b-form-group class="mb-2" :label="`Professional Certifications`">
+            <b-form-textarea
+              v-model="personnelRequirements[i].professional_certifications"
+              rows="2"
             />
           </b-form-group>
           <b-form-group class="mb-2" :label="`JV Compliance`">
@@ -601,7 +691,7 @@
           <b-form-group class="mb-2" :label="`Quantity`">
             <b-form-input
               type="number"
-              v-model.number="store.scheduleItems[i].quantity"
+              v-model.number="scheduleItems[i].quantity"
             />
           </b-form-group>
           <b-form-group class="mb-2" :label="`Specification`">
@@ -692,7 +782,7 @@
             Skip Section
           </b-button>
           <b-button
-            v-if="store.step < 11"
+            v-if="store.step < 12"
             variant="primary"
             @click="nextStep"
           >
@@ -712,62 +802,64 @@
 </template>
 
 <script setup>
-import { ref, computed, watch, onMounted } from 'vue'
-import { useRouter, useRoute } from 'vue-router'
-import AutoComplete from 'primevue/autocomplete'
-import { useTenderStore } from '@/stores/tenderStore'
-import { api } from '@/services/authService'
-import VerticalLayout from '@/layouts/VerticalLayout.vue'
-import DatePicker from 'primevue/datepicker'
-import { useToast } from 'primevue/usetoast'
+import { ref, computed, watch, onMounted } from 'vue';
+import { useRouter, useRoute } from 'vue-router';
+import AutoComplete from 'primevue/autocomplete';
+import { useTenderStore } from '@/stores/tenderStore';
+import { api } from '@/services/authService';
+import VerticalLayout from '@/layouts/VerticalLayout.vue';
+import DatePicker from 'primevue/datepicker';
+import { useToast } from 'primevue/usetoast';
 
-const toast = useToast()
-const router = useRouter()
-const route = useRoute()
-const store = useTenderStore()
+const toast = useToast();
+const router = useRouter();
+const route = useRoute();
+const store = useTenderStore();
 
 // Progress bar
-const progress = computed(() => ((store.step - 1) / 11) * 100)
+const progress = computed(() => ((store.step - 1) / 11) * 100);
 
 // local-only
-const newAgency = ref({ name: '', email: '', phone_number: '', address: '', logoFile: null })
-const agencyResults = ref([])
+const newAgency = ref({ name: '', email: '', phone_number: '', address: '', logoFile: null });
+const agencyResults = ref([]);
+const tenders = ref([]); // NEW: For re_advertised_from dropdown
 
 // lookups
-const categoriesWithSubs = ref([])
-const categories = ref([])
-const subcategories = ref([])
-const procurementProcesses = ref([])
+const categoriesWithSubs = ref([]);
+const categories = ref([]);
+const subcategories = ref([]);
+const procurementProcesses = ref([]);
 
 // nested arrays
-const requiredDocuments = ref([])
-const financialRequirements = ref([])
-const turnoverRequirements = ref([])
-const experienceRequirements = ref([])
-const personnelRequirements = ref([])
-const scheduleItems = ref([])
-const technicalSpecifications = ref([])
+const requiredDocuments = ref([]);
+const financialRequirements = ref([]);
+const turnoverRequirements = ref([]);
+const experienceRequirements = ref([]);
+const personnelRequirements = ref([]);
+const scheduleItems = ref([]);
+const technicalSpecifications = ref([]);
 
 // dropdown options
 const tenderTypeCountries = [
   { value: 'National', text: 'National Tendering' },
   { value: 'International', text: 'International Tendering' },
-]
+];
 const tenderTypeSectors = [
   { value: 'Private Company', text: 'Private Company Tendering' },
   { value: 'Public Sector', text: 'Public Sector Tendering' },
   { value: 'Non-Governmental Organization', text: 'Non-Governmental Organization Tendering' },
   { value: 'Government Agency', text: 'Government Agency Tendering' },
-]
+];
 const documentTypeOptions = [
+  { value: 'other', text: 'Other' }, // Updated to match backend default
   { value: 'PDF', text: 'PDF' },
   { value: 'Word', text: 'Word Document' },
   { value: 'Image', text: 'Image' },
-]
+];
 const tenderSecurityOptions = [
   { value: 'Tender Security', text: 'Tender Security' },
   { value: 'Tender Securing Declaration', text: 'Tender Securing Declaration' },
-]
+];
 const currencyOptions = [
   { value: 'TZS', text: 'Tanzanian Shilling' },
   { value: 'USD', text: 'US Dollar' },
@@ -775,11 +867,11 @@ const currencyOptions = [
   { value: 'GBP', text: 'British Pound' },
   { value: 'JPY', text: 'Japanese Yen' },
   { value: 'CNY', text: 'Chinese Yuan' },
-]
+];
 const experienceTypeOptions = [
   { value: 'general', text: 'General Experience' },
   { value: 'specific', text: 'Specific/Similar Projects' },
-]
+];
 const documentNameOptions = [
   { value: 'power-of-attorney', text: 'Power of Attorney' },
   { value: 'annual-turn-over', text: 'Annual Turn Over' },
@@ -790,11 +882,11 @@ const documentNameOptions = [
   { value: 'personnel-information', text: 'Personnel Information' },
   { value: 'work-experience', text: 'Work Experience' },
   { value: 'other', text: 'Other' },
-]
+];
 const jvComplianceOptions = [
   { value: 'separate', text: 'Separate for Each Partner' },
   { value: 'combined', text: 'Combined for JV' },
-]
+];
 const technicalCategoryOptions = [
   { value: 'service', text: 'Service Specifications' },
   { value: 'technology', text: 'Technology Specifications' },
@@ -803,33 +895,77 @@ const technicalCategoryOptions = [
   { value: 'usability', text: 'Usability' },
   { value: 'testing', text: 'Testing and Quality Assurance' },
   { value: 'conformity', text: 'Conformity to Technical Requirements' },
-]
+];
+const sourceOfFundsOptions = [
+  { value: 'government', text: 'Government Funds' },
+  { value: 'loan', text: 'Loan' },
+  { value: 'credit', text: 'Credit' },
+  { value: 'grant', text: 'Grant' },
+  { value: 'other', text: 'Other' },
+];
+const isRequiredOptions = [
+  { value: 'required', text: 'Required' },
+  { value: 'optional', text: 'Optional' },
+];
+const educationLevelOptions = [
+  { value: 'certificate', text: 'Certificate' },
+  { value: 'diploma', text: 'Diploma' },
+  { value: 'bachelor', text: "Bachelor's Degree" },
+  { value: 'master', text: "Master's Degree" },
+  { value: 'phd', text: 'PhD' },
+];
 
-// step1 validation errors
-const errors = ref({})
+// step validation errors
+const errors = ref({});
 
 function validateStep1() {
-  errors.value = {}
-  if (!store.tender.title) errors.value.title = true
-  if (!store.tender.reference_number) errors.value.reference_number = true
-  if (!store.tender.category_id) errors.value.category_id = true
-  if (!store.tender.subcategory_id) errors.value.subcategory_id = true
-  if (!store.tender.procurement_process_id) errors.value.procurement_process_id = true
-  if (!store.tender.tender_fees) errors.value.tender_fees = true
-  return Object.keys(errors.value).length === 0
+  errors.value = {};
+  if (!store.tender.title) errors.value.title = true;
+  if (!store.tender.reference_number) errors.value.reference_number = true;
+  if (!store.tender.tender_type_country) errors.value.tender_type_country = true;
+  if (!store.tender.tender_type_sector) errors.value.tender_type_sector = true;
+  if (!store.tender.currency) errors.value.currency = true;
+  if (!store.tender.source_of_funds) errors.value.source_of_funds = true;
+  return Object.keys(errors.value).length === 0;
 }
+
+function validateStep2() {
+  errors.value = {};
+  if (!store.tender.submission_deadline) errors.value.submission_deadline = true;
+  return Object.keys(errors.value).length === 0;
+}
+
+function validateStep4() {
+  errors.value = {};
+  if (store.tender.tender_securing_type === 'Tender Security') {
+    if (!store.tender.tender_security_percentage && !store.tender.tender_security_amount) {
+      errors.value.tender_security_percentage = true;
+      errors.value.tender_security_amount = true;
+      toast.add({ severity: 'error', summary: 'Validation Error', detail: 'Either Security Percentage or Security Amount is required for Tender Security.' });
+    }
+  }
+  return Object.keys(errors.value).length === 0;
+}
+
 function nextStep() {
   if (store.step === 1 && !validateStep1()) {
-    toast.add({ severity: 'error', summary: 'Validation Error', detail: 'Please fill all required fields.' })
-    return
+    toast.add({ severity: 'error', summary: 'Validation Error', detail: 'Please fill all required fields.' });
+    return;
+  }
+  if (store.step === 2 && !validateStep2()) {
+    toast.add({ severity: 'error', summary: 'Validation Error', detail: 'Please fill all required fields.' });
+    return;
   }
   if (store.step === 3 && !store.tender.agency_id && !newAgency.value.name) {
-    toast.add({ severity: 'error', summary: 'Validation Error', detail: 'Please select an agency or provide a new agency name.' })
-    return
+    toast.add({ severity: 'error', summary: 'Validation Error', detail: 'Please select an agency or provide a new agency name.' });
+    return;
+  }
+  if (store.step === 4 && !validateStep4()) {
+    return;
   }
   console.log('Moving to next step from:', store.step, 'to', store.step + 1);
   if (store.step < 12) {
-    store.$patch({ step: store.step + 1 })
+    store.$patch({ step: store.step + 1 });
   }
   console.log('After advancing in nextStep, current step:', store.step);
 }
@@ -837,208 +973,287 @@ function nextStep() {
 function skipSection() {
   console.log('Skipping section at step:', store.step);
   if (store.step === 6) {
-    financialRequirements.value = []
+    financialRequirements.value = [];
     console.log('Financial requirements cleared. Length now:', financialRequirements.value.length);
   } else if (store.step === 7) {
-    turnoverRequirements.value = []
+    turnoverRequirements.value = [];
     console.log('Turnover requirements cleared. Length now:', turnoverRequirements.value.length);
   } else if (store.step === 8) {
-    experienceRequirements.value = []
+    experienceRequirements.value = [];
     console.log('Experience requirements cleared. Length now:', experienceRequirements.value.length);
   } else if (store.step === 9) {
-    personnelRequirements.value = []
+    personnelRequirements.value = [];
     console.log('Personnel requirements cleared. Length now:', personnelRequirements.value.length);
   } else if (store.step === 10) {
-    scheduleItems.value = []
+    scheduleItems.value = [];
     console.log('Schedule items cleared. Length now:', scheduleItems.value.length);
   } else if (store.step === 11) {
-    technicalSpecifications.value = []
+    technicalSpecifications.value = [];
     console.log('Technical specifications cleared. Length now:', technicalSpecifications.value.length);
   }
   console.log('Section skipped. Moving to step:', store.step + 1);
   if (store.step < 12) {
-    store.$patch({ step: store.step + 1 })
+    store.$patch({ step: store.step + 1 });
   }
   console.log('After advancing in skipSection, current step:', store.step);
 }
 
 function resetAll() {
-  store.resetAll()
-  requiredDocuments.value = []
-  financialRequirements.value = []
-  turnoverRequirements.value = []
-  experienceRequirements.value = []
-  personnelRequirements.value = []
-  scheduleItems.value = []
-  technicalSpecifications.value = []
-  newAgency.value = { name: '', email: '', phone_number: '', address: '', logoFile: null }
-  agencyResults.value = []
+  store.resetAll();
+  requiredDocuments.value = [];
+  financialRequirements.value = [];
+  turnoverRequirements.value = [];
+  experienceRequirements.value = [];
+  personnelRequirements.value = [];
+  scheduleItems.value = [];
+  technicalSpecifications.value = [];
+  newAgency.value = { name: '', email: '', phone_number: '', address: '', logoFile: null };
+  agencyResults.value = [];
+  tenders.value = [];
 }
 
 function goToList() {
-  resetAll()
-  router.push({ name: 'admin.tenders-management' })
+  resetAll();
+  router.push({ name: 'admin.tenders-management' });
 }
 
 function onCategoryChange() {
-  store.tender.subcategory_id = null
+  store.tender.subcategory_id = null;
 }
+
 watch(() => store.tender.category_id, id => {
-  const cat = categoriesWithSubs.value.find(c => c.id === id)
+  const cat = categoriesWithSubs.value.find(c => c.id === id);
   subcategories.value = cat
     ? cat.subcategories.map(sc => ({ value: sc.id, text: sc.name }))
-    : []
-  store.tender.subcategory_id = null
-})
+    : [];
+  store.tender.subcategory_id = null;
+});
 
 async function fetchCategoriesWithSubcategories() {
   try {
-    const res = await api.get('tenders/categories-with-subcategories/')
-    categoriesWithSubs.value = res.data
-    categories.value = res.data.map(c => ({ value: c.id, text: c.name }))
+    const res = await api.get('tenders/categories-with-subcategories/');
+    categoriesWithSubs.value = res.data;
+    categories.value = res.data.map(c => ({ value: c.id, text: c.name }));
   } catch {
-    toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to load categories' })
+    toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to load categories' });
   }
 }
+
 async function fetchProcurementProcesses() {
   try {
-    const res = await api.get('tenders/procurement-processes/')
-    const items = Array.isArray(res.data) ? res.data : (res.data.results || [])
-    procurementProcesses.value = items.map(p => ({ value: p.id, text: p.name }))
+    const res = await api.get('tenders/procurement-processes/');
+    const items = Array.isArray(res.data) ? res.data : (res.data.results || []);
+    procurementProcesses.value = items.map(p => ({ value: p.id, text: p.name }));
   } catch (err) {
-    console.error(err)
-    toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to load processes' })
+    console.error(err);
+    toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to load processes' });
+  }
+}
+
+async function fetchTenders() {
+  try {
+    const res = await api.get('tenders/tenders/');
+    tenders.value = Array.isArray(res.data) ? res.data : (res.data.results || []);
+  } catch (err) {
+    console.error('Tender fetch error:', err);
+    toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to load tenders' });
   }
 }
 
 async function searchAgency(event) {
-  const query = event.query || store.selectedAgencyName || ''
+  const query = event.query || store.selectedAgencyName || '';
   try {
-    const res = await api.get(`tenders/agencies/?search=${encodeURIComponent(query)}`)
-    agencyResults.value = Array.isArray(res.data) ? res.data : res.data.results || []
+    const res = await api.get(`tenders/agencies/?search=${encodeURIComponent(query)}`);
+    agencyResults.value = Array.isArray(res.data) ? res.data : (res.data.results || []);
   } catch (err) {
-    console.error('Agency search error:', err)
-    toast.add({ severity: 'error', summary: 'Error', detail: 'Agency lookup failed' })
+    console.error('Agency search error:', err);
+    toast.add({ severity: 'error', summary: 'Error', detail: 'Agency lookup failed' });
   }
 }
 
 function onAgencySelect(event) {
-  const selected = event.value
+  const selected = event.value;
   if (selected && typeof selected === 'object' && selected.id && selected.name) {
-    store.tender.agency_id = selected.id
-    store.selectedAgencyName = selected.name
+    store.tender.agency_id = selected.id;
+    store.selectedAgencyName = selected.name;
   } else {
-    store.tender.agency_id = null
-    store.selectedAgencyName = ''
-    toast.add({ severity: 'warn', summary: 'Warning', detail: 'Invalid agency selection' })
+    store.tender.agency_id = null;
+    store.selectedAgencyName = '';
+    toast.add({ severity: 'warn', summary: 'Warning', detail: 'Invalid agency selection' });
   }
 }
 
 watch(() => store.selectedAgencyName, val => {
   if (!val) {
-    store.tender.agency_id = null
-    return
+    store.tender.agency_id = null;
+    return;
   }
-  const matchedAgency = agencyResults.value.find(a => a.name.toLowerCase() === val.toLowerCase())
-  store.tender.agency_id = matchedAgency ? matchedAgency.id : null
-})
+  const matchedAgency = agencyResults.value.find(a => a.name.toLowerCase() === val.toLowerCase());
+  store.tender.agency_id = matchedAgency ? matchedAgency.id : null;
+});
 
 async function fetchTenderData(slug) {
   try {
-    const res = await api.get(`tenders/tenders/${slug}/`)
-    const tender = res.data
+    const res = await api.get(`tenders/tenders/${slug}/`);
+    const tender = res.data;
     store.tender = {
       ...tender,
+      category_id: tender.category ? tender.category.id : null,
+      subcategory_id: tender.subcategory ? tender.subcategory.id : null,
+      procurement_process_id: tender.procurement_process ? tender.procurement_process.id : null,
+      agency_id: tender.agency ? tender.agency.id : null,
+      re_advertised_from_id: tender.re_advertised_from ? tender.re_advertised_from : null,
       submission_deadline: tender.submission_deadline ? new Date(tender.submission_deadline) : null,
+      publication_date: tender.publication_date ? new Date(tender.publication_date) : null,
       litigation_history_start: tender.litigation_history_start ? new Date(tender.litigation_history_start) : null,
       litigation_history_end: tender.litigation_history_end ? new Date(tender.litigation_history_end) : null,
-    }
-    store.selectedAgencyName = tender.agency ? tender.agency.name : ''
-    agencyResults.value = tender.agency ? [tender.agency] : []
-    requiredDocuments.value = tender.required_documents || []
-    financialRequirements.value = tender.financial_requirements || []
-    turnoverRequirements.value = tender.turnover_requirements || []
-    experienceRequirements.value = tender.experience_requirements || []
-    personnelRequirements.value = tender.personnel_requirements || []
-    scheduleItems.value = tender.schedule_items || []
-    technicalSpecifications.value = tender.technical_specifications || []
+    };
+    store.selectedAgencyName = tender.agency ? tender.agency.name : '';
+    agencyResults.value = tender.agency ? [tender.agency] : [];
+    requiredDocuments.value = tender.required_documents || [];
+    financialRequirements.value = tender.financial_requirements || [];
+    turnoverRequirements.value = tender.turnover_requirements || [];
+    experienceRequirements.value = tender.experience_requirements || [];
+    personnelRequirements.value = tender.personnel_requirements || [];
+    scheduleItems.value = tender.schedule_items || [];
+    technicalSpecifications.value = tender.technical_specifications || [];
   } catch (err) {
-    console.error('Failed to load tender:', err)
-    toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to load tender data' })
+    console.error('Failed to load tender:', err);
+    toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to load tender data' });
   }
 }
 
 function addDocument() {
-  requiredDocuments.value.push({ selectedName: '', customName: '', description: '', document_type: '' })
+  requiredDocuments.value.push({ selectedName: '', customName: '', description: '', document_type: 'other', is_required: 'required' });
 }
+
 function removeDocument(i) {
-  requiredDocuments.value.splice(i, 1)
+  requiredDocuments.value.splice(i, 1);
 }
+
 function addFinancialRequirement() {
-  financialRequirements.value.push({ name: '', formula: '', minimum: null, unit: '', actual_value: null, notes: '', start_date: null, end_date: null, jv_compliance: 'combined', jv_percentage: null })
+  financialRequirements.value.push({
+    name: '',
+    formula: '',
+    minimum: null,
+    unit: '',
+    actual_value: null,
+    notes: '',
+    financial_sources: '',
+    start_date: null,
+    end_date: null,
+    jv_compliance: 'combined',
+    jv_percentage: null
+  });
 }
+
 function removeFinancialRequirement(i) {
-  financialRequirements.value.splice(i, 1)
+  financialRequirements.value.splice(i, 1);
 }
+
 function addTurnoverRequirement() {
-  turnoverRequirements.value.push({ label: '', amount: null, currency: 'TZS', start_date: null, end_date: null, jv_compliance: 'combined', jv_percentage: null })
+  turnoverRequirements.value.push({
+    label: '',
+    amount: null,
+    currency: 'TZS',
+    start_date: null,
+    end_date: null,
+    jv_compliance: 'combined',
+    jv_percentage: null
+  });
 }
+
 function removeTurnoverRequirement(i) {
-  turnoverRequirements.value.splice(i, 1)
+  turnoverRequirements.value.splice(i, 1);
 }
+
 function addExperienceRequirement() {
-  experienceRequirements.value.push({ type: 'specific', description: '', contract_count: null, min_value: null, currency: 'TZS', start_date: null, end_date: null, jv_compliance: 'combined', jv_percentage: null, jv_aggregation_note: '' })
+  experienceRequirements.value.push({
+    type: 'specific',
+    description: '',
+    contract_count: null,
+    min_value: null,
+    currency: 'TZS',
+    start_date: null,
+    end_date: null,
+    jv_compliance: 'combined',
+    jv_percentage: null,
+    jv_aggregation_note: '',
+    reputation_notes: ''
+  });
 }
+
 function removeExperienceRequirement(i) {
-  experienceRequirements.value.splice(i, 1)
+  experienceRequirements.value.splice(i, 1);
 }
+
 function addPersonnelRequirement() {
-  personnelRequirements.value.push({ role: '', min_education: '', professional_registration: false, min_experience_yrs: null, appointment_duration_years: null, nationality_required: '', language_required: '', notes: '', jv_compliance: 'combined' })
+  personnelRequirements.value.push({
+    role: '',
+    min_education: 'bachelor',
+    professional_registration: '',
+    min_experience_yrs: null,
+    appointment_duration_years: null,
+    nationality_required: '',
+    language_required: '',
+    age_min: 18,
+    age_max: 60,
+    specialized_education: '',
+    professional_certifications: '',
+    jv_compliance: 'combined',
+    notes: ''
+  });
 }
+
 function removePersonnelRequirement(i) {
-  personnelRequirements.value.splice(i, 1)
+  personnelRequirements.value.splice(i, 1);
 }
+
 function addScheduleItem() {
-  scheduleItems.value.push({ commodity: '', code: '', unit: '', quantity: null, specification: '' })
+  scheduleItems.value.push({ commodity: '', code: '', unit: '', quantity: null, specification: '' });
 }
+
 function removeScheduleItem(i) {
-  scheduleItems.value.splice(i, 1)
+  scheduleItems.value.splice(i, 1);
 }
+
 function addTechnicalSpecification() {
-  technicalSpecifications.value.push({ category: 'service', description: '' })
+  technicalSpecifications.value.push({ category: 'service', description: '' });
 }
+
 function removeTechnicalSpecification(i) {
-  technicalSpecifications.value.splice(i, 1)
+  technicalSpecifications.value.splice(i, 1);
 }
 
 async function submitTender() {
   try {
     if (!store.tender.agency_id && !newAgency.value.name) {
-      toast.add({ severity: 'error', summary: 'Error', detail: 'Please select an agency or provide a new agency name.' })
-      return
+      toast.add({ severity: 'error', summary: 'Error', detail: 'Please select an agency or provide a new agency name.' });
+      return;
     }
 
-    // create agency if needed
+    // Create agency if needed
     if (!store.tender.agency_id && newAgency.value.name) {
-      const agencyData = new FormData()
-      agencyData.append('name', newAgency.value.name)
-      if (newAgency.value.email) agencyData.append('email', newAgency.value.email)
-      if (newAgency.value.phone_number) agencyData.append('phone_number', newAgency.value.phone_number)
-      if (newAgency.value.address) agencyData.append('address', newAgency.value.address)
-      if (newAgency.value.logoFile) agencyData.append('logo', newAgency.value.logoFile)
+      const agencyData = new FormData();
+      agencyData.append('name', newAgency.value.name);
+      if (newAgency.value.email) agencyData.append('email', newAgency.value.email);
+      if (newAgency.value.phone_number) agencyData.append('phone_number', newAgency.value.phone_number);
+      if (newAgency.value.address) agencyData.append('address', newAgency.value.address);
+      if (newAgency.value.logoFile) agencyData.append('logo', newAgency.value.logoFile);
       const r = await api.post('tenders/agencies/', agencyData, {
         headers: { 'Content-Type': 'multipart/form-data' }
-      })
-      store.tender.agency_id = r.data.id
-      store.selectedAgencyName = r.data.name
+      });
+      store.tender.agency_id = r.data.id;
+      store.selectedAgencyName = r.data.name;
     }
 
-    // build nested data
+    // Build nested data
     const required_documents = requiredDocuments.value.map(doc => ({
       name: doc.selectedName === 'other' ? doc.customName : doc.selectedName,
       description: doc.description,
-      document_type: doc.document_type
-    }))
+      document_type: doc.document_type,
+      is_required: doc.is_required
+    }));
     const financial_requirements = financialRequirements.value.map(req => ({
       name: req.name,
       formula: req.formula,
@@ -1046,11 +1261,12 @@ async function submitTender() {
       unit: req.unit,
       actual_value: req.actual_value,
       notes: req.notes,
+      financial_sources: req.financial_sources,
       start_date: req.start_date ? new Date(req.start_date).toISOString().split('T')[0] : null,
       end_date: req.end_date ? new Date(req.end_date).toISOString().split('T')[0] : null,
       jv_compliance: req.jv_compliance,
       jv_percentage: req.jv_percentage
-    }))
+    }));
     console.log('Submitting financial_requirements. Length:', financial_requirements.length);
     const turnover_requirements = turnoverRequirements.value.map(req => ({
       label: req.label,
@@ -1060,7 +1276,7 @@ async function submitTender() {
       end_date: req.end_date ? new Date(req.end_date).toISOString().split('T')[0] : null,
       jv_compliance: req.jv_compliance,
       jv_percentage: req.jv_percentage
-    }))
+    }));
     console.log('Submitting turnover_requirements. Length:', turnover_requirements.length);
     const experience_requirements = experienceRequirements.value.map(req => ({
       type: req.type,
@@ -1072,8 +1288,9 @@ async function submitTender() {
       end_date: req.end_date ? new Date(req.end_date).toISOString().split('T')[0] : null,
       jv_compliance: req.jv_compliance,
       jv_percentage: req.jv_percentage,
-      jv_aggregation_note: req.jv_aggregation_note
-    }))
+      jv_aggregation_note: req.jv_aggregation_note,
+      reputation_notes: req.reputation_notes
+    }));
     console.log('Submitting experience_requirements. Length:', experience_requirements.length);
     const personnel_requirements = personnelRequirements.value.map(req => ({
       role: req.role,
@@ -1083,9 +1300,13 @@ async function submitTender() {
       appointment_duration_years: req.appointment_duration_years,
       nationality_required: req.nationality_required,
       language_required: req.language_required,
-      notes: req.notes,
-      jv_compliance: req.jv_compliance
-    }))
+      age_min: req.age_min,
+      age_max: req.age_max,
+      specialized_education: req.specialized_education,
+      professional_certifications: req.professional_certifications,
+      jv_compliance: req.jv_compliance,
+      notes: req.notes
+    }));
     console.log('Submitting personnel_requirements. Length:', personnel_requirements.length);
     const schedule_items = scheduleItems.value.map(item => ({
       commodity: item.commodity,
@@ -1093,21 +1314,27 @@ async function submitTender() {
       unit: item.unit,
       quantity: item.quantity,
       specification: item.specification
-    }))
+    }));
     console.log('Submitting schedule_items. Length:', schedule_items.length);
     const technical_specifications = technicalSpecifications.value.map(spec => ({
       category: spec.category,
       description: spec.description
-    }))
+    }));
     console.log('Submitting technical_specifications. Length:', technical_specifications.length);
 
-    // pull off file
-    const { tender_document, ...rest } = store.tender
+    // Pull off file and rename IDs
+    const { tender_document, category_id, subcategory_id, procurement_process_id, agency_id, re_advertised_from_id, ...rest } = store.tender;
 
-    // build JSON payload with ISO dates and nested
+    // Build JSON payload with ISO dates and nested
     const payload = {
       ...rest,
+      category: category_id,
+      subcategory: subcategory_id,
+      procurement_process: procurement_process_id,
+      agency: agency_id,
+      re_advertised_from: re_advertised_from_id,
       submission_deadline: rest.submission_deadline ? new Date(rest.submission_deadline).toISOString() : null,
+      publication_date: rest.publication_date ? new Date(rest.publication_date).toISOString() : null,
       litigation_history_start: rest.litigation_history_start ? new Date(rest.litigation_history_start).toISOString().split('T')[0] : null,
       litigation_history_end: rest.litigation_history_end ? new Date(rest.litigation_history_end).toISOString().split('T')[0] : null,
       required_documents,
@@ -1117,47 +1344,48 @@ async function submitTender() {
       personnel_requirements,
       schedule_items,
       technical_specifications
-    }
+    };
 
-    // create or update tender
-    const isEditMode = !!route.params.slug
+    // Create or update tender
+    const isEditMode = !!route.params.slug;
     const resTender = isEditMode
       ? await api.patch(`tenders/tenders/${route.params.slug}/`, payload)
-      : await api.post('tenders/tenders/', payload)
-    const tenderSlug = resTender.data.slug
+      : await api.post('tenders/tenders/', payload);
+    const tenderSlug = resTender.data.slug;
 
-    // upload file if present
+    // Upload file if present
     if (tender_document) {
-      const fd = new FormData()
-      fd.append('tender_document', tender_document)
+      const fd = new FormData();
+      fd.append('tender_document', tender_document);
       await api.patch(`tenders/tenders/${tenderSlug}/`, fd, {
         headers: { 'Content-Type': 'multipart/form-data' }
-      })
+      });
     }
 
-    toast.add({ severity: 'success', summary: 'Done', detail: isEditMode ? 'Tender updated successfully' : 'Tender & all requirements created' })
+    toast.add({ severity: 'success', summary: 'Done', detail: isEditMode ? 'Tender updated successfully' : 'Tender & all requirements created' });
     if (store.step < 12) {
-      store.$patch({ step: store.step + 1 })
+      store.$patch({ step: store.step + 1 });
     }
   } catch (err) {
-    console.error('Validation errors:', err.response?.data)
-    let errorMessage = 'Submission failed – check console'
+    console.error('Validation errors:', err.response?.data);
+    let errorMessage = 'Submission failed – check console';
     if (err.response?.data) {
       errorMessage = Object.entries(err.response.data)
         .map(([key, value]) => `${key}: ${Array.isArray(value) ? value.join(', ') : value}`)
-        .join('\n')
+        .join('\n');
     }
-    toast.add({ severity: 'error', summary: 'Error', detail: errorMessage })
+    toast.add({ severity: 'error', summary: 'Error', detail: errorMessage });
   }
 }
 
 onMounted(async () => {
-  await fetchCategoriesWithSubcategories()
-  await fetchProcurementProcesses()
+  await fetchCategoriesWithSubcategories();
+  await fetchProcurementProcesses();
+  await fetchTenders();
   if (route.params.slug) {
-    await fetchTenderData(route.params.slug)
+    await fetchTenderData(route.params.slug);
   }
-})
+});
 </script>
 
 <style scoped>

@@ -8,7 +8,6 @@
           <i class="bx bx-plus"></i> Create
         </b-button>
       </div>
-
       <!-- Sources Table -->
       <b-table
         :items="items"
@@ -29,6 +28,9 @@
             <a :href="row.item.proof" target="_blank">Download</a>
           </span>
           <span v-else class="text-muted">—</span>
+        </template>
+        <template #cell(uploaded_at)="row">
+          {{ formatDate(row.item.uploaded_at) }}
         </template>
         <template #cell(actions)="row">
           <b-button
@@ -53,7 +55,6 @@
         </template>
       </b-table>
     </b-card>
-
     <!-- Create / Edit Modal -->
     <b-modal
       v-model="showDialog"
@@ -73,7 +74,6 @@
               />
             </b-form-group>
           </b-col>
-
           <!-- Amount -->
           <b-col md="6" class="mb-3">
             <b-form-group label="Amount*" label-for="amount">
@@ -87,7 +87,6 @@
               />
             </b-form-group>
           </b-col>
-
           <!-- Currency -->
           <b-col md="6" class="mb-3">
             <b-form-group label="Currency*" label-for="currency">
@@ -99,7 +98,6 @@
               />
             </b-form-group>
           </b-col>
-
           <!-- Proof File -->
           <b-col md="6" class="mb-3">
             <b-form-group label="Proof Document*" label-for="proof">
@@ -113,7 +111,6 @@
             </b-form-group>
           </b-col>
         </b-row>
-
         <div class="d-flex justify-content-end mt-4">
           <b-button variant="secondary" class="me-2" @click="cancel">
             Cancel
@@ -137,7 +134,6 @@ import VerticalLayout from '@/layouts/VerticalLayout.vue'
 const toast = useToast()
 const authStore = useAuthStore()
 const companyId = ref(authStore.user?.companies?.[0]?.id || null)
-
 const items = ref([])
 const showDialog = ref(false)
 const editing = ref(false)
@@ -153,9 +149,9 @@ const form = reactive({
 
 // source type choices
 const sourceTypeOptions = [
-  { value: 'cash_and_bank',   text: 'Cash and Bank' },
-  { value: 'grant',           text: 'Grant' },
-  { value: 'inventories',     text: 'Inventories' },
+  { value: 'cash_and_bank', text: 'Cash and Bank' },
+  { value: 'grant', text: 'Grant' },
+  { value: 'inventories', text: 'Inventories' },
 ]
 
 // currency choices
@@ -168,11 +164,12 @@ const currencyOptions = [
 
 // table columns
 const tableFields = [
-  { key: 'index',       label: 'No',       thStyle: { width: '4em' } },
+  { key: 'index', label: 'No', thStyle: { width: '4em' } },
   { key: 'source_type', label: 'Type' },
-  { key: 'amount',      label: 'Amount' },
-  { key: 'proof',       label: 'Proof' },
-  { key: 'actions',     label: '',         thStyle: { width: '8em' } },
+  { key: 'amount', label: 'Amount' },
+  { key: 'proof', label: 'Proof' },
+  { key: 'uploaded_at', label: 'Uploaded At' },
+  { key: 'actions', label: '', thStyle: { width: '8em' } },
 ]
 
 // fetch existing sources
@@ -231,14 +228,12 @@ async function save() {
     })
     return
   }
-
-  const base = `accounts/companies/${companyId.value}/sources-of-funds`
+  const base = `accounts/companies/${companyId.value}/sources-of-fund`
   const payload = new FormData()
   payload.append('source_type', form.source_type)
   payload.append('amount', form.amount)
   payload.append('currency', form.currency)
   if (form.proof) payload.append('proof', form.proof)
-
   try {
     if (editing.value) {
       await api.patch(`${base}/${form.id}/`, payload, {
@@ -275,7 +270,7 @@ async function onDelete(item) {
   if (!confirm(`Delete source "${sourceTypeLabel(item.source_type)}"?`)) return
   try {
     await api.delete(
-      `accounts/companies/${companyId.value}/sources-of-funds/${item.id}/`
+      `accounts/companies/${companyId.value}/sources-of-fund/${item.id}/`
     )
     toast.add({
       severity: 'success',
@@ -302,8 +297,13 @@ function sourceTypeLabel(value) {
   const opt = sourceTypeOptions.find(o => o.value === value)
   return opt ? opt.text : value
 }
+
 function formatCurrency(amount, currency) {
   return `${parseFloat(amount).toLocaleString()} ${currency}`
+}
+
+function formatDate(dateStr) {
+  return new Date(dateStr).toLocaleString()
 }
 </script>
 

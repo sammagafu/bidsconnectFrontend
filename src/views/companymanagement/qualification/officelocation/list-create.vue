@@ -11,30 +11,18 @@
 
       <!-- Offices Table -->
       <b-table :items="items" :fields="fields" striped hover small responsive>
-        <template #cell(index)="row">
-          {{ row.index + 1 }}
+        <template #cell(index)="data">
+          {{ data.index + 1 }}
         </template>
-        <template #cell(director_title)="row">
-          {{ row.item.director_title }}
+        <template #cell(is_headquarters)="data">
+          {{ data.item.is_headquarters ? 'Yes' : 'No' }}
         </template>
-        <template #cell(phone)="row">
-          {{ row.item.phone }}
-        </template>
-        <template #cell(email)="row">
-          {{ row.item.email }}
-        </template>
-        <template #cell(region)="row">
-          {{ row.item.region }}
-        </template>
-        <template #cell(district)="row">
-          {{ row.item.district }}
-        </template>
-        <template #cell(actions)="row">
+        <template #cell(actions)="data">
           <b-button
             size="sm"
             variant="outline-primary"
             class="me-2"
-            @click="onEdit(row.item)"
+            @click="onEdit(data.item)"
             v-b-tooltip.hover
             title="Edit"
           >
@@ -43,7 +31,7 @@
           <b-button
             size="sm"
             variant="outline-danger"
-            @click="onDelete(row.item)"
+            @click="onDelete(data.item)"
             v-b-tooltip.hover
             title="Delete"
           >
@@ -58,63 +46,102 @@
       <b-form @submit.prevent="save">
         <b-row>
           <b-col md="6" class="mb-3">
-            <b-form-group label="Director Title*" label-for="director_title">
+            <b-form-group
+              label="Name*"
+              label-for="name"
+              :state="formErrors.name === undefined"
+              :invalid-feedback="formErrors.name || ''"
+            >
               <b-form-input
-                id="director_title"
-                v-model="form.director_title"
+                id="name"
+                v-model="form.name"
+                :state="formErrors.name === undefined"
                 required
               />
             </b-form-group>
           </b-col>
           <b-col md="6" class="mb-3">
-            <b-form-group label="Phone*" label-for="phone">
-              <b-form-input id="phone" v-model="form.phone" required />
-            </b-form-group>
-          </b-col>
-          <b-col md="6" class="mb-3">
-            <b-form-group label="Email*" label-for="email">
-              <b-form-input id="email" v-model="form.email" type="email" required />
-            </b-form-group>
-          </b-col>
-          <b-col md="6" class="mb-3">
-            <b-form-group label="Postal Address*" label-for="postal_address">
-              <b-form-input id="postal_address" v-model="form.postal_address" required />
+            <b-form-group
+              label="Phone Number"
+              label-for="phone_number"
+              :state="formErrors.phone_number === undefined"
+              :invalid-feedback="formErrors.phone_number || ''"
+            >
+              <b-form-input
+                id="phone_number"
+                v-model="form.phone_number"
+                :state="formErrors.phone_number === undefined"
+              />
             </b-form-group>
           </b-col>
           <b-col cols="12" class="mb-3">
-            <b-form-group label="Physical Address*" label-for="physical_address">
+            <b-form-group
+              label="Address*"
+              label-for="address"
+              :state="formErrors.address === undefined"
+              :invalid-feedback="formErrors.address || ''"
+            >
               <b-form-textarea
-                id="physical_address"
-                v-model="form.physical_address"
-                rows="2"
+                id="address"
+                v-model="form.address"
+                rows="3"
+                :state="formErrors.address === undefined"
                 required
               />
             </b-form-group>
           </b-col>
           <b-col md="4" class="mb-3">
-            <b-form-group label="Region*" label-for="region">
-              <b-form-input id="region" v-model="form.region" required />
+            <b-form-group
+              label="City*"
+              label-for="city"
+              :state="formErrors.city === undefined"
+              :invalid-feedback="formErrors.city || ''"
+            >
+              <b-form-input
+                id="city"
+                v-model="form.city"
+                :state="formErrors.city === undefined"
+                required
+              />
             </b-form-group>
           </b-col>
           <b-col md="4" class="mb-3">
-            <b-form-group label="District*" label-for="district">
-              <b-form-input id="district" v-model="form.district" required />
+            <b-form-group
+              label="Country*"
+              label-for="country"
+              :state="formErrors.country === undefined"
+              :invalid-feedback="formErrors.country || ''"
+            >
+              <b-form-input
+                id="country"
+                v-model="form.country"
+                :state="formErrors.country === undefined"
+                required
+              />
             </b-form-group>
           </b-col>
           <b-col md="4" class="mb-3">
-            <b-form-group label="Council*" label-for="council">
-              <b-form-input id="council" v-model="form.council" required />
+            <b-form-group
+              label="Postal Code"
+              label-for="postal_code"
+              :state="formErrors.postal_code === undefined"
+              :invalid-feedback="formErrors.postal_code || ''"
+            >
+              <b-form-input
+                id="postal_code"
+                v-model="form.postal_code"
+                :state="formErrors.postal_code === undefined"
+              />
             </b-form-group>
           </b-col>
-          <b-col md="6" class="mb-3">
-            <b-form-group label="Ward*" label-for="ward">
-              <b-form-input id="ward" v-model="form.ward" required />
-            </b-form-group>
-          </b-col>
-          <b-col md="6" class="mb-3">
-            <b-form-group label="Street*" label-for="street">
-              <b-form-input id="street" v-model="form.street" required />
-            </b-form-group>
+          <b-col cols="12" class="mb-3">
+            <b-form-checkbox
+              id="is_headquarters"
+              v-model="form.is_headquarters"
+              switch
+            >
+              Is Headquarters
+            </b-form-checkbox>
           </b-col>
         </b-row>
 
@@ -145,30 +172,34 @@ const editing = ref(false)
 // form model
 const form = reactive({
   id: null,
-  director_title: '',
-  phone: '',
-  email: '',
-  physical_address: '',
-  postal_address: '',
-  region: '',
-  district: '',
-  council: '',
-  ward: '',
-  street: ''
+  name: '',
+  address: '',
+  city: '',
+  country: '',
+  postal_code: '',
+  phone_number: '',
+  is_headquarters: false
 })
+
+// form errors
+const formErrors = reactive({})
 
 const fields = [
   { key: 'index', label: 'No', thStyle: { width: '4em' } },
-  { key: 'director_title', label: 'Director Title' },
-  { key: 'phone', label: 'Phone' },
-  { key: 'email', label: 'Email' },
-  { key: 'region', label: 'Region' },
-  { key: 'district', label: 'District' },
+  { key: 'name', label: 'Name' },
+  { key: 'city', label: 'City' },
+  { key: 'country', label: 'Country' },
+  { key: 'phone_number', label: 'Phone Number' },
+  { key: 'is_headquarters', label: 'Headquarters' },
+  { key: 'created_at', label: 'Created At', formatter: 'formatDateTime' },
+  { key: 'updated_at', label: 'Updated At', formatter: 'formatDateTime' },
   { key: 'actions', label: '', thStyle: { width: '8em' } }
 ]
 
-function formatDate(d) {
-  return d ? new Date(d).toISOString().slice(0,10) : ''
+function formatDateTime(value) {
+  if (!value) return '—'
+  const date = new Date(value)
+  return date.toLocaleString('en-US', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })
 }
 
 async function fetchItems(id) {
@@ -188,36 +219,42 @@ function openNew() {
   editing.value = false
   Object.assign(form, {
     id: null,
-    director_title: '',
-    phone: '',
-    email: '',
-    physical_address: '',
-    postal_address: '',
-    region: '',
-    district: '',
-    council: '',
-    ward: '',
-    street: ''
+    name: '',
+    address: '',
+    city: '',
+    country: '',
+    postal_code: '',
+    phone_number: '',
+    is_headquarters: false
   })
+  Object.assign(formErrors, {})
   showDialog.value = true
 }
 
 function onEdit(item) {
   editing.value = true
   Object.assign(form, item)
+  Object.assign(formErrors, {})
   showDialog.value = true
 }
 
 async function save() {
-  // basic validation
-  if (!form.director_title || !form.phone || !form.email) {
-    toast.add({ severity: 'warn', summary: 'Validation', detail: 'Please fill required fields.' })
+  formErrors.name = form.name ? undefined : 'Name is required'
+  formErrors.address = form.address ? undefined : 'Address is required'
+  formErrors.city = form.city ? undefined : 'City is required'
+  formErrors.country = form.country ? undefined : 'Country is required'
+  formErrors.postal_code = undefined
+  formErrors.phone_number = undefined
+
+  if (Object.values(formErrors).some(err => err)) {
+    toast.add({ severity: 'warn', summary: 'Validation Error', detail: 'Please fill all required fields correctly.' })
     return
   }
+
   const base = `accounts/companies/${companyId.value}/offices`
   try {
     if (editing.value) {
-      await api.patch(`${base}/${form.uuid}/`, form)
+      await api.patch(`${base}/${form.id}/`, form)
       toast.add({ severity: 'success', summary: 'Updated' })
     } else {
       await api.post(`${base}/`, form)
@@ -231,10 +268,10 @@ async function save() {
 }
 
 async function onDelete(item) {
-  if (!confirm(`Delete office "${item.director_title}"?`)) return
+  if (!confirm(`Delete office "${item.name}"?`)) return
   const base = `accounts/companies/${companyId.value}/offices`
   try {
-    await api.delete(`${base}/${item.uuid}/`)
+    await api.delete(`${base}/${item.id}/`)
     toast.add({ severity: 'success', summary: 'Deleted' })
     fetchItems(companyId.value)
   } catch {
