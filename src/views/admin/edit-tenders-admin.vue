@@ -1,6 +1,7 @@
 <template>
   <VerticalLayout>
     <b-card>
+      <h1 class="mb-4">{{ isEditMode ? 'Edit Tender' : 'Create Tender' }}</h1>
       <!-- Progress bar -->
       <b-progress :value="progress" max="100" class="mb-3">
         <b-progress-bar
@@ -114,34 +115,6 @@
             required
           />
         </b-form-group>
-
-        <b-form-group class="mb-3" label="Re-advertisement Count" label-for="re_advertisement_count">
-          <b-form-input
-            id="re_advertisement_count"
-            type="number"
-            v-model.number="store.tender.re_advertisement_count"
-            readonly
-          />
-        </b-form-group>
-
-        <b-form-group class="mb-3" label="Re-advertised From" label-for="re_advertised_from_id">
-          <b-form-select
-            id="re_advertised_from_id"
-            v-model="store.tender.re_advertised_from_id"
-            :options="tenders"
-            value-field="id"
-            text-field="title"
-          />
-        </b-form-group>
-
-        <b-form-group class="mb-3" label="Version" label-for="version">
-          <b-form-input
-            id="version"
-            type="number"
-            v-model.number="store.tender.version"
-            readonly
-          />
-        </b-form-group>
       </b-form>
 
       <!-- Step 2: Deadlines & Dates -->
@@ -236,10 +209,15 @@
             dateFormat="yy-mm-dd"
           />
         </b-form-group>
-        <b-form-group class="mb-3" label="Tender Document">
+        <b-form-group class="mb-3" label="Tender Document" label-for="tender_document">
+          <div v-if="store.tender.tender_document && typeof store.tender.tender_document === 'string'">
+            Current Document: <a :href="store.tender.tender_document" target="_blank">View</a>
+            <b-button variant="link" @click="store.tender.tender_document = null">Replace</b-button>
+          </div>
           <b-form-file
+            v-else
             accept=".pdf,.doc,.docx"
-            v-model="store.tender.tender_document"
+            v-model="tenderDocumentFile"
           />
         </b-form-group>
         <b-form-group class="mb-3" label="Security Type" label-for="tender_securing_type">
@@ -278,36 +256,36 @@
       <!-- Step 5: Required Documents -->
       <b-form v-else-if="store.step === 5" novalidate>
         <div
-          v-for="(doc, i) in store.requiredDocuments"
+          v-for="(doc, i) in requiredDocuments"
           :key="i"
           class="mb-3 border p-2 rounded"
         >
           <b-form-group class="mb-2" :label="`Document ${i+1} Name`">
             <b-form-select
-              v-model="store.requiredDocuments[i].selectedName"
+              v-model="requiredDocuments[i].selectedName"
               :options="documentNameOptions"
             />
           </b-form-group>
-          <b-form-group v-if="store.requiredDocuments[i].selectedName === 'other'" class="mb-2" label="Custom Name">
+          <b-form-group v-if="requiredDocuments[i].selectedName === 'other'" class="mb-2" label="Custom Name">
             <b-form-input
-              v-model="store.requiredDocuments[i].customName"
+              v-model="requiredDocuments[i].customName"
             />
           </b-form-group>
           <b-form-group class="mb-2" :label="`Document ${i+1} Description`">
             <b-form-textarea
-              v-model="store.requiredDocuments[i].description"
+              v-model="requiredDocuments[i].description"
               rows="2"
             />
           </b-form-group>
           <b-form-group class="mb-2" :label="`Document ${i+1} Type`">
             <b-form-select
-              v-model="store.requiredDocuments[i].document_type"
+              v-model="requiredDocuments[i].document_type"
               :options="documentTypeOptions"
             />
           </b-form-group>
           <b-form-group class="mb-2" :label="`Document ${i+1} Required`">
             <b-form-select
-              v-model="store.requiredDocuments[i].is_required"
+              v-model="requiredDocuments[i].is_required"
               :options="isRequiredOptions"
             />
           </b-form-group>
@@ -331,74 +309,55 @@
       <!-- Step 6: Financial Requirements -->
       <b-form v-else-if="store.step === 6" novalidate>
         <div
-          v-for="(req, i) in store.financialRequirements"
+          v-for="(req, i) in financialRequirements"
           :key="i"
           class="mb-3 border p-2 rounded"
         >
           <b-form-group class="mb-2" :label="`Financial Req ${i+1} Name`">
             <b-form-input
-              v-model="store.financialRequirements[i].name"
+              v-model="financialRequirements[i].name"
             />
           </b-form-group>
           <b-form-group class="mb-2" :label="`Formula`">
             <b-form-input
-              v-model="store.financialRequirements[i].formula"
+              v-model="financialRequirements[i].formula"
             />
           </b-form-group>
           <b-form-group class="mb-2" :label="`Minimum`">
             <b-form-input
               type="number"
               step="0.01"
-              v-model.number="store.financialRequirements[i].minimum"
+              v-model.number="financialRequirements[i].minimum"
             />
           </b-form-group>
           <b-form-group class="mb-2" :label="`Unit`">
             <b-form-input
-              v-model="store.financialRequirements[i].unit"
+              v-model="financialRequirements[i].unit"
             />
           </b-form-group>
           <b-form-group class="mb-2" :label="`Actual Value`">
             <b-form-input
               type="number"
               step="0.01"
-              v-model.number="store.financialRequirements[i].actual_value"
+              v-model.number="financialRequirements[i].actual_value"
             />
           </b-form-group>
           <b-form-group class="mb-2" :label="`Notes`">
             <b-form-textarea
-              v-model="store.financialRequirements[i].notes"
+              v-model="financialRequirements[i].notes"
               rows="2"
             />
           </b-form-group>
           <b-form-group class="mb-2" :label="`Financial Sources`">
             <b-form-textarea
-              v-model="store.financialRequirements[i].financial_sources"
+              v-model="financialRequirements[i].financial_sources"
               rows="2"
-            />
-          </b-form-group>
-          <b-form-group class="mb-2" :label="`Start Date`">
-            <DatePicker
-              v-model="store.financialRequirements[i].start_date"
-              dateFormat="yy-mm-dd"
-            />
-          </b-form-group>
-          <b-form-group class="mb-2" :label="`End Date`">
-            <DatePicker
-              v-model="store.financialRequirements[i].end_date"
-              dateFormat="yy-mm-dd"
             />
           </b-form-group>
           <b-form-group class="mb-2" :label="`JV Compliance`">
             <b-form-select
-              v-model="store.financialRequirements[i].jv_compliance"
+              v-model="financialRequirements[i].jv_compliance"
               :options="jvComplianceOptions"
-            />
-          </b-form-group>
-          <b-form-group class="mb-2" :label="`JV Percentage`">
-            <b-form-input
-              type="number"
-              step="0.01"
-              v-model.number="store.financialRequirements[i].jv_percentage"
             />
           </b-form-group>
           <b-button
@@ -421,43 +380,43 @@
       <!-- Step 7: Turnover Requirements -->
       <b-form v-else-if="store.step === 7" novalidate>
         <div
-          v-for="(req, i) in store.turnoverRequirements"
+          v-for="(req, i) in turnoverRequirements"
           :key="i"
           class="mb-3 border p-2 rounded"
         >
           <b-form-group class="mb-2" :label="`Turnover Req ${i+1} Label`">
             <b-form-input
-              v-model="store.turnoverRequirements[i].label"
+              v-model="turnoverRequirements[i].label"
             />
           </b-form-group>
           <b-form-group class="mb-2" :label="`Amount`">
             <b-form-input
               type="number"
               step="0.01"
-              v-model.number="store.turnoverRequirements[i].amount"
+              v-model.number="turnoverRequirements[i].amount"
             />
           </b-form-group>
           <b-form-group class="mb-2" :label="`Currency`">
             <b-form-select
-              v-model="store.turnoverRequirements[i].currency"
+              v-model="turnoverRequirements[i].currency"
               :options="currencyOptions"
             />
           </b-form-group>
           <b-form-group class="mb-2" :label="`Start Date`">
             <DatePicker
-              v-model="store.turnoverRequirements[i].start_date"
+              v-model="turnoverRequirements[i].start_date"
               dateFormat="yy-mm-dd"
             />
           </b-form-group>
           <b-form-group class="mb-2" :label="`End Date`">
             <DatePicker
-              v-model="store.turnoverRequirements[i].end_date"
+              v-model="turnoverRequirements[i].end_date"
               dateFormat="yy-mm-dd"
             />
           </b-form-group>
           <b-form-group class="mb-2" :label="`JV Compliance`">
             <b-form-select
-              v-model="store.turnoverRequirements[i].jv_compliance"
+              v-model="turnoverRequirements[i].jv_compliance"
               :options="jvComplianceOptions"
             />
           </b-form-group>
@@ -465,7 +424,7 @@
             <b-form-input
               type="number"
               step="0.01"
-              v-model.number="store.turnoverRequirements[i].jv_percentage"
+              v-model.number="turnoverRequirements[i].jv_percentage"
             />
           </b-form-group>
           <b-button
@@ -488,56 +447,56 @@
       <!-- Step 8: Experience Requirements -->
       <b-form v-else-if="store.step === 8" novalidate>
         <div
-          v-for="(req, i) in store.experienceRequirements"
+          v-for="(req, i) in experienceRequirements"
           :key="i"
           class="mb-3 border p-2 rounded"
         >
           <b-form-group class="mb-2" :label="`Experience Req ${i+1} Type`">
             <b-form-select
-              v-model="store.experienceRequirements[i].type"
+              v-model="experienceRequirements[i].type"
               :options="experienceTypeOptions"
             />
           </b-form-group>
           <b-form-group class="mb-2" :label="`Description`">
             <b-form-textarea
-              v-model="store.experienceRequirements[i].description"
+              v-model="experienceRequirements[i].description"
               rows="2"
             />
           </b-form-group>
           <b-form-group class="mb-2" :label="`Contract Count`">
             <b-form-input
               type="number"
-              v-model.number="store.experienceRequirements[i].contract_count"
+              v-model.number="experienceRequirements[i].contract_count"
             />
           </b-form-group>
           <b-form-group class="mb-2" :label="`Min Value`">
             <b-form-input
               type="number"
               step="0.01"
-              v-model.number="store.experienceRequirements[i].min_value"
+              v-model.number="experienceRequirements[i].min_value"
             />
           </b-form-group>
           <b-form-group class="mb-2" :label="`Currency`">
             <b-form-select
-              v-model="store.experienceRequirements[i].currency"
+              v-model="experienceRequirements[i].currency"
               :options="currencyOptions"
             />
           </b-form-group>
           <b-form-group class="mb-2" :label="`Start Date`">
             <DatePicker
-              v-model="store.experienceRequirements[i].start_date"
+              v-model="experienceRequirements[i].start_date"
               dateFormat="yy-mm-dd"
             />
           </b-form-group>
           <b-form-group class="mb-2" :label="`End Date`">
             <DatePicker
-              v-model="store.experienceRequirements[i].end_date"
+              v-model="experienceRequirements[i].end_date"
               dateFormat="yy-mm-dd"
             />
           </b-form-group>
           <b-form-group class="mb-2" :label="`JV Compliance`">
             <b-form-select
-              v-model="store.experienceRequirements[i].jv_compliance"
+              v-model="experienceRequirements[i].jv_compliance"
               :options="jvComplianceOptions"
             />
           </b-form-group>
@@ -545,18 +504,18 @@
             <b-form-input
               type="number"
               step="0.01"
-              v-model.number="store.experienceRequirements[i].jv_percentage"
+              v-model.number="experienceRequirements[i].jv_percentage"
             />
           </b-form-group>
           <b-form-group class="mb-2" :label="`JV Aggregation Note`">
             <b-form-textarea
-              v-model="store.experienceRequirements[i].jv_aggregation_note"
+              v-model="experienceRequirements[i].jv_aggregation_note"
               rows="2"
             />
           </b-form-group>
           <b-form-group class="mb-2" :label="`Reputation Notes`">
             <b-form-textarea
-              v-model="store.experienceRequirements[i].reputation_notes"
+              v-model="experienceRequirements[i].reputation_notes"
               rows="2"
             />
           </b-form-group>
@@ -567,7 +526,7 @@
           >
             Remove
           </b-button>
-        </b-form>
+        </div>
         <b-button
           size="sm"
           variant="outline-primary"
@@ -580,81 +539,81 @@
       <!-- Step 9: Personnel Requirements -->
       <b-form v-else-if="store.step === 9" novalidate>
         <div
-          v-for="(req, i) in store.personnelRequirements"
+          v-for="(req, i) in personnelRequirements"
           :key="i"
           class="mb-3 border p-2 rounded"
         >
           <b-form-group class="mb-2" :label="`Personnel Req ${i+1} Role`">
             <b-form-input
-              v-model="store.personnelRequirements[i].role"
+              v-model="personnelRequirements[i].role"
             />
           </b-form-group>
           <b-form-group class="mb-2" :label="`Min Education`">
             <b-form-select
-              v-model="store.personnelRequirements[i].min_education"
+              v-model="personnelRequirements[i].min_education"
               :options="educationLevelOptions"
             />
           </b-form-group>
           <b-form-group class="mb-2" :label="`Professional Registration`">
             <b-form-input
-              v-model="store.personnelRequirements[i].professional_registration"
+              v-model="personnelRequirements[i].professional_registration"
             />
           </b-form-group>
           <b-form-group class="mb-2" :label="`Min Experience Years`">
             <b-form-input
               type="number"
-              v-model.number="store.personnelRequirements[i].min_experience_yrs"
+              v-model.number="personnelRequirements[i].min_experience_yrs"
             />
           </b-form-group>
           <b-form-group class="mb-2" :label="`Appointment Duration Years`">
             <b-form-input
               type="number"
-              v-model.number="store.personnelRequirements[i].appointment_duration_years"
+              v-model.number="personnelRequirements[i].appointment_duration_years"
             />
           </b-form-group>
           <b-form-group class="mb-2" :label="`Nationality Required`">
             <b-form-input
-              v-model="store.personnelRequirements[i].nationality_required"
+              v-model="personnelRequirements[i].nationality_required"
             />
           </b-form-group>
           <b-form-group class="mb-2" :label="`Language Required`">
             <b-form-input
-              v-model="store.personnelRequirements[i].language_required"
+              v-model="personnelRequirements[i].language_required"
             />
           </b-form-group>
           <b-form-group class="mb-2" :label="`Age Minimum`">
             <b-form-input
               type="number"
-              v-model.number="store.personnelRequirements[i].age_min"
+              v-model.number="personnelRequirements[i].age_min"
             />
           </b-form-group>
           <b-form-group class="mb-2" :label="`Age Maximum`">
             <b-form-input
               type="number"
-              v-model.number="store.personnelRequirements[i].age_max"
+              v-model.number="personnelRequirements[i].age_max"
             />
           </b-form-group>
           <b-form-group class="mb-2" :label="`Specialized Education`">
             <b-form-textarea
-              v-model="store.personnelRequirements[i].specialized_education"
+              v-model="personnelRequirements[i].specialized_education"
               rows="2"
             />
           </b-form-group>
           <b-form-group class="mb-2" :label="`Professional Certifications`">
             <b-form-textarea
-              v-model="store.personnelRequirements[i].professional_certifications"
+              v-model="personnelRequirements[i].professional_certifications"
               rows="2"
             />
           </b-form-group>
           <b-form-group class="mb-2" :label="`JV Compliance`">
             <b-form-select
-              v-model="store.personnelRequirements[i].jv_compliance"
+              v-model="personnelRequirements[i].jv_compliance"
               :options="jvComplianceOptions"
             />
           </b-form-group>
           <b-form-group class="mb-2" :label="`Notes`">
             <b-form-textarea
-              v-model="store.personnelRequirements[i].notes"
+              v-model="personnelRequirements[i].notes"
               rows="2"
             />
           </b-form-group>
@@ -665,7 +624,7 @@
           >
             Remove
           </b-button>
-        </b-form>
+        </div>
         <b-button
           size="sm"
           variant="outline-primary"
@@ -678,34 +637,34 @@
       <!-- Step 10: Schedule Items -->
       <b-form v-else-if="store.step === 10" novalidate>
         <div
-          v-for="(item, i) in store.scheduleItems"
+          v-for="(item, i) in scheduleItems"
           :key="i"
           class="mb-3 border p-2 rounded"
         >
           <b-form-group class="mb-2" :label="`Schedule Item ${i+1} Commodity`">
             <b-form-input
-              v-model="store.scheduleItems[i].commodity"
+              v-model="scheduleItems[i].commodity"
             />
           </b-form-group>
           <b-form-group class="mb-2" :label="`Code`">
             <b-form-input
-              v-model="store.scheduleItems[i].code"
+              v-model="scheduleItems[i].code"
             />
           </b-form-group>
           <b-form-group class="mb-2" :label="`Unit`">
             <b-form-input
-              v-model="store.scheduleItems[i].unit"
+              v-model="scheduleItems[i].unit"
             />
           </b-form-group>
           <b-form-group class="mb-2" :label="`Quantity`">
             <b-form-input
               type="number"
-              v-model.number="store.scheduleItems[i].quantity"
+              v-model.number="scheduleItems[i].quantity"
             />
           </b-form-group>
           <b-form-group class="mb-2" :label="`Specification`">
             <b-form-textarea
-              v-model="store.scheduleItems[i].specification"
+              v-model="scheduleItems[i].specification"
               rows="2"
             />
           </b-form-group>
@@ -716,7 +675,7 @@
           >
             Remove
           </b-button>
-        </b-form>
+        </div>
         <b-button
           size="sm"
           variant="outline-primary"
@@ -729,19 +688,19 @@
       <!-- Step 11: Technical Specifications -->
       <b-form v-else-if="store.step === 11" novalidate>
         <div
-          v-for="(spec, i) in store.technicalSpecifications"
+          v-for="(spec, i) in technicalSpecifications"
           :key="i"
           class="mb-3 border p-2 rounded"
         >
           <b-form-group class="mb-2" :label="`Technical Spec ${i+1} Category`">
             <b-form-select
-              v-model="store.technicalSpecifications[i].category"
+              v-model="technicalSpecifications[i].category"
               :options="technicalCategoryOptions"
             />
           </b-form-group>
           <b-form-group class="mb-2" :label="`Description`">
             <b-form-textarea
-              v-model="store.technicalSpecifications[i].description"
+              v-model="technicalSpecifications[i].description"
               rows="3"
             />
           </b-form-group>
@@ -752,7 +711,7 @@
           >
             Remove
           </b-button>
-        </b-form>
+        </div>
         <b-button
           size="sm"
           variant="outline-primary"
@@ -764,7 +723,7 @@
 
       <!-- Step 12: Success -->
       <div v-else class="text-center py-4">
-        <h4 class="text-success mb-4">✅ Tender updated!</h4>
+        <h4 class="text-success mb-4">✅ Tender {{ isEditMode ? 'updated' : 'created' }}!</h4>
         <b-button class="me-2" variant="outline-primary" @click="resetAll">
           New Tender
         </b-button>
@@ -784,7 +743,7 @@
             Back
           </b-button>
           <b-button
-            v-if="store.step >= 5 && store.step < 12"
+            v-if="store.step >= 6 && store.step < 12"
             variant="outline-secondary"
             @click="skipSection"
           >
@@ -802,7 +761,7 @@
             variant="success"
             @click="submitTender"
           >
-            Update Tender
+            Submit Tender
           </b-button>
         </div>
       </template>
@@ -831,7 +790,7 @@ const progress = computed(() => ((store.step - 1) / 11) * 100);
 // local-only
 const newAgency = ref({ name: '', email: '', phone_number: '', address: '', logoFile: null });
 const agencyResults = ref([]);
-const tenders = ref([]);
+const tenderDocumentFile = ref(null);
 
 // lookups
 const categoriesWithSubs = ref([]);
@@ -839,9 +798,16 @@ const categories = ref([]);
 const subcategories = ref([]);
 const procurementProcesses = ref([]);
 
-// validation errors
-const errors = ref({});
+// nested arrays (bound to store)
+const requiredDocuments = computed(() => store.requiredDocuments);
+const financialRequirements = computed(() => store.financialRequirements);
+const turnoverRequirements = computed(() => store.turnoverRequirements);
+const experienceRequirements = computed(() => store.experienceRequirements);
+const personnelRequirements = computed(() => store.personnelRequirements);
+const scheduleItems = computed(() => store.scheduleItems);
+const technicalSpecifications = computed(() => store.technicalSpecifications);
 
+// dropdown options
 const tenderTypeCountries = [
   { value: 'National', text: 'National Tendering' },
   { value: 'International', text: 'International Tendering' },
@@ -883,6 +849,7 @@ const documentNameOptions = [
   { value: 'office-location', text: 'Office Location' },
   { value: 'personnel-information', text: 'Personnel Information' },
   { value: 'work-experience', text: 'Work Experience' },
+  { value: 'tender-securing-declaration', text: 'Tender Securing Declaration' },
   { value: 'other', text: 'Other' },
 ];
 const jvComplianceOptions = [
@@ -916,6 +883,11 @@ const educationLevelOptions = [
   { value: 'master', text: "Master's Degree" },
   { value: 'phd', text: 'PhD' },
 ];
+
+// step validation errors
+const errors = ref({});
+
+const isEditMode = computed(() => !!route.params.slug);
 
 function validateStep1() {
   errors.value = {};
@@ -971,10 +943,7 @@ function nextStep() {
 
 function skipSection() {
   console.log('Skipping section at step:', store.step);
-  if (store.step === 5) {
-    store.requiredDocuments = [];
-    console.log('Required documents cleared. Length now:', store.requiredDocuments.length);
-  } else if (store.step === 6) {
+  if (store.step === 6) {
     store.financialRequirements = [];
     console.log('Financial requirements cleared. Length now:', store.financialRequirements.length);
   } else if (store.step === 7) {
@@ -1004,7 +973,7 @@ function resetAll() {
   store.resetAll();
   newAgency.value = { name: '', email: '', phone_number: '', address: '', logoFile: null };
   agencyResults.value = [];
-  tenders.value = [];
+  tenderDocumentFile.value = null;
 }
 
 function goToList() {
@@ -1022,6 +991,20 @@ watch(() => store.tender.category_id, id => {
     ? cat.subcategories.map(sc => ({ value: sc.id, text: sc.name }))
     : [];
   store.tender.subcategory_id = null;
+});
+
+watch(() => store.tender.tender_securing_type, (newVal) => {
+  if (newVal === 'Tender Securing Declaration') {
+    const hasDecl = store.requiredDocuments.some(doc => doc.selectedName === 'tender-securing-declaration');
+    if (!hasDecl) {
+      store.addDocument();
+      const lastIndex = store.requiredDocuments.length - 1;
+      store.requiredDocuments[lastIndex].selectedName = 'tender-securing-declaration';
+      store.requiredDocuments[lastIndex].description = 'Signed Tender Securing Declaration Form';
+      store.requiredDocuments[lastIndex].document_type = 'other';
+      store.requiredDocuments[lastIndex].is_required = 'required';
+    }
+  }
 });
 
 async function fetchCategoriesWithSubcategories() {
@@ -1042,16 +1025,6 @@ async function fetchProcurementProcesses() {
   } catch (err) {
     console.error(err);
     toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to load processes' });
-  }
-}
-
-async function fetchTenders() {
-  try {
-    const res = await api.get('tenders/tenders/');
-    tenders.value = Array.isArray(res.data) ? res.data : (res.data.results || []);
-  } catch (err) {
-    console.error('Tender fetch error:', err);
-    toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to load tenders' });
   }
 }
 
@@ -1097,21 +1070,27 @@ async function fetchTenderData(slug) {
       subcategory_id: tender.subcategory ? tender.subcategory.id : null,
       procurement_process_id: tender.procurement_process ? tender.procurement_process.id : null,
       agency_id: tender.agency ? tender.agency.id : null,
-      re_advertised_from_id: tender.re_advertised_from ? tender.re_advertised_from : null,
       submission_deadline: tender.submission_deadline ? new Date(tender.submission_deadline) : null,
       publication_date: tender.publication_date ? new Date(tender.publication_date) : null,
       litigation_history_start: tender.litigation_history_start ? new Date(tender.litigation_history_start) : null,
       litigation_history_end: tender.litigation_history_end ? new Date(tender.litigation_history_end) : null,
+      tender_document: tender.tender_document, // Keep as URL string for edit
     };
     store.selectedAgencyName = tender.agency ? tender.agency.name : '';
-    store.requiredDocuments = tender.required_documents || [];
+    agencyResults.value = tender.agency ? [tender.agency] : [];
+    store.requiredDocuments = tender.required_documents.map(doc => ({
+      selectedName: documentNameOptions.some(opt => opt.value === doc.name) ? doc.name : 'other',
+      customName: documentNameOptions.some(opt => opt.value === doc.name) ? '' : doc.name,
+      description: doc.description,
+      document_type: doc.document_type,
+      is_required: doc.is_required
+    })) || [];
     store.financialRequirements = tender.financial_requirements || [];
     store.turnoverRequirements = tender.turnover_requirements || [];
     store.experienceRequirements = tender.experience_requirements || [];
     store.personnelRequirements = tender.personnel_requirements || [];
     store.scheduleItems = tender.schedule_items || [];
     store.technicalSpecifications = tender.technical_specifications || [];
-    agencyResults.value = tender.agency ? [tender.agency] : [];
   } catch (err) {
     console.error('Failed to load tender:', err);
     toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to load tender data' });
@@ -1155,10 +1134,7 @@ async function submitTender() {
       actual_value: req.actual_value,
       notes: req.notes,
       financial_sources: req.financial_sources,
-      start_date: req.start_date ? new Date(req.start_date).toISOString().split('T')[0] : null,
-      end_date: req.end_date ? new Date(req.end_date).toISOString().split('T')[0] : null,
-      jv_compliance: req.jv_compliance,
-      jv_percentage: req.jv_percentage
+      jv_compliance: req.jv_compliance
     }));
     console.log('Submitting financial_requirements. Length:', financial_requirements.length);
     const turnover_requirements = store.turnoverRequirements.map(req => ({
@@ -1215,17 +1191,12 @@ async function submitTender() {
     }));
     console.log('Submitting technical_specifications. Length:', technical_specifications.length);
 
-    // Pull off file and rename IDs
-    const { tender_document, category_id, subcategory_id, procurement_process_id, agency_id, re_advertised_from_id, version, ...rest } = store.tender;
+    // Pull off file
+    const { tender_document, ...rest } = store.tender;
 
     // Build JSON payload with ISO dates and nested
     const payload = {
       ...rest,
-      category: category_id,
-      subcategory: subcategory_id,
-      procurement_process: procurement_process_id,
-      agency: agency_id,
-      re_advertised_from: re_advertised_from_id,
       submission_deadline: rest.submission_deadline ? new Date(rest.submission_deadline).toISOString() : null,
       publication_date: rest.publication_date ? new Date(rest.publication_date).toISOString() : null,
       litigation_history_start: rest.litigation_history_start ? new Date(rest.litigation_history_start).toISOString().split('T')[0] : null,
@@ -1239,24 +1210,27 @@ async function submitTender() {
       technical_specifications
     };
 
-    // Update tender
-    const slug = route.params.slug;
-    const resTender = await api.patch(`tenders/tenders/${slug}/`, payload);
+    // Create or update tender
+    const isEditMode = !!route.params.slug;
+    const resTender = isEditMode
+      ? await api.patch(`tenders/tenders/${route.params.slug}/`, payload)
+      : await api.post('tenders/tenders/', payload);
     const tenderSlug = resTender.data.slug;
 
     // Upload file if present
-    if (tender_document) {
+    if (tenderDocumentFile.value) {
       const fd = new FormData();
-      fd.append('tender_document', tender_document);
+      fd.append('tender_document', tenderDocumentFile.value);
       await api.patch(`tenders/tenders/${tenderSlug}/`, fd, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
     }
 
-    toast.add({ severity: 'success', summary: 'Done', detail: 'Tender updated successfully' });
+    toast.add({ severity: 'success', summary: 'Done', detail: isEditMode ? 'Tender updated successfully' : 'Tender & all requirements created' });
     if (store.step < 12) {
       store.$patch({ step: store.step + 1 });
     }
+    resetAll();
   } catch (err) {
     console.error('Validation errors:', err.response?.data);
     let errorMessage = 'Submission failed – check console';
@@ -1272,7 +1246,6 @@ async function submitTender() {
 onMounted(async () => {
   await fetchCategoriesWithSubcategories();
   await fetchProcurementProcesses();
-  await fetchTenders();
   if (route.params.slug) {
     await fetchTenderData(route.params.slug);
   }

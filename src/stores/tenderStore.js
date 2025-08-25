@@ -3,8 +3,8 @@ import { defineStore } from 'pinia';
 const initialTender = () => ({
   title: '',
   reference_number: '',
-  tender_type_country: 'National',
-  tender_type_sector: 'Private Company',
+  tender_type_country: 'national',
+  tender_type_sector: 'private',
   description: '',
   currency: 'TZS',
   source_of_funds: 'government',
@@ -13,8 +13,6 @@ const initialTender = () => ({
   procurement_process_id: null,
   agency_id: null,
   tender_fees: null,
-  re_advertisement_count: 0,
-  re_advertised_from_id: null,
   publication_date: null,
   submission_deadline: null,
   validity_period_days: 90,
@@ -23,7 +21,7 @@ const initialTender = () => ({
   litigation_history_start: null,
   litigation_history_end: null,
   tender_document: null,
-  tender_securing_type: 'Tender Securing Declaration',
+  tender_securing_type: 'declaration',
   tender_security_percentage: null,
   tender_security_amount: null,
   tender_security_currency: 'TZS',
@@ -35,7 +33,7 @@ export const useTenderStore = defineStore('tender', {
     tender: initialTender(),
     step: 1,
     selectedAgencyName: '',
-    requiredDocuments: [{ selectedName: '', customName: '', description: '', document_type: 'other', is_required: 'required' }],
+    requiredDocuments: [{ selectedName: '', customName: '', description: '', document_type: 'other', is_required: true }],
     financialRequirements: [],
     turnoverRequirements: [],
     experienceRequirements: [],
@@ -55,7 +53,7 @@ export const useTenderStore = defineStore('tender', {
       this.tender = initialTender();
       this.step = 1;
       this.selectedAgencyName = '';
-      this.requiredDocuments = [{ selectedName: '', customName: '', description: '', document_type: 'other', is_required: 'required' }];
+      this.requiredDocuments = [{ selectedName: '', customName: '', description: '', document_type: 'other', is_required: true }];
       this.financialRequirements = [];
       this.turnoverRequirements = [];
       this.experienceRequirements = [];
@@ -64,7 +62,7 @@ export const useTenderStore = defineStore('tender', {
       this.technicalSpecifications = [];
     },
     addDocument() {
-      this.requiredDocuments.push({ selectedName: '', customName: '', description: '', document_type: 'other', is_required: 'required' });
+      this.requiredDocuments.push({ selectedName: '', customName: '', description: '', document_type: 'other', is_required: true });
     },
     removeDocument(idx) {
       this.requiredDocuments.splice(idx, 1);

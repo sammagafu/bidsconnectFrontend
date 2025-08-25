@@ -39,12 +39,13 @@
                     <b-form-group label="Upload Priced Schedule Document">
                       <b-form-file v-model="documents['Priced Schedule']" accept=".pdf" />
                     </b-form-group>
+                    <b-button variant="primary" @click="complySection('priced-schedule')">Comply</b-button>
                   </b-card-body>
                 </b-collapse>
               </b-card>
 
               <!-- Power of Attorney -->
-              <b-card no-body class="mb-1" v-if="requiredDocuments.some(doc => doc.name === 'power-of-attorney')">
+              <b-card no-body class="mb-1">
                 <b-card-header
                   header-tag="header"
                   class="p-2 bg-success pointer d-flex justify-content-between align-items-center"
@@ -71,6 +72,7 @@
                         <b-form-file v-model="documents['Power of Attorney']" accept=".pdf" />
                       </b-form-group>
                     </b-card>
+                    <b-button variant="primary" @click="complySection('power-of-attorney')">Comply</b-button>
                   </b-card-body>
                 </b-collapse>
               </b-card>
@@ -91,6 +93,7 @@
                     <b-form-group label="Upload Compliance Statement">
                       <b-form-file v-model="documents['Conformance to Technical Specifications']" accept=".pdf" />
                     </b-form-group>
+                    <b-button variant="primary" @click="complySection('technical-specifications')">Comply</b-button>
                   </b-card-body>
                 </b-collapse>
               </b-card>
@@ -111,6 +114,7 @@
                     <b-form-group label="Upload Manufacturer Authorization Letter">
                       <b-form-file v-model="documents['Manufacturer Authorization']" accept=".pdf" />
                     </b-form-group>
+                    <b-button variant="primary" @click="complySection('manufacturer-authorization')">Comply</b-button>
                   </b-card-body>
                 </b-collapse>
               </b-card>
@@ -131,6 +135,7 @@
                     <b-form-group :label="`Required Security: ${tender.tender_security_amount || tender.tender_security_percentage}% (${tender.tender_security_currency || 'TZS'})`">
                       <b-form-file v-model="documents['Tender Security']" accept=".pdf" />
                     </b-form-group>
+                    <b-button variant="primary" @click="complySection('tender-security')">Comply</b-button>
                   </b-card-body>
                 </b-collapse>
               </b-card>
@@ -170,6 +175,7 @@
                     <b-button variant="primary" @click="addLitigation">
                       + Add Litigation
                     </b-button>
+                    <b-button variant="primary" @click="complySection('litigation-history')">Comply</b-button>
                   </b-card-body>
                 </b-collapse>
               </b-card>
@@ -200,6 +206,7 @@
                     <b-button variant="primary" @click="addSource">
                       <i class="pi pi-plus mr-2" /> Add Source of Funds
                     </b-button>
+                    <b-button variant="primary" @click="complySection('source-of-funds')">Comply</b-button>
                   </b-card-body>
                 </b-collapse>
               </b-card>
@@ -232,6 +239,7 @@
                     <b-button variant="primary" @click="addStatement">
                       <i class="pi pi-plus mr-2" /> Add Financial Statement
                     </b-button>
+                    <b-button variant="primary" @click="complySection('financial-statements')">Comply</b-button>
                   </b-card-body>
                 </b-collapse>
               </b-card>
@@ -263,6 +271,7 @@
                         <b-alert v-if="complianceErrors[req.name]" variant="danger" show>{{ complianceErrors[req.name] }}</b-alert>
                       </b-card>
                     </div>
+                    <b-button variant="primary" @click="complySection('financial-requirements')">Comply</b-button>
                   </b-card-body>
                 </b-collapse>
               </b-card>
@@ -285,11 +294,11 @@
                         <h5>{{ req.label }}</h5>
                         <b-form-group :label="'Minimum Required: ' + req.amount + ' ' + req.currency">
                         </b-form-group>
-                        <b-form-group label="Select Turnover Year">
-                          <b-form-select v-model="selectedTurnoversForReq[req.id]" :options="turnoverOptions" value-field="value" text-field="text" />
+                        <b-form-group label="Select Turnover Years">
+                          <b-form-checkbox-group v-model="selectedTurnoversForReq[req.id]" :options="turnoverOptions" stacked />
                         </b-form-group>
                         <b-form-group label="Actual Amount">
-                          <b-form-input v-model="complianceData[req.label]" type="number" disabled placeholder="Select turnover to auto-fill" />
+                          <b-form-input v-model="complianceData[req.label]" type="number" disabled placeholder="Select turnovers to auto-fill" />
                         </b-form-group>
                         <b-alert v-if="complianceErrors[req.label]" variant="danger" show>{{ complianceErrors[req.label] }}</b-alert>
                       </b-card>
@@ -298,6 +307,7 @@
                     <b-button variant="primary" @click="addTurnover">
                       <i class="pi pi-plus mr-2" /> Add Turnover
                     </b-button>
+                    <b-button variant="primary" @click="complySection('turnover-requirements')">Comply</b-button>
                   </b-card-body>
                 </b-collapse>
               </b-card>
@@ -320,11 +330,8 @@
                         <h5>{{ req.type }} Experience</h5>
                         <b-form-group :label="'Required: ' + req.contract_count + ' contracts, ' + req.min_value + ' ' + req.currency">
                         </b-form-group>
-                        <b-form-group label="Number of Contracts">
-                          <b-form-input v-model.number="complianceData[`Experience ${req.id} Contracts`]" type="number" placeholder="Enter number of contracts" />
-                        </b-form-group>
-                        <b-form-group label="Total Value">
-                          <b-form-input v-model.number="complianceData[`Experience ${req.id} Value`]" type="number" :placeholder="`Enter total value (${req.currency})`" />
+                        <b-form-group label="Select Company Experience">
+                          <b-form-select v-model="selectedExperiencesForReq[req.id]" :options="experienceOptions" value-field="id" text-field="text" />
                         </b-form-group>
                         <b-form-group label="Upload Proof">
                           <b-form-file v-model="documents[`Experience ${req.id}`]" accept=".pdf" />
@@ -332,6 +339,7 @@
                         <b-alert v-if="complianceErrors[`Experience ${req.id}`]" variant="danger" show>{{ complianceErrors[`Experience ${req.id}`] }}</b-alert>
                       </b-card>
                     </div>
+                    <b-button variant="primary" @click="complySection('experience-requirements')">Comply</b-button>
                   </b-card-body>
                 </b-collapse>
               </b-card>
@@ -366,6 +374,7 @@
                     <b-button variant="primary" @click="addPersonnel">
                       <i class="pi pi-plus mr-2" /> Add Personnel
                     </b-button>
+                    <b-button variant="primary" @click="complySection('personnel-requirements')">Comply</b-button>
                   </b-card-body>
                 </b-collapse>
               </b-card>
@@ -391,6 +400,7 @@
                     <b-form-checkbox v-model="validityComplied">
                       Complied
                     </b-form-checkbox>
+                    <b-button variant="primary" @click="complySection('tender-validity')">Comply</b-button>
                   </b-card-body>
                 </b-collapse>
               </b-card>
@@ -416,6 +426,10 @@
                     <b-form-checkbox v-model="completionComplied">
                       Complied
                     </b-form-checkbox>
+                    <b-form-group label="Proposed Completion Days" v-if="!completionComplied && tender.allow_alternative_delivery">
+                      <b-form-input v-model.number="proposedCompletionDays" type="number" placeholder="Enter proposed days" />
+                    </b-form-group>
+                    <b-button variant="primary" @click="complySection('completion-period')">Comply</b-button>
                   </b-card-body>
                 </b-collapse>
               </b-card>
@@ -475,6 +489,7 @@ const documents = ref({});
 const complianceData = ref({});
 const selectedUserId = ref(null);
 const bidId = ref(null);
+const proposedCompletionDays = ref(null);
 
 // Accordion states
 const isPricedScheduleOpen = ref(true);
@@ -501,13 +516,15 @@ const litigations = ref(company.value.litigations || []);
 const personnel = ref(company.value.personnel || []);
 const certifications = ref(company.value.certifications || []);
 const equipment = ref(company.value.equipment || []);
+const experiences = ref(company.value.experiences || []); // Added for company experiences
 
 // Selected mappings
 const selectedLitigationIds = ref([]);
 const selectedSourceIds = ref([]);
 const selectedStatementIds = ref([]);
 const selectedStatementsForReq = ref({});
-const selectedTurnoversForReq = ref({});
+const selectedTurnoversForReq = ref({}); // Now object of arrays
+const selectedExperiencesForReq = ref({});
 const assignedPersonnel = ref({});
 const noLitigation = ref(false);
 const validityComplied = ref(false);
@@ -550,6 +567,16 @@ const selectedStatements = computed(() => financialStatements.value.filter(s => 
 const turnoverOptions = computed(() => turnoverList.value.map(t => ({
   value: t.id,
   text: `${t.year}`
+})));
+
+const experienceOptions = computed(() => experiences.value.map(e => ({
+  value: e.id,
+  text: `${e.project_name} - ${e.contract_value} ${e.currency} (${e.completion_date})`
+})));
+
+const personnelOptions = computed(() => personnel.value.map(p => ({
+  uuid: p.uuid,
+  text: `${p.first_name} ${p.last_name} - ${p.position} (${p.years_of_experience} yrs)`
 })));
 
 const tenderFields = [
@@ -637,10 +664,8 @@ const completionPercentage = computed(() => {
     if (complianceData.value['Priced Schedule'] && complianceData.value['VAT Amount']) completed += 1;
   }
 
-  if (docNames.includes('power-of-attorney')) {
-    total += 1;
-    if (selectedUserId.value && documents.value['Power of Attorney']) completed += 1;
-  }
+  total += 1; // Always count Power of Attorney
+  if (selectedUserId.value && documents.value['Power of Attorney']) completed += 1;
 
   if (docNames.includes('litigation-history')) {
     total += 1;
@@ -666,15 +691,14 @@ const completionPercentage = computed(() => {
 
   turnoverRequirements.value.forEach(req => {
     total += 1;
-    if (selectedTurnoversForReq.value[req.id] && complianceData.value[req.label]) {
+    if (selectedTurnoversForReq.value[req.id] && selectedTurnoversForReq.value[req.id].length > 0 && complianceData.value[req.label]) {
       if (parseFloat(complianceData.value[req.label]) >= parseFloat(req.amount)) completed += 1;
     }
   });
 
   experienceRequirements.value.forEach(req => {
-    total += 2;
-    if (complianceData.value[`Experience ${req.id} Contracts`] >= req.contract_count) completed += 1;
-    if (complianceData.value[`Experience ${req.id} Value`] >= req.min_value && documents.value[`Experience ${req.id}`]) completed += 1;
+    total += 1;
+    if (selectedExperiencesForReq.value[req.id] && documents.value[`Experience ${req.id}`]) completed += 1;
   });
 
   personnelRequirements.value.forEach(req => {
@@ -689,7 +713,7 @@ const completionPercentage = computed(() => {
 
   if (tender.value.completion_period_days) {
     total += 1;
-    if (completionComplied.value) completed += 1;
+    if (completionComplied.value || (proposedCompletionDays.value && tender.value.allow_alternative_delivery)) completed += 1;
   }
 
   return total > 0 ? Math.round((completed / total) * 100) : 0;
@@ -713,17 +737,6 @@ const validateCompliance = () => {
     const value = complianceData.value[req.label];
     if (value && parseFloat(value) < parseFloat(req.amount)) {
       complianceErrors.value[req.label] = `Amount ${value} ${req.currency} is below required minimum ${req.amount} ${req.currency}`;
-    }
-  });
-
-  experienceRequirements.value.forEach(req => {
-    const contracts = complianceData.value[`Experience ${req.id} Contracts`];
-    const value = complianceData.value[`Experience ${req.id} Value`];
-    if (contracts && contracts < req.contract_count) {
-      complianceErrors.value[`Experience ${req.id}`] = `Number of contracts (${contracts}) is below required minimum (${req.contract_count})`;
-    }
-    if (value && parseFloat(value) < parseFloat(req.min_value)) {
-      complianceErrors.value[`Experience ${req.id}`] = `Total value ${value} ${req.currency} is below required minimum ${req.min_value} ${req.currency}`;
     }
   });
 
@@ -768,10 +781,11 @@ watch(selectedStatementsForReq, (newVal) => {
 // Auto-fill turnover amounts
 watch(selectedTurnoversForReq, (newVal) => {
   turnoverRequirements.value.forEach(req => {
-    const turnoverId = newVal[req.id];
-    const turnover = turnoverList.value.find(t => t.id === turnoverId);
-    if (turnover) {
-      complianceData.value[req.label] = turnover.amount;
+    const turnoverIds = newVal[req.id] || [];
+    const selectedTurnovers = turnoverList.value.filter(t => turnoverIds.includes(t.id));
+    if (selectedTurnovers.length > 0) {
+      const total = selectedTurnovers.reduce((sum, t) => sum + parseFloat(t.amount), 0);
+      complianceData.value[req.label] = total / selectedTurnovers.length;
     }
   });
   validateCompliance();
@@ -784,6 +798,18 @@ watch(assignedPersonnel, (newVal) => {
     const person = personnel.value.find(p => p.uuid === personnelUuid);
     if (person) {
       complianceData.value[`Personnel ${req.id} Experience`] = person.years_of_experience;
+    }
+  });
+  validateCompliance();
+}, { deep: true });
+
+// Auto-fill experience (optional, can add if needed for compliance)
+watch(selectedExperiencesForReq, (newVal) => {
+  experienceRequirements.value.forEach(req => {
+    const experienceId = newVal[req.id];
+    const exp = experiences.value.find(e => e.id === experienceId);
+    if (exp) {
+      // Can set some compliance data if needed
     }
   });
   validateCompliance();
@@ -875,8 +901,20 @@ const addTurnover = async () => {
   }
 };
 
-const viewTurnover = (item) => {
-  toast.add({ severity: 'info', summary: 'Viewing Turnover', detail: `Year: ${item.year}, Amount: ${item.amount} ${item.currency}` });
+const addExperience = async () => {
+  try {
+    const response = await api.post(`accounts/companies/${company.value.id}/experiences/`, {
+      project_name: 'New Project',
+      contract_value: 0,
+      currency: tender.value?.tender_security_currency || 'TZS',
+      completion_date: new Date().toISOString().split('T')[0],
+      description: 'New experience'
+    });
+    experiences.value.push(response.data);
+    toast.add({ severity: 'success', summary: 'Success', detail: 'Experience added' });
+  } catch (err) {
+    toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to add experience' });
+  }
 };
 
 const viewFinancial = (item) => {
@@ -913,7 +951,27 @@ const fetchTenderData = async () => {
   }
 };
 
-// Fetch existing draft bid
+// Fetch company data
+const fetchCompanyData = async () => {
+  try {
+    if (!company.value.id) return;
+    const response = await api.get(`accounts/companies/${company.value.id}/`);
+    company.value = response.data;
+    financialStatements.value = company.value.financial_statements || [];
+    turnoverList.value = company.value.annual_turnovers || [];
+    sources.value = company.value.sources_of_funds || [];
+    litigations.value = company.value.litigations || [];
+    personnel.value = company.value.personnel || [];
+    certifications.value = company.value.certifications || [];
+    equipment.value = company.value.equipment || [];
+    experiences.value = company.value.experiences || [];
+  } catch (err) {
+    error.value = 'Failed to load company data: ' + (err.response?.data?.detail || err.message);
+    toast.add({ severity: 'error', summary: 'Error', detail: error.value });
+  }
+};
+
+// Fetch existing draft bid and nested data
 const fetchExistingBid = async () => {
   try {
     if (!tender.value?.id) return;
@@ -923,20 +981,338 @@ const fetchExistingBid = async () => {
     if (drafts.length > 0) {
       const draft = drafts[0];
       bidId.value = draft.id;
-      complianceData.value = draft.compliance_data || {};
-      selectedUserId.value = complianceData.value['Power of Attorney User'] || null;
-      selectedLitigationIds.value = complianceData.value['Litigation Ids'] || [];
-      selectedSourceIds.value = complianceData.value['Source Ids'] || [];
-      selectedStatementIds.value = complianceData.value['Statement Ids'] || [];
-      assignedPersonnel.value = complianceData.value['Personnel Assignments'] || {};
-      selectedStatementsForReq.value = complianceData.value['Financial Statements For Req'] || {};
-      selectedTurnoversForReq.value = complianceData.value['Turnover For Req'] || {};
-      noLitigation.value = complianceData.value['No Litigation'] || false;
-      validityComplied.value = complianceData.value['Validity Complied'] || false;
-      completionComplied.value = complianceData.value['Completion Complied'] || false;
+      validityComplied.value = draft.validity_complied;
+      completionComplied.value = draft.completion_complied;
+      proposedCompletionDays.value = draft.proposed_completion_days;
+
+      // Fetch documents
+      const docsRes = await api.get(`/bids/${bidId.value}/documents/`);
+      docsRes.data.forEach(d => {
+        const docName = requiredDocuments.value.find(rd => rd.id === d.tender_document)?.name;
+        if (docName) {
+          documents.value[docName] = true; // Placeholder
+          if (docName === 'Power of Attorney') {
+            const desc = d.description || '';
+            const match = desc.match(/Authorized representative: (.*?), (.*)/);
+            if (match) {
+              const name = match[1].split(' ');
+              const email = match[2];
+              selectedUserId.value = personnel.value.find(p => p.email === email)?.uuid || null;
+            }
+          }
+        }
+      });
+
+      // Fetch litigation responses
+      const litRes = await api.get(`/bids/${bidId.value}/litigation-responses/`);
+      if (litRes.data.length > 0) {
+        const lit = litRes.data[0];
+        noLitigation.value = lit.no_litigation;
+        selectedLitigationIds.value = lit.litigations;
+      }
+
+      // Fetch source responses
+      const srcRes = await api.get(`/bids/${bidId.value}/source-responses/`);
+      if (srcRes.data.length > 0) {
+        const src = srcRes.data[0];
+        selectedSourceIds.value = src.sources;
+      }
+
+      // Fetch financial responses
+      const finRes = await api.get(`/bids/${bidId.value}/financial-responses/`);
+      finRes.data.forEach(fr => {
+        const req = financialRequirements.value.find(r => r.id === fr.financial_requirement);
+        if (req) {
+          selectedStatementsForReq.value[req.id] = fr.financial_statement;
+          complianceData.value[req.name] = fr.actual_value;
+        }
+      });
+
+      // Fetch turnover responses
+      const turnRes = await api.get(`/bids/${bidId.value}/turnover-responses/`);
+      turnRes.data.forEach(tr => {
+        const req = turnoverRequirements.value.find(r => r.id === tr.turnover_requirement);
+        if (req) {
+          selectedTurnoversForReq.value[req.id] = tr.turnovers;
+          complianceData.value[req.label] = tr.actual_amount;
+        }
+      });
+
+      // Fetch experience responses
+      const expRes = await api.get(`/bids/${bidId.value}/experience-responses/`);
+      expRes.data.forEach(er => {
+        const req = experienceRequirements.value.find(r => r.id === er.experience_requirement);
+        if (req) {
+          selectedExperiencesForReq.value[req.id] = er.company_experience;
+          documents.value[`Experience ${req.id}`] = true; // Assume uploaded
+        }
+      });
+
+      // Fetch personnel responses
+      const persRes = await api.get(`/bids/${bidId.value}/personnel-responses/`);
+      persRes.data.forEach(pr => {
+        const req = personnelRequirements.value.find(r => r.id === pr.personnel_requirement);
+        if (req) {
+          assignedPersonnel.value[req.id] = pr.personnel;
+          complianceData.value[`Personnel ${req.id} Experience`] = personnel.value.find(p => p.uuid === pr.personnel)?.years_of_experience;
+        }
+      });
+
     }
   } catch (err) {
     console.warn('No existing draft found or error:', err);
+  }
+};
+
+// Save/Update bid scalars
+const saveBidScalars = async () => {
+  const data = {
+    tender: tender.value.id,
+    company: company.value.id,
+    total_price: complianceData.value['Priced Schedule'] || 0,
+    currency: tender.value.tender_security_currency || 'TZS',
+    status: 'draft',
+    validity_complied: validityComplied.value,
+    completion_complied: completionComplied.value,
+    proposed_completion_days: proposedCompletionDays.value || null,
+  };
+
+  let response;
+  if (bidId.value) {
+    response = await api.patch(`/bids/${bidId.value}/`, data);
+  } else {
+    response = await api.post('/bids/', data);
+    bidId.value = response.data.id;
+  }
+  return response.data;
+};
+
+// General save simple document
+const saveSimpleDocument = async (name, description = '') => {
+  const doc = requiredDocuments.value.find(d => d.name === name);
+  if (!doc) return toast.add({severity: 'error', detail: 'Document not found'});
+
+  const file = documents.value[name];
+  if (!file && documents.value[name] !== true) return toast.add({severity: 'error', detail: 'Please upload document'});
+
+  const formData = new FormData();
+  formData.append('tender_document', doc.id);
+  if (file) formData.append('file', file);
+  formData.append('description', description);
+  formData.append('submitted_at', new Date().toISOString());
+
+  const existingRes = await api.get(`/bids/${bidId.value}/documents/`);
+  const existing = existingRes.data.find(d => d.tender_document === doc.id);
+
+  if (existing) {
+    await api.patch(`/bids/${bidId.value}/documents/${existing.id}/`, formData, {headers: {'Content-Type': 'multipart/form-data'}});
+  } else {
+    await api.post(`/bids/${bidId.value}/documents/`, formData, {headers: {'Content-Type': 'multipart/form-data'}});
+  }
+};
+
+// Save litigation
+const saveLitigation = async () => {
+  const litDoc = requiredDocuments.value.find(doc => doc.name === 'litigation-history');
+  if (litDoc) {
+    const data = {
+      tender_document: litDoc.id,
+      litigations: selectedLitigationIds.value,
+      no_litigation: noLitigation.value,
+      notes: ''
+    };
+    const existingRes = await api.get(`/bids/${bidId.value}/litigation-responses/`);
+    const existing = existingRes.data.find(lr => lr.tender_document === litDoc.id);
+    if (existing) {
+      await api.patch(`/bids/${bidId.value}/litigation-responses/${existing.id}/`, data);
+    } else {
+      await api.post(`/bids/${bidId.value}/litigation-responses/`, data);
+    }
+  }
+};
+
+// Save sources
+const saveSources = async () => {
+  const srcDoc = requiredDocuments.value.find(doc => doc.name === 'source-of-funds');
+  if (srcDoc) {
+    const data = {
+      tender_document: srcDoc.id,
+      sources: selectedSourceIds.value,
+      notes: ''
+    };
+    const existingRes = await api.get(`/bids/${bidId.value}/source-responses/`);
+    const existing = existingRes.data.find(sr => sr.tender_document === srcDoc.id);
+    if (existing) {
+      await api.patch(`/bids/${bidId.value}/source-responses/${existing.id}/`, data);
+    } else {
+      await api.post(`/bids/${bidId.value}/source-responses/`, data);
+    }
+  }
+};
+
+// Save financial responses
+const saveFinancialResponses = async () => {
+  const existingRes = await api.get(`/bids/${bidId.value}/financial-responses/`);
+  const existingMap = new Map(existingRes.data.map(fr => [fr.financial_requirement, fr.id]));
+
+  for (const req of financialRequirements.value) {
+    if (selectedStatementsForReq.value[req.id]) {
+      const data = {
+        financial_requirement: req.id,
+        financial_statement: selectedStatementsForReq.value[req.id],
+        actual_value: complianceData.value[req.name] || 0,
+        jv_contribution: null,
+        notes: ''
+      };
+      const existingId = existingMap.get(req.id);
+      if (existingId) {
+        await api.patch(`/bids/${bidId.value}/financial-responses/${existingId}/`, data);
+      } else {
+        await api.post(`/bids/${bidId.value}/financial-responses/`, data);
+      }
+    }
+  }
+};
+
+// Save turnover responses
+const saveTurnoverResponses = async () => {
+  const existingRes = await api.get(`/bids/${bidId.value}/turnover-responses/`);
+  const existingMap = new Map(existingRes.data.map(tr => [tr.turnover_requirement, tr.id]));
+
+  for (const req of turnoverRequirements.value) {
+    const turnovers = selectedTurnoversForReq.value[req.id] || [];
+    if (turnovers.length > 0) {
+      const data = {
+        turnover_requirement: req.id,
+        turnovers: turnovers,
+        actual_amount: complianceData.value[req.label] || 0,
+        currency: req.currency,
+        jv_contribution: null,
+        notes: ''
+      };
+      const existingId = existingMap.get(req.id);
+      if (existingId) {
+        await api.patch(`/bids/${bidId.value}/turnover-responses/${existingId}/`, data);
+      } else {
+        await api.post(`/bids/${bidId.value}/turnover-responses/`, data);
+      }
+    }
+  }
+};
+
+// Save experience responses
+const saveExperienceResponses = async () => {
+  const existingRes = await api.get(`/bids/${bidId.value}/experience-responses/`);
+  const existingMap = new Map(existingRes.data.map(er => [er.experience_requirement, er.id]));
+
+  for (const req of experienceRequirements.value) {
+    const experienceId = selectedExperiencesForReq.value[req.id];
+    if (experienceId) {
+      const formData = new FormData();
+      formData.append('experience_requirement', req.id);
+      formData.append('company_experience', experienceId);
+      formData.append('jv_contribution', null);
+      formData.append('notes', '');
+      const file = documents.value[`Experience ${req.id}`];
+      if (file) formData.append('proof', file);
+
+      const existingId = existingMap.get(req.id);
+      if (existingId) {
+        await api.patch(`/bids/${bidId.value}/experience-responses/${existingId}/`, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
+      } else {
+        await api.post(`/bids/${bidId.value}/experience-responses/`, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
+      }
+    }
+  }
+};
+
+// Save personnel responses
+const savePersonnelResponses = async () => {
+  const existingRes = await api.get(`/bids/${bidId.value}/personnel-responses/`);
+  const existingMap = new Map(existingRes.data.map(pr => [pr.personnel_requirement, pr.id]));
+
+  for (const req of personnelRequirements.value) {
+    const personnelUuid = assignedPersonnel.value[req.id];
+    if (personnelUuid) {
+      const data = {
+        personnel_requirement: req.id,
+        personnel: personnelUuid,
+        jv_contribution: null,
+        notes: ''
+      };
+      const existingId = existingMap.get(req.id);
+      if (existingId) {
+        await api.patch(`/bids/${bidId.value}/personnel-responses/${existingId}/`, data);
+      } else {
+        await api.post(`/bids/${bidId.value}/personnel-responses/`, data);
+      }
+    }
+  }
+};
+
+// Comply section
+const complySection = async (section) => {
+  try {
+    if (!bidId.value) {
+      await saveBidScalars();
+    }
+    switch (section) {
+      case 'priced-schedule':
+        if (!complianceData.value['Priced Schedule'] || !documents.value['Priced Schedule']) {
+          return toast.add({severity: 'error', detail: 'Please enter amount and upload document'});
+        }
+        await saveBidScalars();
+        await saveSimpleDocument('Priced Schedule');
+        break;
+      case 'power-of-attorney':
+        if (!selectedUserId.value || !documents.value['Power of Attorney']) {
+          return toast.add({severity: 'error', detail: 'Please select representative and upload document'});
+        }
+        const description = `Authorized representative: ${selectedUser.value.first_name} ${selectedUser.value.last_name}, ${selectedUser.value.email}`;
+        await saveSimpleDocument('Power of Attorney', description);
+        break;
+      case 'technical-specifications':
+        await saveSimpleDocument('Conformance to Technical Specifications');
+        break;
+      case 'manufacturer-authorization':
+        await saveSimpleDocument('Manufacturer Authorization');
+        break;
+      case 'tender-security':
+        await saveSimpleDocument('Tender Security');
+        break;
+      case 'litigation-history':
+        await saveLitigation();
+        break;
+      case 'source-of-funds':
+        await saveSources();
+        break;
+      case 'financial-statements':
+        toast.add({severity: 'success', detail: 'Financial Statements selected'});
+        break;
+      case 'financial-requirements':
+        await saveFinancialResponses();
+        break;
+      case 'turnover-requirements':
+        await saveTurnoverResponses();
+        break;
+      case 'experience-requirements':
+        await saveExperienceResponses();
+        break;
+      case 'personnel-requirements':
+        await savePersonnelResponses();
+        break;
+      case 'tender-validity':
+        validityComplied.value = true;
+        await saveBidScalars();
+        break;
+      case 'completion-period':
+        completionComplied.value = true;
+        await saveBidScalars();
+        break;
+    }
+    toast.add({severity: 'success', detail: 'Section complied'});
+  } catch (err) {
+    toast.add({severity: 'error', detail: 'Failed to comply section'});
   }
 };
 
@@ -953,53 +1329,18 @@ const saveDraft = async () => {
       return;
     }
 
-    const formData = new FormData();
-    formData.append('tender', tender.value.id);
-    formData.append('company', company.value.id);
-    formData.append('validity_days', tender.value.validity_period_days || 90);
-    formData.append('status', 'draft');
-
-    const docs = requiredDocuments.value.map(doc => ({
-      required_document: doc.id,
-      file: documents.value[doc.name] ? documents.value[doc.name] : null,
-    })).filter(d => d.file);
-    if (docs.length) formData.append('documents', JSON.stringify(docs));
-
-    experienceRequirements.value.forEach(req => {
-      if (documents.value[`Experience ${req.id}`]) {
-        docs.push({
-          required_document: `Experience ${req.id}`,
-          file: documents.value[`Experience ${req.id}`]
-        });
-      }
-    });
-    if (docs.length) formData.append('documents', JSON.stringify(docs));
-
-    formData.append('compliance_data', JSON.stringify({
-      ...complianceData.value,
-      'Power of Attorney User': selectedUserId.value,
-      'Litigation Ids': selectedLitigationIds.value,
-      'Source Ids': selectedSourceIds.value,
-      'Statement Ids': selectedStatementIds.value,
-      'Personnel Assignments': assignedPersonnel.value,
-      'Financial Statements For Req': selectedStatementsForReq.value,
-      'Turnover For Req': selectedTurnoversForReq.value,
-      'No Litigation': noLitigation.value,
-      'Validity Complied': validityComplied.value,
-      'Completion Complied': completionComplied.value,
-    }));
-
-    let response;
-    if (bidId.value) {
-      response = await api.patch(`/bids/${bidId.value}/`, formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
-    } else {
-      response = await api.post('/bids/', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
-      bidId.value = response.data.id;
-    }
+    await saveBidScalars();
+    await saveSimpleDocument('Priced Schedule');
+    await saveSimpleDocument('Power of Attorney', `Authorized representative: ${selectedUser.value?.first_name} ${selectedUser.value?.last_name}, ${selectedUser.value?.email}`);
+    await saveSimpleDocument('Conformance to Technical Specifications');
+    await saveSimpleDocument('Manufacturer Authorization');
+    await saveSimpleDocument('Tender Security');
+    await saveLitigation();
+    await saveSources();
+    await saveFinancialResponses();
+    await saveTurnoverResponses();
+    await saveExperienceResponses();
+    await savePersonnelResponses();
 
     toast.add({ severity: 'success', summary: 'Success', detail: 'Draft saved successfully!' });
   } catch (err) {
@@ -1010,7 +1351,7 @@ const saveDraft = async () => {
   }
 };
 
-// Submit/Publish bid
+// Submit bid
 const submitBid = async () => {
   try {
     loading.value = true;
@@ -1023,8 +1364,7 @@ const submitBid = async () => {
       return;
     }
 
-    if (!bidId.value) await saveDraft();
-
+    await saveDraft(); // Ensure all data saved
     await api.post(`/bids/${bidId.value}/submit/`);
 
     toast.add({ severity: 'success', summary: 'Success', detail: 'Bid submitted successfully!' });
@@ -1034,25 +1374,6 @@ const submitBid = async () => {
     toast.add({ severity: 'error', summary: 'Error', detail: error.value });
   } finally {
     loading.value = false;
-  }
-};
-
-// Fetch company data
-const fetchCompanyData = async () => {
-  try {
-    if (!company.value.id) return;
-    const response = await api.get(`accounts/companies/${company.value.id}/`);
-    company.value = response.data;
-    financialStatements.value = company.value.financial_statements || [];
-    turnoverList.value = company.value.annual_turnovers || [];
-    sources.value = company.value.sources_of_funds || [];
-    litigations.value = company.value.litigations || [];
-    personnel.value = company.value.personnel || [];
-    certifications.value = company.value.certifications || [];
-    equipment.value = company.value.equipment || [];
-  } catch (err) {
-    error.value = 'Failed to load company data: ' + (err.response?.data?.detail || err.message);
-    toast.add({ severity: 'error', summary: 'Error', detail: error.value });
   }
 };
 

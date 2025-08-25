@@ -12,16 +12,16 @@ export const useAuthStore = defineStore('auth', {
     const token = authService.getToken();
     const companies = user?.companies || [];
 
-    // Determine initial role flags
+    // Determine initial role flags with safeguards
     const isSuperAdmin = user?.is_superuser === true;
     const isStaffUser = user?.is_staff === true;
-    const isCompanyOwner = companies.some(c =>
-      c.company_users.some(cu => cu.user.id === user.id && cu.role === 'owner')
+    const isCompanyOwner = (companies || []).some(c =>
+      (c.company_users || []).some(cu => (cu.user?.id === user?.id) && cu.role === 'owner')
     );
-    const isCompanyAdmin = companies.some(c =>
-      c.company_users.some(cu => cu.user.id === user.id && cu.role === 'admin')
+    const isCompanyAdmin = (companies || []).some(c =>
+      (c.company_users || []).some(cu => (cu.user?.id === user?.id) && cu.role === 'admin')
     );
-    const isCompanyMember = companies.length > 0;
+    const isCompanyMember = (companies || []).length > 0;
     const isNormalUser = isCompanyMember && !isCompanyOwner && !isCompanyAdmin;
 
     return {
@@ -44,11 +44,11 @@ export const useAuthStore = defineStore('auth', {
       this.loading = true;
       try {
         const data = await authService.login(credentials, rememberMe);
-        this.user = data.user;
-        this.token = data.access;
-        this.companies = data.user.companies || [];
+        this.user = data.user || null;
+        this.token = data.access || null;
+        this.companies = data.user?.companies || [];
         this.updateRoles();  // renamed
-        this.isAuthenticated = true;
+        this.isAuthenticated = !!this.token && !!this.user;
         this.startTokenRefresh();
         return data;
       } catch (error) {
@@ -64,11 +64,11 @@ export const useAuthStore = defineStore('auth', {
       this.loading = true;
       try {
         const response = await authService.register(credentials);
-        this.user = response.user;
-        this.token = response.access;
-        this.companies = response.user.companies || [];
+        this.user = response.user || null;
+        this.token = response.access || null;
+        this.companies = response.user?.companies || [];
         this.updateRoles();  // renamed
-        this.isAuthenticated = true;
+        this.isAuthenticated = !!this.token && !!this.user;
         this.startTokenRefresh();
         return response;
       } catch (error) {
@@ -110,8 +110,8 @@ export const useAuthStore = defineStore('auth', {
       try {
         authService.initializeAuth();
         const user = authService.getUser();
-        this.user = user;
-        this.token = authService.getToken();
+        this.user = user || null;
+        this.token = authService.getToken() || null;
         this.companies = user?.companies || [];
         this.isAuthenticated = await authService.isAuthenticated();
         this.updateRoles();  // renamed
@@ -137,6 +137,10 @@ export const useAuthStore = defineStore('auth', {
     },
 
 updateUser(user) {
+  if (!user) {
+    console.warn('updateUser called with null/undefined user; skipping update.');
+    return;
+  }
   if (JSON.stringify(this.user) !== JSON.stringify(user)) {
     this.user = user;
     this.token = authService.getToken();
@@ -150,18 +154,18 @@ updateUser(user) {
     updateRoles() {  // renamed from _updateRoles
       this.isSuperAdmin = this.user?.is_superuser === true;
       this.isStaffUser = this.user?.is_staff === true;
-      this.isCompanyOwner = this.companies.some(c =>
-        c.company_users.some(cu => cu.user.id === this.user.id && cu.role === 'owner')
+      this.isCompanyOwner = (this.companies ?? []).some(c =>
+        (c.company_users ?? []).some(cu => cu.user?.id === this.user?.id && cu.role === 'owner')
       );
-      this.isCompanyAdmin = this.companies.some(c =>
-        c.company_users.some(cu => cu.user.id === this.user.id && cu.role === 'admin')
+      this.isCompanyAdmin = (this.companies ?? []).some(c =>
+        (c.company_users ?? []).some(cu => cu.user?.id === this.user?.id && cu.role === 'admin')
       );
-      this.isCompanyMember = this.companies.length > 0;
+      this.isCompanyMember = (this.companies ?? []).length > 0;
       this.isNormalUser = this.isCompanyMember && !this.isCompanyOwner && !this.isCompanyAdmin;
     },
 
     hasCompanies() {
-      return this.companies.length > 0;
+      return (this.companies ?? []).length > 0;
     },
 
     shouldShowCompanyModal() {

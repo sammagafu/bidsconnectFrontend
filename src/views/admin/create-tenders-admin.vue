@@ -114,25 +114,6 @@
             required
           />
         </b-form-group>
-
-        <b-form-group class="mb-3" label="Re-advertisement Count" label-for="re_advertisement_count">
-          <b-form-input
-            id="re_advertisement_count"
-            type="number"
-            v-model.number="store.tender.re_advertisement_count"
-            readonly
-          />
-        </b-form-group>
-
-        <b-form-group class="mb-3" label="Re-advertised From" label-for="re_advertised_from_id">
-          <b-form-select
-            id="re_advertised_from_id"
-            v-model="store.tender.re_advertised_from_id"
-            :options="tenders"
-            value-field="id"
-            text-field="title"
-          />
-        </b-form-group>
       </b-form>
 
       <!-- Step 2: Deadlines & Dates -->
@@ -305,7 +286,7 @@
           <b-button
             size="sm"
             variant="danger"
-            @click="removeDocument(i)"
+            @click="store.removeDocument(i)"
           >
             Remove
           </b-button>
@@ -313,7 +294,7 @@
         <b-button
           size="sm"
           variant="outline-primary"
-          @click="addDocument"
+          @click="store.addDocument"
         >
           + Add Document
         </b-button>
@@ -367,35 +348,16 @@
               rows="2"
             />
           </b-form-group>
-          <b-form-group class="mb-2" :label="`Start Date`">
-            <DatePicker
-              v-model="financialRequirements[i].start_date"
-              dateFormat="yy-mm-dd"
-            />
-          </b-form-group>
-          <b-form-group class="mb-2" :label="`End Date`">
-            <DatePicker
-              v-model="financialRequirements[i].end_date"
-              dateFormat="yy-mm-dd"
-            />
-          </b-form-group>
           <b-form-group class="mb-2" :label="`JV Compliance`">
             <b-form-select
               v-model="financialRequirements[i].jv_compliance"
               :options="jvComplianceOptions"
             />
           </b-form-group>
-          <b-form-group class="mb-2" :label="`JV Percentage`">
-            <b-form-input
-              type="number"
-              step="0.01"
-              v-model.number="financialRequirements[i].jv_percentage"
-            />
-          </b-form-group>
           <b-button
             size="sm"
             variant="danger"
-            @click="removeFinancialRequirement(i)"
+            @click="store.removeFinancialRequirement(i)"
           >
             Remove
           </b-button>
@@ -403,7 +365,7 @@
         <b-button
           size="sm"
           variant="outline-primary"
-          @click="addFinancialRequirement"
+          @click="store.addFinancialRequirement"
         >
           + Add Financial Requirement
         </b-button>
@@ -462,7 +424,7 @@
           <b-button
             size="sm"
             variant="danger"
-            @click="removeTurnoverRequirement(i)"
+            @click="store.removeTurnoverRequirement(i)"
           >
             Remove
           </b-button>
@@ -470,7 +432,7 @@
         <b-button
           size="sm"
           variant="outline-primary"
-          @click="addTurnoverRequirement"
+          @click="store.addTurnoverRequirement"
         >
           + Add Turnover Requirement
         </b-button>
@@ -554,7 +516,7 @@
           <b-button
             size="sm"
             variant="danger"
-            @click="removeExperienceRequirement(i)"
+            @click="store.removeExperienceRequirement(i)"
           >
             Remove
           </b-button>
@@ -562,7 +524,7 @@
         <b-button
           size="sm"
           variant="outline-primary"
-          @click="addExperienceRequirement"
+          @click="store.addExperienceRequirement"
         >
           + Add Experience Requirement
         </b-button>
@@ -652,7 +614,7 @@
           <b-button
             size="sm"
             variant="danger"
-            @click="removePersonnelRequirement(i)"
+            @click="store.removePersonnelRequirement(i)"
           >
             Remove
           </b-button>
@@ -660,7 +622,7 @@
         <b-button
           size="sm"
           variant="outline-primary"
-          @click="addPersonnelRequirement"
+          @click="store.addPersonnelRequirement"
         >
           + Add Personnel Requirement
         </b-button>
@@ -703,7 +665,7 @@
           <b-button
             size="sm"
             variant="danger"
-            @click="removeScheduleItem(i)"
+            @click="store.removeScheduleItem(i)"
           >
             Remove
           </b-button>
@@ -711,7 +673,7 @@
         <b-button
           size="sm"
           variant="outline-primary"
-          @click="addScheduleItem"
+          @click="store.addScheduleItem"
         >
           + Add Schedule Item
         </b-button>
@@ -739,7 +701,7 @@
           <b-button
             size="sm"
             variant="danger"
-            @click="removeTechnicalSpecification(i)"
+            @click="store.removeTechnicalSpecification(i)"
           >
             Remove
           </b-button>
@@ -747,7 +709,7 @@
         <b-button
           size="sm"
           variant="outline-primary"
-          @click="addTechnicalSpecification"
+          @click="store.addTechnicalSpecification"
         >
           + Add Technical Specification
         </b-button>
@@ -822,7 +784,6 @@ const progress = computed(() => ((store.step - 1) / 11) * 100);
 // local-only
 const newAgency = ref({ name: '', email: '', phone_number: '', address: '', logoFile: null });
 const agencyResults = ref([]);
-const tenders = ref([]); // NEW: For re_advertised_from dropdown
 
 // lookups
 const categoriesWithSubs = ref([]);
@@ -830,14 +791,14 @@ const categories = ref([]);
 const subcategories = ref([]);
 const procurementProcesses = ref([]);
 
-// nested arrays
-const requiredDocuments = ref([]);
-const financialRequirements = ref([]);
-const turnoverRequirements = ref([]);
-const experienceRequirements = ref([]);
-const personnelRequirements = ref([]);
-const scheduleItems = ref([]);
-const technicalSpecifications = ref([]);
+// nested arrays (bound to store)
+const requiredDocuments = computed(() => store.requiredDocuments);
+const financialRequirements = computed(() => store.financialRequirements);
+const turnoverRequirements = computed(() => store.turnoverRequirements);
+const experienceRequirements = computed(() => store.experienceRequirements);
+const personnelRequirements = computed(() => store.personnelRequirements);
+const scheduleItems = computed(() => store.scheduleItems);
+const technicalSpecifications = computed(() => store.technicalSpecifications);
 
 // dropdown options
 const tenderTypeCountries = [
@@ -851,7 +812,7 @@ const tenderTypeSectors = [
   { value: 'Government Agency', text: 'Government Agency Tendering' },
 ];
 const documentTypeOptions = [
-  { value: 'other', text: 'Other' }, // Updated to match backend default
+  { value: 'other', text: 'Other' },
   { value: 'PDF', text: 'PDF' },
   { value: 'Word', text: 'Word Document' },
   { value: 'Image', text: 'Image' },
@@ -881,6 +842,7 @@ const documentNameOptions = [
   { value: 'office-location', text: 'Office Location' },
   { value: 'personnel-information', text: 'Personnel Information' },
   { value: 'work-experience', text: 'Work Experience' },
+  { value: 'tender-securing-declaration', text: 'Tender Securing Declaration' },
   { value: 'other', text: 'Other' },
 ];
 const jvComplianceOptions = [
@@ -973,23 +935,23 @@ function nextStep() {
 function skipSection() {
   console.log('Skipping section at step:', store.step);
   if (store.step === 6) {
-    financialRequirements.value = [];
-    console.log('Financial requirements cleared. Length now:', financialRequirements.value.length);
+    store.financialRequirements = [];
+    console.log('Financial requirements cleared. Length now:', store.financialRequirements.length);
   } else if (store.step === 7) {
-    turnoverRequirements.value = [];
-    console.log('Turnover requirements cleared. Length now:', turnoverRequirements.value.length);
+    store.turnoverRequirements = [];
+    console.log('Turnover requirements cleared. Length now:', store.turnoverRequirements.length);
   } else if (store.step === 8) {
-    experienceRequirements.value = [];
-    console.log('Experience requirements cleared. Length now:', experienceRequirements.value.length);
+    store.experienceRequirements = [];
+    console.log('Experience requirements cleared. Length now:', store.experienceRequirements.length);
   } else if (store.step === 9) {
-    personnelRequirements.value = [];
-    console.log('Personnel requirements cleared. Length now:', personnelRequirements.value.length);
+    store.personnelRequirements = [];
+    console.log('Personnel requirements cleared. Length now:', store.personnelRequirements.length);
   } else if (store.step === 10) {
-    scheduleItems.value = [];
-    console.log('Schedule items cleared. Length now:', scheduleItems.value.length);
+    store.scheduleItems = [];
+    console.log('Schedule items cleared. Length now:', store.scheduleItems.length);
   } else if (store.step === 11) {
-    technicalSpecifications.value = [];
-    console.log('Technical specifications cleared. Length now:', technicalSpecifications.value.length);
+    store.technicalSpecifications = [];
+    console.log('Technical specifications cleared. Length now:', store.technicalSpecifications.length);
   }
   console.log('Section skipped. Moving to step:', store.step + 1);
   if (store.step < 12) {
@@ -1000,16 +962,8 @@ function skipSection() {
 
 function resetAll() {
   store.resetAll();
-  requiredDocuments.value = [];
-  financialRequirements.value = [];
-  turnoverRequirements.value = [];
-  experienceRequirements.value = [];
-  personnelRequirements.value = [];
-  scheduleItems.value = [];
-  technicalSpecifications.value = [];
   newAgency.value = { name: '', email: '', phone_number: '', address: '', logoFile: null };
   agencyResults.value = [];
-  tenders.value = [];
 }
 
 function goToList() {
@@ -1027,6 +981,20 @@ watch(() => store.tender.category_id, id => {
     ? cat.subcategories.map(sc => ({ value: sc.id, text: sc.name }))
     : [];
   store.tender.subcategory_id = null;
+});
+
+watch(() => store.tender.tender_securing_type, (newVal) => {
+  if (newVal === 'Tender Securing Declaration') {
+    const hasDecl = store.requiredDocuments.some(doc => doc.selectedName === 'tender-securing-declaration');
+    if (!hasDecl) {
+      store.addDocument();
+      const lastIndex = store.requiredDocuments.length - 1;
+      store.requiredDocuments[lastIndex].selectedName = 'tender-securing-declaration';
+      store.requiredDocuments[lastIndex].description = 'Signed Tender Securing Declaration Form';
+      store.requiredDocuments[lastIndex].document_type = 'other';
+      store.requiredDocuments[lastIndex].is_required = 'required';
+    }
+  }
 });
 
 async function fetchCategoriesWithSubcategories() {
@@ -1047,16 +1015,6 @@ async function fetchProcurementProcesses() {
   } catch (err) {
     console.error(err);
     toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to load processes' });
-  }
-}
-
-async function fetchTenders() {
-  try {
-    const res = await api.get('tenders/tenders/');
-    tenders.value = Array.isArray(res.data) ? res.data : (res.data.results || []);
-  } catch (err) {
-    console.error('Tender fetch error:', err);
-    toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to load tenders' });
   }
 }
 
@@ -1102,7 +1060,6 @@ async function fetchTenderData(slug) {
       subcategory_id: tender.subcategory ? tender.subcategory.id : null,
       procurement_process_id: tender.procurement_process ? tender.procurement_process.id : null,
       agency_id: tender.agency ? tender.agency.id : null,
-      re_advertised_from_id: tender.re_advertised_from ? tender.re_advertised_from : null,
       submission_deadline: tender.submission_deadline ? new Date(tender.submission_deadline) : null,
       publication_date: tender.publication_date ? new Date(tender.publication_date) : null,
       litigation_history_start: tender.litigation_history_start ? new Date(tender.litigation_history_start) : null,
@@ -1110,119 +1067,23 @@ async function fetchTenderData(slug) {
     };
     store.selectedAgencyName = tender.agency ? tender.agency.name : '';
     agencyResults.value = tender.agency ? [tender.agency] : [];
-    requiredDocuments.value = tender.required_documents || [];
-    financialRequirements.value = tender.financial_requirements || [];
-    turnoverRequirements.value = tender.turnover_requirements || [];
-    experienceRequirements.value = tender.experience_requirements || [];
-    personnelRequirements.value = tender.personnel_requirements || [];
-    scheduleItems.value = tender.schedule_items || [];
-    technicalSpecifications.value = tender.technical_specifications || [];
+    store.requiredDocuments = tender.required_documents.map(doc => ({
+      selectedName: documentNameOptions.some(opt => opt.value === doc.name) ? doc.name : 'other',
+      customName: documentNameOptions.some(opt => opt.value === doc.name) ? '' : doc.name,
+      description: doc.description,
+      document_type: doc.document_type,
+      is_required: doc.is_required
+    })) || [];
+    store.financialRequirements = tender.financial_requirements || [];
+    store.turnoverRequirements = tender.turnover_requirements || [];
+    store.experienceRequirements = tender.experience_requirements || [];
+    store.personnelRequirements = tender.personnel_requirements || [];
+    store.scheduleItems = tender.schedule_items || [];
+    store.technicalSpecifications = tender.technical_specifications || [];
   } catch (err) {
     console.error('Failed to load tender:', err);
     toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to load tender data' });
   }
-}
-
-function addDocument() {
-  requiredDocuments.value.push({ selectedName: '', customName: '', description: '', document_type: 'other', is_required: 'required' });
-}
-
-function removeDocument(i) {
-  requiredDocuments.value.splice(i, 1);
-}
-
-function addFinancialRequirement() {
-  financialRequirements.value.push({
-    name: '',
-    formula: '',
-    minimum: null,
-    unit: '',
-    actual_value: null,
-    notes: '',
-    financial_sources: '',
-    start_date: null,
-    end_date: null,
-    jv_compliance: 'combined',
-    jv_percentage: null
-  });
-}
-
-function removeFinancialRequirement(i) {
-  financialRequirements.value.splice(i, 1);
-}
-
-function addTurnoverRequirement() {
-  turnoverRequirements.value.push({
-    label: '',
-    amount: null,
-    currency: 'TZS',
-    start_date: null,
-    end_date: null,
-    jv_compliance: 'combined',
-    jv_percentage: null
-  });
-}
-
-function removeTurnoverRequirement(i) {
-  turnoverRequirements.value.splice(i, 1);
-}
-
-function addExperienceRequirement() {
-  experienceRequirements.value.push({
-    type: 'specific',
-    description: '',
-    contract_count: null,
-    min_value: null,
-    currency: 'TZS',
-    start_date: null,
-    end_date: null,
-    jv_compliance: 'combined',
-    jv_percentage: null,
-    jv_aggregation_note: '',
-    reputation_notes: ''
-  });
-}
-
-function removeExperienceRequirement(i) {
-  experienceRequirements.value.splice(i, 1);
-}
-
-function addPersonnelRequirement() {
-  personnelRequirements.value.push({
-    role: '',
-    min_education: 'bachelor',
-    professional_registration: '',
-    min_experience_yrs: null,
-    appointment_duration_years: null,
-    nationality_required: '',
-    language_required: '',
-    age_min: 18,
-    age_max: 60,
-    specialized_education: '',
-    professional_certifications: '',
-    jv_compliance: 'combined',
-    notes: ''
-  });
-}
-
-function removePersonnelRequirement(i) {
-  personnelRequirements.value.splice(i, 1);
-}
-
-function addScheduleItem() {
-  scheduleItems.value.push({ commodity: '', code: '', unit: '', quantity: null, specification: '' });
-}
-
-function removeScheduleItem(i) {
-  scheduleItems.value.splice(i, 1);
-}
-
-function addTechnicalSpecification() {
-  technicalSpecifications.value.push({ category: 'service', description: '' });
-}
-
-function removeTechnicalSpecification(i) {
-  technicalSpecifications.value.splice(i, 1);
 }
 
 async function submitTender() {
@@ -1248,13 +1109,13 @@ async function submitTender() {
     }
 
     // Build nested data
-    const required_documents = requiredDocuments.value.map(doc => ({
+    const required_documents = store.requiredDocuments.map(doc => ({
       name: doc.selectedName === 'other' ? doc.customName : doc.selectedName,
       description: doc.description,
       document_type: doc.document_type,
       is_required: doc.is_required
     }));
-    const financial_requirements = financialRequirements.value.map(req => ({
+    const financial_requirements = store.financialRequirements.map(req => ({
       name: req.name,
       formula: req.formula,
       minimum: req.minimum,
@@ -1262,13 +1123,10 @@ async function submitTender() {
       actual_value: req.actual_value,
       notes: req.notes,
       financial_sources: req.financial_sources,
-      start_date: req.start_date ? new Date(req.start_date).toISOString().split('T')[0] : null,
-      end_date: req.end_date ? new Date(req.end_date).toISOString().split('T')[0] : null,
-      jv_compliance: req.jv_compliance,
-      jv_percentage: req.jv_percentage
+      jv_compliance: req.jv_compliance
     }));
     console.log('Submitting financial_requirements. Length:', financial_requirements.length);
-    const turnover_requirements = turnoverRequirements.value.map(req => ({
+    const turnover_requirements = store.turnoverRequirements.map(req => ({
       label: req.label,
       amount: req.amount,
       currency: req.currency,
@@ -1278,7 +1136,7 @@ async function submitTender() {
       jv_percentage: req.jv_percentage
     }));
     console.log('Submitting turnover_requirements. Length:', turnover_requirements.length);
-    const experience_requirements = experienceRequirements.value.map(req => ({
+    const experience_requirements = store.experienceRequirements.map(req => ({
       type: req.type,
       description: req.description,
       contract_count: req.contract_count,
@@ -1292,7 +1150,7 @@ async function submitTender() {
       reputation_notes: req.reputation_notes
     }));
     console.log('Submitting experience_requirements. Length:', experience_requirements.length);
-    const personnel_requirements = personnelRequirements.value.map(req => ({
+    const personnel_requirements = store.personnelRequirements.map(req => ({
       role: req.role,
       min_education: req.min_education,
       professional_registration: req.professional_registration,
@@ -1308,7 +1166,7 @@ async function submitTender() {
       notes: req.notes
     }));
     console.log('Submitting personnel_requirements. Length:', personnel_requirements.length);
-    const schedule_items = scheduleItems.value.map(item => ({
+    const schedule_items = store.scheduleItems.map(item => ({
       commodity: item.commodity,
       code: item.code,
       unit: item.unit,
@@ -1316,23 +1174,18 @@ async function submitTender() {
       specification: item.specification
     }));
     console.log('Submitting schedule_items. Length:', schedule_items.length);
-    const technical_specifications = technicalSpecifications.value.map(spec => ({
+    const technical_specifications = store.technicalSpecifications.map(spec => ({
       category: spec.category,
       description: spec.description
     }));
     console.log('Submitting technical_specifications. Length:', technical_specifications.length);
 
-    // Pull off file and rename IDs
-    const { tender_document, category_id, subcategory_id, procurement_process_id, agency_id, re_advertised_from_id, ...rest } = store.tender;
+    // Pull off file
+    const { tender_document, ...rest } = store.tender;
 
     // Build JSON payload with ISO dates and nested
     const payload = {
       ...rest,
-      category: category_id,
-      subcategory: subcategory_id,
-      procurement_process: procurement_process_id,
-      agency: agency_id,
-      re_advertised_from: re_advertised_from_id,
       submission_deadline: rest.submission_deadline ? new Date(rest.submission_deadline).toISOString() : null,
       publication_date: rest.publication_date ? new Date(rest.publication_date).toISOString() : null,
       litigation_history_start: rest.litigation_history_start ? new Date(rest.litigation_history_start).toISOString().split('T')[0] : null,
@@ -1366,6 +1219,7 @@ async function submitTender() {
     if (store.step < 12) {
       store.$patch({ step: store.step + 1 });
     }
+    resetAll();
   } catch (err) {
     console.error('Validation errors:', err.response?.data);
     let errorMessage = 'Submission failed – check console';
@@ -1381,7 +1235,6 @@ async function submitTender() {
 onMounted(async () => {
   await fetchCategoriesWithSubcategories();
   await fetchProcurementProcesses();
-  await fetchTenders();
   if (route.params.slug) {
     await fetchTenderData(route.params.slug);
   }

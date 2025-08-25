@@ -719,13 +719,13 @@ const NORMAL_MENU_ITEMS = [
       {
         key: 'previous-tenders',
         label: 'Awarded',
-        route: { name: 'pages.welcome' },
+        route: { name: 'company.bids-awarded-list' },
         parentKey: 'user-tenders',
       },
       {
         key: 'Open-tenders',
         label: 'My Unsuccessful',
-        route: { name: 'pages.welcome' },
+        route: { name: 'company.bids-unsucessful-list' },
         parentKey: 'user-tenders',
       },
       {

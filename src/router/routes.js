@@ -1003,6 +1003,27 @@ const userRoutes = [
       authRequired: true
     },
   },
+
+{
+    path: '/bids/awarded',
+    name: 'company.bids-awarded-list', 
+    component: () => import('@/views/bids/users/bid-tender-awarded.vue'),
+    meta: {
+      title: setTitle('Tenders Awarded'),
+      authRequired: true
+    },
+  },
+
+  {
+    path: '/bids/unsucessful',
+    name: 'company.bids-unsucessful-list', 
+    component: () => import('@/views/bids/users/bids-tender-unsuccessful.vue'),
+    meta: {
+      title: setTitle('Tenders Awarded'),
+      authRequired: true
+    },
+  },
+
     {
     path: '/tenders/:slug/bid',
     name: 'company.bids-create', 

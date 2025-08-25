@@ -1,7 +1,7 @@
 <template>
     <VerticalLayout>
         <b-container class="py-4">
-            <h1 class="h3 mb-4">My Bids</h1>
+            <h1 class="h3 mb-4">My Awarded Bids</h1>
             
             <!-- Loading state -->
             <b-overlay :show="loading" rounded="sm">
@@ -12,11 +12,11 @@
 
                 <!-- Bids list -->
                 <div v-else>
-                    <b-alert v-if="bids.length === 0" variant="info" show>
-                        No bids found
+                    <b-alert v-if="awardedBids.length === 0" variant="info" show>
+                        No awarded bids found
                     </b-alert>
                     
-                    <div v-for="bid in bids" :key="bid.id" class="border-bottom py-3">
+                    <div v-for="bid in awardedBids" :key="bid.id" class="border-bottom py-3">
                         <div class="d-flex justify-content-between align-items-start flex-column flex-md-row">
                             <div>
                                 <router-link :to="{ name: 'company.tenders-detail', params: { slug: getTenderSlug(bid.tender) } }" class="text-decoration-none">
@@ -58,13 +58,13 @@ import { api } from '@/services/authService';
 import { useAuthStore } from '@/stores/auth';
 import { useRouter } from 'vue-router';
 
-const bids = ref([]);
+const awardedBids = ref([]);
 const loading = ref(true);
 const error = ref(null);
 const authStore = useAuthStore();
 const router = useRouter();
 
-const fetchBids = async () => {
+const fetchAwardedBids = async () => {
     loading.value = true;
     const companies = authStore.user?.companies;
     
@@ -83,11 +83,11 @@ const fetchBids = async () => {
     }
     
     try {
-        const response = await api.get(`bids/by-company/?company_id=${company_id}`);
-        bids.value = response.data;
+        const response = await api.get(`bids/by-company/?company_id=${company_id}&status=accepted`);
+        awardedBids.value = response.data;
     } catch (err) {
-        error.value = 'Failed to load bids. Please try again later.';
-        console.error('Error fetching bids:', err);
+        error.value = 'Failed to load awarded bids. Please try again later.';
+        console.error('Error fetching awarded bids:', err);
     } finally {
         loading.value = false;
     }
@@ -148,7 +148,7 @@ const openingReport = (bid) => {
 };
 
 onMounted(() => {
-    fetchBids();
+    fetchAwardedBids();
 });
 </script>
 
