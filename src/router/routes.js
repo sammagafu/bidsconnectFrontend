@@ -1003,6 +1003,15 @@ const userRoutes = [
       authRequired: true
     },
   },
+   {
+    path: '/bids/:slug',
+    name: 'company.bids-detail', 
+    component: () => import('@/views/bids/users/users-bid-detail.vue'),
+    meta: {
+      title: setTitle('Tenders'),
+      authRequired: true
+    },
+  },
 
 {
     path: '/bids/awarded',

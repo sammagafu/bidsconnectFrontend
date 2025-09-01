@@ -19,7 +19,7 @@
                     <div v-for="bid in bids" :key="bid.id" class="border-bottom py-3">
                         <div class="d-flex justify-content-between align-items-start flex-column flex-md-row">
                             <div>
-                                <router-link :to="{ name: 'company.tenders-detail', params: { slug: getTenderSlug(bid.tender) } }" class="text-decoration-none">
+                                <router-link :to="{ name: 'company.bids-detail', params: { slug: getTenderSlug(bid.tender) } }" class="text-decoration-none">
                                     <h5 class="fw-bold text-dark mb-1">{{ bid.tender.title }}</h5>
                                 </router-link>
                                 <p class="small text-muted mb-1">
@@ -74,23 +74,26 @@ const fetchBids = async () => {
         return;
     }
     
-    const company_id = companies[0].id;
-    
-    if (!company_id) {
-        error.value = 'Company ID not found';
-        loading.value = false;
-        return;
+    // Aggregate bids from all companies if user has multiple
+    let allBids = [];
+    for (const company of companies) {
+        const company_id = company.id;
+        if (!company_id) continue;
+        
+        try {
+            const response = await api.get(`bids/by-company/?company_id=${company_id}`);
+            allBids = [...allBids, ...response.data];
+        } catch (err) {
+            console.error(`Error fetching bids for company ${company_id}:`, err);
+            // Optionally set error if all fail, but continue to fetch others
+        }
     }
     
-    try {
-        const response = await api.get(`bids/by-company/?company_id=${company_id}`);
-        bids.value = response.data;
-    } catch (err) {
-        error.value = 'Failed to load bids. Please try again later.';
-        console.error('Error fetching bids:', err);
-    } finally {
-        loading.value = false;
+    bids.value = allBids;
+    if (bids.value.length === 0) {
+        error.value = 'No bids found across your companies.';
     }
+    loading.value = false;
 };
 
 const formatDate = (date) => {
@@ -132,11 +135,12 @@ const getStatusClass = (status) => {
 };
 
 const getTenderSlug = (tender) => {
+    if (!tender) return '';
     return tender.slug || tender.reference_number.replace(/[^a-zA-Z0-9]+/g, '').toLowerCase();
 };
 
 const viewDetails = (bid) => {
-    router.push(`/tenders/${getTenderSlug(bid.tender)}`);
+    router.push({ name: 'company.bids-detail', params: { slug: getTenderSlug(bid.tender) } });
 };
 
 const viewBid = (bid) => {
