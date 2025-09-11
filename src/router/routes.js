@@ -824,6 +824,24 @@ const adminRoutes = [
     },
   component: () => import('@/views/admin/edit-tenders-admin.vue')  
   },
+    {
+    path: '/admin/bids/:id',
+    name: 'admin.bids-detail',
+    meta: {
+      title: setTitle('BIDS Details'),
+      authRequired: true
+    },
+    component: () => import('@/views/admin/bids-admin-detail.vue')  
+  },
+  {
+    path: '/admin/tenders/:slug',
+    name: 'admin.tenders-detail',
+    meta: {
+      title: setTitle('Tenders Management Details'),
+      authRequired: true
+    },
+    component: () => import('@/views/admin/tender-management-admin-details.vue')  
+  },
   {
     path: '/admin/tenders',
     name: 'admin.tenders-management',
@@ -1004,7 +1022,7 @@ const userRoutes = [
     },
   },
    {
-    path: '/bids/:slug',
+    path: '/bids/:id',
     name: 'company.bids-detail', 
     component: () => import('@/views/bids/users/users-bid-detail.vue'),
     meta: {

@@ -28,6 +28,12 @@
             small
             class="mb-0"
           >
+            <template #cell(title)="row">
+              <router-link :to="{ name: 'admin.tenders-detail', params: { slug: row.item.slug } }" class="text-decoration-none text-primary">
+                {{ row.item.title }}
+              </router-link>
+            </template>
+
             <template #cell(status)="row">
               <div class="d-flex align-items-center gap-2">
                 <b-form-select
@@ -50,6 +56,16 @@
             </template>
 
             <template #cell(actions)="row">
+              <b-button
+                size="sm"
+                variant="outline-info"
+                class="me-2"
+                @click="goToDetail(row.item)"
+                v-b-tooltip.hover
+                title="View Details"
+              >
+                <i class="pi pi-eye"></i>
+              </b-button>
               <b-button
                 size="sm"
                 variant="outline-primary"
@@ -103,7 +119,7 @@ const fields = [
   { key: 'reference_number',  label: 'Reference #',      sortable: true },
   { key: 'status',            label: 'Status',           sortable: true },
   { key: 'publication_date',  label: 'Publication Date', sortable: true },
-  { key: 'actions',           label: 'Actions',          thStyle: { width: '10rem' } },
+  { key: 'actions',           label: 'Actions',          thStyle: { width: '12rem' } },
 ]
 
 onMounted(fetchTenders)
@@ -152,6 +168,13 @@ function goToCreate() {
 function goToEdit(item) {
   router.push({
     name: 'admin.tenders-edit',
+    params: { slug: item.slug }
+  })
+}
+
+function goToDetail(item) {
+  router.push({
+    name: 'admin.tenders-detail',
     params: { slug: item.slug }
   })
 }
