@@ -29,6 +29,7 @@
     "axios-mock-adapter": "^2.0.0",
     "bootstrap": "^5.3.3",
     "bootstrap-vue-next": "^0.24.10",
+    "chart.js": "^4.5.0",
     "choices.js": "^10.2.0",
     "dayjs": "^1.11.13",
     "dropzone": "^6.0.0-beta.2",

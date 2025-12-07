@@ -798,6 +798,69 @@ const NORMAL_MENU_ITEMS = [
     icon: 'solar:cart-large-2-bold',
     label: 'Market Place',
     route: { name: 'user.marketplace-list' },
+    children: [
+      {
+        key: 'marketplace-products',
+        label: 'Market Place',
+        route: { name: 'user.marketplace-list' },
+        parentKey: 'apps-marketplace',
+      },
+      {
+        key: 'marketplace-products',
+        label: 'Add Products or Services',
+        route: { name: 'user.marketplace-list.add-product' },
+        parentKey: 'apps-marketplace',
+      },
+      {
+        key: 'marketplace-products',
+        label: 'My invoices',
+        route: { name: 'user.marketplace-list' },
+        parentKey: 'apps-marketplace',
+      },
+      {
+        key: 'marketplace-requested-quotes',
+        label: 'Requested Quotes',
+        route: { name: 'user.quote-request.list' },
+        parentKey: 'apps-marketplace',
+      },
+    ]
+  },
+  {
+    key: 'automation',
+    label: 'Automation',
+    isTitle: true,
+  },
+  {
+    key: 'automation-items',
+    label: 'Automation',
+    isTitle: false,
+    icon: 'solar:robot-broken',
+    children: [
+      {
+        key: 'power-of-attorney',
+        label: 'Power Of Attorney',
+        route: { name: 'automation.power-of-attorney' },
+        parentKey: 'automation-items',
+      },
+      {
+        key: 'tender-securing-declaration',
+        label: 'Tender Securing Declaration',
+        route: { name: 'automation.tender-securing-declaration' },
+        parentKey: 'automation-items',
+      },
+      {
+        key: 'litigation-history',
+        label: 'Litigation History',
+        route: { name: 'automation.litigation-history' },
+        parentKey: 'automation-items',
+      },
+      {
+        key: 'cover-letter',
+        label: 'Cover Letter',
+        route: { name: 'automation.cover-letter' },
+        parentKey: 'automation-items',
+      },
+    ]
   },
 ];
 

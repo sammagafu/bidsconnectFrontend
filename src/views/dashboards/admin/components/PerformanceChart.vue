@@ -22,5 +22,5 @@
   </b-col>
 </template>
 <script setup lang="ts">
-import { performanceChart } from '@/views/dashboards/components/data';
+import { performanceChart } from '@/views/dashboards/admin/components/data';
 </script>

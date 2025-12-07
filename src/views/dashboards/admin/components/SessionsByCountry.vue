@@ -43,7 +43,7 @@
 </template>
 <script setup lang="ts">
 import { Icon } from "@iconify/vue";
-import { countries } from '@/views/dashboards/components/data';
+import { countries } from '@/views/dashboards/admin/components/data';
 
 const worldMapOptions = {
   map: 'world',

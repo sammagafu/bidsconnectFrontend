@@ -41,13 +41,13 @@
                 <template #loading> Loading categories data. Please wait. </template>
 
                 <Column selectionMode="multiple" style="width: 3rem" :exportable="false"></Column>
-                <Column field="name" header="Name" sortable style="min-width: 16rem"></Column>
+                <Column field="name" header="Category" sortable style="min-width: 16rem"></Column>
                 <Column field="description" header="Description" style="min-width: 20rem">
                     <template #body="slotProps">
                         {{ slotProps.data.description || 'No description' }}
                     </template>
                 </Column>
-                <Column field="subcategories" header="Subcategories" style="min-width: 20rem">
+                <Column header="Subcategory" style="min-width: 20rem">
                     <template #body="slotProps">
                         <div class="flex flex-wrap gap-2">
                             <Chip v-for="(subcategory, index) in slotProps.data.subcategories" :key="index" 
@@ -146,7 +146,7 @@
             </div>
             <template #footer>
                 <Button label="No" icon="pi pi-times" text @click="deleteCategoriesDialog = false" />
-                <Button label="Yes" icon="pi pi-check" text @click="deleteSelectedCategories" />
+                <Button label="Yes" icon="pi pi-check" @click="deleteSelectedCategories" />
             </template>
         </Dialog>
 
@@ -173,8 +173,7 @@
                 </div>
                 <div>
                     <label for="edit-subcategory-desc" class="block font-bold mb-2">Description</label>
-                    <Textarea id="edit-subcategory-desc" v-model="editedSubcategory.description" 
-                        rows="3" cols="20" fluid />
+                    <Textarea id="edit-subcategory-desc" v-model="editedSubcategory.description" rows="3" cols="20" fluid />
                 </div>
             </div>
             <template #footer>
@@ -233,14 +232,18 @@ const fetchCategories = async () => {
     try {
         loading.value = true;
         const response = await api.get('marketplaces/categories-with-subcategories/');
-        categories.value = response.data.results || response.data;
-        // Fetch subcategories for each category
+        console.log('Fetched categories response:', response.data);
+        categories.value = response.data;
+        // Fetch subcategories for each category if not included
         await Promise.all(categories.value.map(async (cat) => {
-            const subResponse = await api.get('marketplaces/subcategories/', {
-                params: { category: cat.id }
-            });
-            cat.subcategories = subResponse.data.results || subResponse.data;
+            if (!cat.subcategories || cat.subcategories.length === 0) {
+                const subResponse = await api.get('marketplaces/subcategories/', {
+                    params: { category: cat.id }
+                });
+                cat.subcategories = subResponse.data.results || subResponse.data;
+            }
         }));
+        console.log('Processed categories:', categories.value);
     } catch (error) {
         console.error('Failed to fetch categories:', error);
         toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to fetch categories', life: 3000 });
@@ -280,13 +283,13 @@ const hideDialog = () => {
     editSubcategoryDialog.value = false;
 };
 
-// Start adding a new subcategory
+// Start adding subcategory
 const startAddingSubcategory = () => {
     isAddingSubcategory.value = true;
     newSubcategory.value = { name: '', description: '' };
 };
 
-// Add a new subcategory
+// Add subcategory
 const addSubcategory = () => {
     submitted.value = true;
     if (!newSubcategory.value.name.trim()) {
@@ -299,7 +302,7 @@ const addSubcategory = () => {
     submitted.value = false;
 };
 
-// Edit a subcategory
+// Edit subcategory
 const editSubcategory = (index) => {
     editedSubcategory.value = { ...category.value.subcategories[index] };
     editingSubcategoryIndex.value = index;
@@ -354,7 +357,7 @@ const saveCategory = async () => {
         let categoryId = category.value.id;
         if (categoryId) {
             // Update existing category
-            await api.put(`marketplaces/categories-with-subcategories/${categoryId}/`, {
+            await api.put(`marketplaces/categories/${categoryId}/`, {
                 name: category.value.name,
                 description: category.value.description
             });
@@ -364,20 +367,20 @@ const saveCategory = async () => {
                     await api.put(`marketplaces/subcategories/${sub.id}/`, {
                         name: sub.name,
                         description: sub.description,
-                        category: categoryId
+                        category_id: categoryId
                     });
                 } else {
                     await api.post('marketplaces/subcategories/', {
                         name: sub.name,
                         description: sub.description,
-                        category: categoryId
+                        category_id: categoryId
                     });
                 }
             }));
             toast.add({ severity: 'success', summary: 'Successful', detail: 'Category Updated', life: 3000 });
         } else {
             // Create new category
-            const response = await api.post('marketplaces/categories-with-subcategories/', {
+            const response = await api.post('marketplaces/categories/', {
                 name: category.value.name,
                 description: category.value.description
             });
@@ -388,7 +391,7 @@ const saveCategory = async () => {
                     api.post('marketplaces/subcategories/', {
                         name: sub.name,
                         description: sub.description,
-                        category: categoryId
+                        category_id: categoryId
                     })
                 ));
             }
@@ -427,7 +430,7 @@ const confirmDeleteCategory = (cat) => {
 // Delete single category
 const deleteCategory = async () => {
     try {
-        await api.delete(`marketplaces/categories-with-subcategories/${category.value.id}/`);
+        await api.delete(`marketplaces/categories/${category.value.id}/`);
         await fetchCategories();
         deleteCategoryDialog.value = false;
         category.value = { name: '', description: '', subcategories: [] };
@@ -447,7 +450,7 @@ const confirmDeleteSelected = () => {
 const deleteSelectedCategories = async () => {
     try {
         await Promise.all(selectedCategories.value.map(cat => 
-            api.delete(`marketplaces/categories-with-subcategories/${cat.id}/`)
+            api.delete(`marketplaces/categories/${cat.id}/`)
         ));
         await fetchCategories();
         deleteCategoriesDialog.value = false;

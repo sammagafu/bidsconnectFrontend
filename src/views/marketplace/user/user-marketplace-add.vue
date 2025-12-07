@@ -40,16 +40,6 @@
           />
         </b-form-group>
 
-        <b-form-group v-if="auth.isSuperAdmin || auth.isStaffUser" class="mb-3" label="Company" label-for="company">
-          <b-form-select
-            id="company"
-            v-model="store.product.company"
-            :options="companiesList"
-            :state="!errors.company"
-            required
-          />
-        </b-form-group>
-
         <b-form-group class="mb-3" label="Category" label-for="category">
           <b-form-select
             id="category"
@@ -225,14 +215,12 @@ import { useRouter } from 'vue-router';
 import { useToast } from 'primevue/usetoast';
 import { api } from '@/services/authService';
 import VerticalLayout from '@/layouts/VerticalLayout.vue';
-import { useAuthStore } from '@/stores/auth';
 
 const toast = useToast();
 const router = useRouter();
-const auth = useAuthStore();
 const store = ref({
   step: 1,
-  product: { name: '', type: '', description: '', company: null, category_id: null, subcategory_id: null, featured_image: null },
+  product: { name: '', type: '', description: '', category_id: null, subcategory_id: null, featured_image: null },
   back: () => { if (store.value.step > 1) store.value.step--; }
 });
 const progress = computed(() => ((store.value.step - 1) / 3) * 100);
@@ -240,7 +228,6 @@ const errors = ref({});
 const categoriesWithSubs = ref([]);
 const categories = ref([]);
 const subcategories = ref([]);
-const companiesList = ref([]);
 const prices = ref([]);
 const images = ref([]);
 const typeOptions = [
@@ -253,7 +240,6 @@ function validateStep1() {
   if (!store.value.product.name) errors.value.name = true;
   if (!store.value.product.type) errors.value.type = true;
   if (!store.value.product.description) errors.value.description = true;
-  if ((auth.isSuperAdmin || auth.isStaffUser) && !store.value.product.company) errors.value.company = true;
   if (!store.value.product.category_id) errors.value.category_id = true;
   if (!store.value.product.subcategory_id) errors.value.subcategory_id = true;
   return Object.keys(errors.value).length === 0;
@@ -291,7 +277,7 @@ function removeImage(i) {
 
 function resetAll() {
   store.value.step = 1;
-  store.value.product = { name: '', type: '', description: '', company: null, category_id: null, subcategory_id: null, featured_image: null };
+  store.value.product = { name: '', type: '', description: '', category_id: null, subcategory_id: null, featured_image: null };
   prices.value = [];
   images.value = [];
 }
@@ -320,24 +306,12 @@ async function fetchCategoriesWithSubcategories() {
   }
 }
 
-async function fetchCompanies() {
-  if (auth.isSuperAdmin || auth.isStaffUser) {
-    try {
-      const res = await api.get('accounts/companies/');
-      companiesList.value = res.data.map(c => ({ value: c.id, text: c.name }));
-    } catch {
-      toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to load companies' });
-    }
-  }
-}
-
 async function submitProduct() {
   try {
     const productData = new FormData();
     productData.append('name', store.value.product.name);
     productData.append('type', store.value.product.type);
     productData.append('description', store.value.product.description);
-    if (store.value.product.company) productData.append('company', store.value.product.company);
     productData.append('category_id', store.value.product.category_id);
     productData.append('subcategory_id', store.value.product.subcategory_id);
     if (store.value.product.featured_image) productData.append('featured_image', store.value.product.featured_image);
@@ -346,7 +320,7 @@ async function submitProduct() {
     const productId = resProduct.data.id;
 
     for (const price of prices.value) {
-      await api.post('marketplaces/prices/', { ...price, product_service: productId });
+      await api.post('marketplace/prices/', { ...price, product_service: productId });
     }
 
     for (const img of images.value) {
@@ -365,13 +339,7 @@ async function submitProduct() {
   }
 }
 
-onMounted(async () => {
-  await fetchCategoriesWithSubcategories();
-  await fetchCompanies();
-  if (!auth.isSuperAdmin && !auth.isStaffUser && auth.companies.length > 0) {
-    store.value.product.company = auth.companies[0].id;
-  }
-});
+onMounted(fetchCategoriesWithSubcategories);
 </script>
 
 <style scoped>

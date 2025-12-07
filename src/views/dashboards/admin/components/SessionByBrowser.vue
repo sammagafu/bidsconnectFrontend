@@ -15,5 +15,5 @@
 </template>
 <script setup lang="ts">
 import simplebar from 'simplebar-vue'
-import { sessionBrowser } from '@/views/dashboards/components/data';
+import { sessionBrowser } from '@/views/dashboards/admin/components/data';
 </script>

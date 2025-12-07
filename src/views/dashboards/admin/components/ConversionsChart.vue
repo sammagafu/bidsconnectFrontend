@@ -20,5 +20,5 @@
   </b-col>
 </template>
 <script setup lang="ts">
-import { conversionsChart } from '@/views/dashboards/components/data';
+import { conversionsChart } from '@/views/dashboards/admin/components/data';
 </script>

@@ -66,6 +66,7 @@ import '@vueup/vue-quill/dist/vue-quill.bubble.css';
 import 'bootstrap-vue-next/dist/bootstrap-vue-next.css';
 import '@/assets/scss/app.scss';
 import '@/assets/scss/icons.scss';
+import Chart from 'primevue/chart';
 import 'primeicons/primeicons.css';
 import ToastService from 'primevue/toastservice';
 
@@ -111,6 +112,7 @@ app.component('Divider', Divider);
 app.component('FileUpload', FileUpload);
 app.component('Calendar', Calendar); // Register Calendar
 app.component('Chips', Chips); // Register Chips
+app.component('Chart', Chart);
 
 authService.initializeAuth(); // Initialize auth before mounting
 

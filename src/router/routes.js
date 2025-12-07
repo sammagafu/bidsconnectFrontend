@@ -1,3 +1,4 @@
+
 import path from 'path';
 
 const setTitle = (title) => {
@@ -899,6 +900,15 @@ const adminRoutes = [
       authRequired: true
     },
     component: () => import('@/views/marketplace/admin/admin-marketplace-products.vue')
+  },
+  {
+    path: '/admin/marketplace/products-management/:id',
+    name: 'admin.marketplace.products-details',
+    meta: {
+      title: setTitle('Marketplace Products Details'),
+      authRequired: true
+    },
+    component: () => import('@/views/marketplace/admin/admin-marketplace-products.vue')
   }
 ];
 
@@ -1004,11 +1014,39 @@ const userRoutes = [
     },
   },
   {
+    path: '/marketplace/add-product/',
+    name: 'user.marketplace-list.add-product', 
+    component: () => import('@/views/marketplace/user/user-marketplace-add.vue'),
+    meta: {
+      title: setTitle('Marketplace'),
+      authRequired: true
+    },
+  },
+  {
     path: '/marketplace/',
     name: 'user.marketplace-list', 
     component: () => import('@/views/marketplace/user/user-marketplace-productlist.vue'),
     meta: {
       title: setTitle('Marketplace'),
+      authRequired: true
+    },
+  },
+   {
+    path: '/marketplace/request-for-quote/',
+    name: 'user.marketplace-list', 
+    component: () => import('@/views/marketplace/user/request-for-quote.vue'),
+    meta: {
+      title: setTitle('Marketplace'),
+      authRequired: true
+    },
+  },
+
+   {
+    path: '/marketplace/request-for-quote',
+    name: 'user.quote-request.list', 
+    component: () => import('@/views/marketplace/user/invoices-ask.vue'),
+    meta: {
+      title: setTitle('Request For Quote'),
       authRequired: true
     },
   },
@@ -1098,6 +1136,82 @@ const userRoutes = [
   },
 ];
 
+// Automation routes
+const automationRoutes = [
+  {
+    path: '/automation/power-of-attorney',
+    name: 'automation.power-of-attorney',
+    meta: {
+      title: setTitle('Power Of Attorney'),
+      authRequired: true
+    },
+    component: () => import('@/views/automation/PowerOfAttorney.vue')
+  },
+  {
+    path: '/automation/power-of-attorney/:id',
+    name: 'automation.power-of-attorney.detail',
+    meta: {
+      title: setTitle('Power Of Attorney Detail'),
+      authRequired: true
+    },
+    component: () => import('@/views/automation/PowerOfAttorneyDetail.vue')
+  },
+  {
+    path: '/automation/tender-securing-declaration',
+    name: 'automation.tender-securing-declaration',
+    meta: {
+      title: setTitle('Tender Securing Declaration'),
+      authRequired: true
+    },
+    component: () => import('@/views/automation/TenderSecuringDeclaration.vue')
+  },
+  {
+    path: '/automation/tender-securing-declaration/:id',
+    name: 'automation.tender-securing-declaration.detail',
+    meta: {
+      title: setTitle('Tender Securing Declaration Detail'),
+      authRequired: true
+    },
+    component: () => import('@/views/automation/TenderSecuringDeclarationDetail.vue')
+  },
+  {
+    path: '/automation/litigation-history',
+    name: 'automation.litigation-history',
+    meta: {
+      title: setTitle('Litigation History'),
+      authRequired: true
+    },
+    component: () => import('@/views/automation/LitigationHistory.vue')
+  },
+  {
+    path: '/automation/litigation-history/:id',
+    name: 'automation.litigation-history.detail',
+    meta: {
+      title: setTitle('Litigation History Detail'),
+      authRequired: true
+    },
+    component: () => import('@/views/automation/LitigationHistoryDetail.vue')
+  },
+  {
+    path: '/automation/cover-letter',
+    name: 'automation.cover-letter',
+    meta: {
+      title: setTitle('Cover Letter'),
+      authRequired: true
+    },
+    component: () => import('@/views/automation/CoverLetter.vue')
+  },
+  {
+    path: '/automation/cover-letter/:id',
+    name: 'automation.cover-letter.detail',
+    meta: {
+      title: setTitle('Cover Letter Detail'),
+      authRequired: true
+    },
+    component: () => import('@/views/automation/CoverLetterDetail.vue')
+  }
+];
+
 export const allRoutes = [
   ...dashboardRoutes,
   ...pagesRoutes,
@@ -1113,5 +1227,6 @@ export const allRoutes = [
   ...mapsRoutes,
   ...adminRoutes,
   ...staffRoutes,
-  ...userRoutes
+  ...userRoutes,
+  ...automationRoutes
 ];

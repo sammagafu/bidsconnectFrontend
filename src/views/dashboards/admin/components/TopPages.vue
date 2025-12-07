@@ -31,5 +31,5 @@
   </b-col>
 </template>
 <script setup lang="ts">
-import { topPages } from '@/views/dashboards/components/data';
+import { topPages } from '@/views/dashboards/admin/components/data';
 </script>

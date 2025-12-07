@@ -136,20 +136,20 @@ export const useAuthStore = defineStore('auth', {
       }
     },
 
-updateUser(user) {
-  if (!user) {
-    console.warn('updateUser called with null/undefined user; skipping update.');
-    return;
-  }
-  if (JSON.stringify(this.user) !== JSON.stringify(user)) {
-    this.user = user;
-    this.token = authService.getToken();
-    this.companies = user.companies || [];
-    this.updateRoles();
-    const storage = localStorage.getItem('auth_token') ? localStorage : sessionStorage;
-    storage.setItem('user_data', JSON.stringify(user));
-  }
-},
+    updateUser(user) {
+      if (!user) {
+        console.warn('updateUser called with null/undefined user; skipping update.');
+        return;
+      }
+      if (JSON.stringify(this.user) !== JSON.stringify(user)) {
+        this.user = user;
+        this.token = authService.getToken();
+        this.companies = user.companies || [];
+        this.updateRoles();
+        const storage = localStorage.getItem('auth_token') ? localStorage : sessionStorage;
+        storage.setItem('user_data', JSON.stringify(user));
+      }
+    },
 
     updateRoles() {  // renamed from _updateRoles
       this.isSuperAdmin = this.user?.is_superuser === true;
@@ -169,7 +169,7 @@ updateUser(user) {
     },
 
     shouldShowCompanyModal() {
-      return this.isAuthenticated && !this.isCompanyAdmin && !this.hasCompanies();
+      return this.isAuthenticated && !this.isSuperAdmin && !this.hasCompanies();
     },
 
     startTokenRefresh() {
