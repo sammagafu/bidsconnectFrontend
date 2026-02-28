@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "run-p type-check \"build-only {@}\" --",
     "preview": "vite preview",
-    "build-only": "vite build",
+    "build-only": "node --max-old-space-size=4096 node_modules/.bin/vite build",
     "type-check": "vue-tsc --build --force"
   },
   "dependencies": {
