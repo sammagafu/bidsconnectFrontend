@@ -15,7 +15,7 @@
                     <!-- Tender details -->
                     <div v-if="tender" class="mb-4">
                         <h5 class="fw-bold text-dark mb-3">Tender Details</h5>
-                        <div class="border p-3 rounded bg-light">
+                        <div class="border p-3 rounded bg-body-tertiary">
                             <p class="mb-1"><strong>Title:</strong> {{ tender.title || 'N/A' }}</p>
                             <p class="mb-1"><strong>Description:</strong> {{ tender.description || 'N/A' }}</p>
                             <p class="mb-1"><strong>Agency:</strong> {{ tender.agency?.name || 'Unknown Agency' }}</p>
@@ -50,7 +50,7 @@
                     <!-- Your Bid details -->
                     <div v-if="bid" class="mb-4">
                         <h5 class="fw-bold text-dark mb-3">Your Bid Details</h5>
-                        <div class="border p-3 rounded bg-light">
+                        <div class="border p-3 rounded bg-body-tertiary">
                             <p class="mb-1"><strong>Total Price:</strong> {{ bid.total_price || 0 }} {{ bid.currency || '' }}</p>
                             <p class="mb-1"><strong>Status:</strong> <span :class="['badge', getStatusClass(bid.status)]">{{ (bid.status || '').toUpperCase() }}</span></p>
                             <p class="mb-1"><strong>Submission Date:</strong> {{ formatDateTime(bid.submission_date) }}</p>
@@ -237,7 +237,7 @@
 import { ref, onMounted } from 'vue';
 import VerticalLayout from "@/layouts/VerticalLayout.vue";
 import Timeline from 'primevue/timeline';
-import { api } from '@/services/authService';
+import { bidsService, parseApiError } from '@/services';
 import { useRouter, useRoute } from 'vue-router';
 
 const bid = ref(null);
@@ -363,23 +363,19 @@ const auditFields = [
 
 const fetchBidDetails = async () => {
     loading.value = true;
-    const id = route.params.id;  // Use id from route
-    
+    const id = route.params.id;
+
     try {
-        // Fetch bid by id
-        const bidResponse = await api.get(`bids/${id}/`);
-        bid.value = bidResponse.data;
+        bid.value = await bidsService.get(id);
         tender.value = bid.value.tender;
 
-        // Fetch all bidders for the tender
-        const biddersResponse = await api.get(`bids/?tender=${tender.value.id}`);
-        bidders.value = biddersResponse.data.filter(b => b.id !== id);
+        const list = await bidsService.list({ tender: tender.value.id });
+        const arr = Array.isArray(list) ? list : list?.results ?? [];
+        bidders.value = arr.filter(b => b.id !== id);
 
-        // Update currentIndex based on tender.status
         currentIndex.value = getStageIndex(tender.value.status.toLowerCase());
     } catch (err) {
-        error.value = 'Failed to load bid details. Please try again later.';
-        console.error('Error fetching bid:', err);
+        error.value = parseApiError(err) || 'Failed to load bid details. Please try again later.';
     } finally {
         loading.value = false;
     }
@@ -393,15 +389,12 @@ const uploadDocument = async () => {
         formData.append('file', newDocument.value.file);
         formData.append('description', newDocument.value.description);
 
-        await api.post(`bids/${bid.value.id}/documents/`, formData, {
-            headers: { 'Content-Type': 'multipart/form-data' }
-        });
+        await bidsService.addDocument(bid.value.id, formData);
         alert('Document uploaded successfully!');
-        await fetchBidDetails();  // Refresh bid data
+        await fetchBidDetails();
         newDocument.value = { tender_document: null, file: null, description: '' };
     } catch (err) {
-        console.error('Error uploading document:', err);
-        alert('Failed to upload document: ' + (err.response?.data?.error || 'Unknown error'));
+        alert('Failed to upload document: ' + (parseApiError(err) || 'Unknown error'));
     } finally {
         uploading.value = false;
     }
@@ -419,12 +412,11 @@ const viewDocument = (document) => {
 const deleteDocument = async (document) => {
     if (confirm('Are you sure you want to delete this document?')) {
         try {
-            await api.delete(`bids/${bid.value.id}/documents/${document.id}/`);
+            await bidsService.deleteDocument(bid.value.id, document.id);
             alert('Document deleted successfully!');
             await fetchBidDetails();
         } catch (err) {
-            console.error('Error deleting document:', err);
-            alert('Failed to delete document.');
+            alert('Failed to delete document: ' + (parseApiError(err) || 'Unknown error'));
         }
     }
 };
@@ -489,7 +481,7 @@ p {
   font-size: 0.75rem;
 }
 .border-bottom {
-  border-bottom: 1px solid #dee2e6;
+  border-bottom: 1px solid var(--bs-border-color);
 }
 .py-3 {
   padding-top: 1rem;
@@ -504,10 +496,6 @@ p {
 .mb-1 {
   margin-bottom: 0.25rem;
 }
-.bg-light {
-  background-color: #f8f9fa !important;
-}
-
 /* Timeline Styles (adjust as needed for PrimeVue) */
 .custom-marker {
   display: flex;

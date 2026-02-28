@@ -42,7 +42,7 @@
                       <i :class="showPassword ? 'pi pi-eye-slash' : 'pi pi-eye'" />
                     </span>
                   </div>
-                  <div v-if="v.password.$errors" class="text-danger">
+                  <div v-if="v.password.$error" class="text-danger">
                     <span v-for="(err, idx) in v.password.$errors" :key="idx">
                       {{ err.$message }}
                     </span>
@@ -86,6 +86,7 @@ import { useVuelidate } from '@vuelidate/core';
 import { ref, reactive, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
+import { parseApiError } from '@/services/api';
 import { useToast } from 'primevue/usetoast';
 import InputText from 'primevue/inputtext';
 
@@ -116,10 +117,8 @@ const togglePassword = () => {
 
 const handleSignIn = async () => {
   try {
-    console.log('Form submitted, validating...');
     v.value.$touch();
     if (v.value.$invalid) {
-      console.log('Validation failed:', v.value.$errors);
       error.value = 'Please fill in all required fields correctly';
       toast.add({
         severity: 'error',
@@ -130,7 +129,6 @@ const handleSignIn = async () => {
       return;
     }
 
-    console.log('Validation passed, proceeding with login...');
     loading.value = true;
     error.value = '';
 
@@ -142,42 +140,18 @@ const handleSignIn = async () => {
       checked.value
     );
 
-    console.log('Login successful, user stored in Pinia:', authStore.user);
-    console.log('Is Authenticated:', authStore.isAuthenticated);
+    await authStore.initialize();
 
-    // Add a slight delay to ensure state updates propagate
-    await new Promise(resolve => setTimeout(resolve, 100));
+    await router.push({ path: '/' });  // Always redirect to dashboard root
 
-    const redirect = router.currentRoute.value.query.redirect || { name: 'dashboards.index' };
-    console.log('Redirecting to:', redirect);
-
-    // Check if the redirect route exists
-    const resolvedRoute = router.resolve(redirect);
-    if (!resolvedRoute.matched.length) {
-      console.error('Redirect route not found, redirecting to a fallback route');
-      await router.push('/');
-    } else {
-      await router.push(redirect);
-    }
   } catch (err) {
-    console.error('Login error:', err);
-    if (err.message === 'Token refresh failed') {
-      toast.add({
-        severity: 'error',
-        summary: 'Session Expired',
-        detail: 'Your session has expired. Please log in again.',
-        life: 3000,
-      });
-      // Redirect is handled by authService.js
-    } else {
-      error.value = err.detail || err.message || 'Invalid credentials';
-      toast.add({
-        severity: 'error',
-        summary: 'Login Failed',
-        detail: error.value,
-        life: 3000,
-      });
-    }
+    error.value = parseApiError(err) || 'Invalid credentials';
+    toast.add({
+      severity: 'error',
+      summary: 'Login Failed',
+      detail: error.value,
+      life: 3000,
+    });
   } finally {
     loading.value = false;
   }

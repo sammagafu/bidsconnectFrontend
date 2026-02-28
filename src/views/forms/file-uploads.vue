@@ -20,7 +20,7 @@
                   <div class="border rounded">
                     <div class="d-flex align-items-center p-2">
                       <div class="flex-shrink-0 me-3">
-                        <div class="avatar-sm bg-light rounded">
+                        <div class="avatar-sm bg-body-tertiary rounded">
                           <img data-dz-thumbnail class="img-fluid rounded d-block" src="#" alt="Dropzone-Img"/>
                         </div>
                       </div>

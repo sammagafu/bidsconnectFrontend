@@ -37,7 +37,7 @@
               <b-col cols="12">
                 <div class="table-responsive table-borderless text-nowrap mt-3 table-centered mb-0">
                   <table class="table mb-0">
-                    <thead class="bg-light bg-opacity-50">
+                    <thead class="bg-body-tertiary">
                       <tr>
                         <th class="border-0 py-2">Product Name</th>
                         <th class="border-0 py-2">Quantity</th>

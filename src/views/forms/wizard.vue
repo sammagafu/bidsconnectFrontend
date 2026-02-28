@@ -47,7 +47,7 @@
                       class="avatar-title bg-body rounded-circle border border-3 border-dashed-light position-relative">
                       <label for="imageInput" class="position-absolute end-0 bottom-0">
                         <div class="avatar-xs cursor-pointer">
-                          <span class="avatar-title bg-light text-dark rounded-circle"><i
+                          <span class="avatar-title bg-body-tertiary text-dark rounded-circle"><i
                               class="bx bx-camera"></i></span>
                         </div>
                       </label>
@@ -187,7 +187,7 @@
                       class="avatar-title bg-body rounded-circle border border-3 border-dashed-light position-relative">
                       <label for="imageInput" class="position-absolute end-0 bottom-0">
                         <div class="avatar-xs cursor-pointer">
-                          <span class="avatar-title bg-light text-dark rounded-circle">
+                          <span class="avatar-title bg-body-tertiary text-dark rounded-circle">
                             <i class="bx bx-camera"></i>
                           </span>
                         </div>

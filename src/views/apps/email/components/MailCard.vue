@@ -17,13 +17,13 @@
         <span v-if="mail.message">
           {{ mail.message }}
         </span>
-        <b-badge variant="light" class="border text-dark fw-semibold ms-1" v-for="(attach, idx) in mail.attachments" :key="idx">
+        <b-badge class="border border-secondary bg-body-tertiary text-body fw-semibold ms-1" v-for="(attach, idx) in mail.attachments" :key="idx">
           <i class="bx bx-images text-primary me-2" v-if="mail.attachType === 'image'" />
           <i class="bx bxs-file-pdf text-danger text-primary me-2" v-if="mail.attachType === 'pdf'" />
           <i class="bx bxs-file-doc text-blue me-2" v-if="mail.attachType === 'doc'" />
           {{ attach }}
         </b-badge>
-        <b-badge variant="light" class="border text-dark fw-semibold rounded-circle" v-if="mail.badge">
+        <b-badge class="border border-secondary bg-body-tertiary text-body fw-semibold rounded-circle" v-if="mail.badge">
           {{ mail.badge }}
         </b-badge>
       </a>

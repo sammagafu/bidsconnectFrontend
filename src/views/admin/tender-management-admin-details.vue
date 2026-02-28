@@ -20,7 +20,7 @@
         <b-card-body v-if="tender">
           <!-- Tender Info Section -->
           <h5 class="mb-3">Tender Information</h5>
-          <div class="border p-3 rounded bg-light mb-4">
+          <div class="border p-3 rounded bg-body-tertiary mb-4">
             <p class="mb-1"><strong>Reference #:</strong> {{ tender.reference_number }}</p>
             <p class="mb-1"><strong>Description:</strong> {{ tender.description || 'N/A' }}</p>
             <p class="mb-1"><strong>Category:</strong> {{ tender.category?.name || 'N/A' }}</p>
@@ -90,7 +90,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { api } from '@/services/authService'
+import { tendersService, bidsService, parseApiError } from '@/services'
 import VerticalLayout from '@/layouts/VerticalLayout.vue'
 import { useToast } from 'primevue/usetoast'
 import Dialog from 'primevue/dialog'
@@ -126,11 +126,10 @@ async function fetchTenderDetails() {
   }
 
   try {
-    const res = await api.get(`tenders/tenders/${slug}/`)
-    tender.value = res.data
+    tender.value = await tendersService.get(slug)
     await fetchBids()
-  } catch {
-    toast.add({ severity: 'error', summary: 'Error', detail: 'Could not load tender details.' })
+  } catch (err) {
+    toast.add({ severity: 'error', summary: 'Error', detail: parseApiError(err) || 'Could not load tender details.' })
     router.back()
   }
 }
@@ -138,10 +137,10 @@ async function fetchTenderDetails() {
 async function fetchBids() {
   if (!tender.value?.id) return
   try {
-    const res = await api.get(`bids/?tender=${tender.value.id}`)
-    bids.value = res.data.results || res.data || []
-  } catch {
-    toast.add({ severity: 'error', summary: 'Error', detail: 'Could not load bids.' })
+    const data = await bidsService.list({ tender: tender.value.id })
+    bids.value = Array.isArray(data) ? data : data?.results ?? data ?? []
+  } catch (err) {
+    toast.add({ severity: 'error', summary: 'Error', detail: parseApiError(err) || 'Could not load bids.' })
   }
 }
 
@@ -164,12 +163,12 @@ function openAwardModal() {
 
 async function awardTender() {
   try {
-    await api.patch(`tenders/tenders/${tender.value.slug}/award/`, { awarded_bid: selectedBid.value })
+    await tendersService.award(tender.value.slug, selectedBid.value)
     toast.add({ severity: 'success', summary: 'Success', detail: 'Tender awarded successfully.' })
     awardModalVisible.value = false
-    await fetchTenderDetails()  // Refresh tender to show awarded_bid
-  } catch {
-    toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to award tender.' })
+    await fetchTenderDetails()
+  } catch (err) {
+    toast.add({ severity: 'error', summary: 'Error', detail: parseApiError(err) || 'Failed to award tender.' })
   }
 }
 
@@ -207,6 +206,5 @@ function exportBidsCSV() {
 .mb-4 { margin-bottom: 1.5rem; }
 .mb-3 { margin-bottom: 1rem; }
 .mb-1 { margin-bottom: 0.25rem; }
-.bg-light { background-color: #f8f9fa !important; }
 .gap-2 { gap: .5rem; }
 </style>

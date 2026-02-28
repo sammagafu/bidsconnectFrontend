@@ -125,7 +125,7 @@
 
         <UIComponentCard title="Transcluent" id="transcluent"
           caption="Toasts are slightly translucent, too, so they blend over whatever they might appear over. For browsers that support the backdrop-filter CSS property, we’ll also attempt to blur the elements under a toast.">
-          <div class="p-3 bg-light">
+          <div class="p-3 bg-body-tertiary">
             <b-toast :model-value="true" role="alert" aria-live="assertive" aria-atomic="true" :noCloseButton="true"
               header-class="d-flex justify-content-between">
               <template #title>
@@ -144,7 +144,7 @@
         </UIComponentCard>
 
         <UIComponentCard title="Placement" id="placement">
-          <div aria-live="polite" aria-atomic="true" class="bg-light position-relative mt-3" style="min-height: 350px">
+          <div aria-live="polite" aria-atomic="true" class="bg-body-tertiary position-relative mt-3" style="min-height: 350px">
             <div class="toast-container position-absolute p-3" id="toastPlacement" :class="selected">
               <b-toast :model-value="true" :noCloseButton="true" header-class="d-flex justify-content-between">
                 <template #title>

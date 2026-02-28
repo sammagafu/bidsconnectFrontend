@@ -176,7 +176,7 @@ onMounted(() => {
     // Display the slider value and how far the handle moved
     // from the left edge of the slider.
     nonLinearSlider.noUiSlider.on('update', function (values: string, handle: number, positions: number[]) {
-      nodes[handle].innerHTML = values[handle] + ', ' + positions[handle].toFixed(2) + '%';
+      nodes[handle].textContent = values[handle] + ', ' + positions[handle].toFixed(2) + '%';
     });
   }
 
@@ -241,10 +241,10 @@ onMounted(() => {
 
   if (slider1 && slider2) {
     slider1.noUiSlider.on('update', function (values: string, handle: number) {
-      slider1Value.innerHTML = values[handle];
+      slider1Value.textContent = values[handle];
     });
     slider2.noUiSlider.on('update', function (values: string, handle: number) {
-      slider2Value.innerHTML = values[handle];
+      slider2Value.textContent = values[handle];
     });
 
     function setLockedValues() {
@@ -345,7 +345,7 @@ onMounted(() => {
               offset = (textIsRtl && !isVertical ? 100 : 0) + offset / handlesInPool - lastOffset;
 
               // Center this tooltip over the affected handles
-              tooltips[handleNumber].innerHTML = poolValues[poolIndex].join(separator);
+              tooltips[handleNumber].textContent = poolValues[poolIndex].join(separator);
               tooltips[handleNumber].style.display = 'block';
               tooltips[handleNumber].style[direction] = offset + '%';
             } else {

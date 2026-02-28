@@ -49,16 +49,28 @@
                       v-model="form.password"
                       :type="showPassword ? 'text' : 'password'"
                       class="form-control"
-                      placeholder="Enter your password"
+                      placeholder="Enter your password (must pass validators)"
                       required
                     />
                     <span class="position-absolute end-0 me-3" style="cursor: pointer;" @click="togglePassword">
                       <i :class="showPassword ? 'pi pi-eye-slash' : 'pi pi-eye'" />
                     </span>
                   </div>
+                  <small class="text-muted">Min length, no common passwords (Django validators apply).</small>
+                </b-form-group>
+                <b-form-group label="Confirm Password" class="mb-3">
+                  <div class="position-relative d-flex align-items-center">
+                    <InputText
+                      v-model="form.password_confirm"
+                      :type="showPassword ? 'text' : 'password'"
+                      class="form-control"
+                      placeholder="Confirm your password"
+                    />
+                  </div>
+                  <div v-if="passwordMismatch" class="text-danger small">Passwords do not match.</div>
                 </b-form-group>
                 <div class="mb-1 text-center d-grid">
-                  <b-button type="submit" variant="primary" :disabled="loading">
+                  <b-button type="submit" variant="primary" :disabled="loading || passwordMismatch">
                     {{ loading ? 'Registering...' : 'Sign Up' }}
                   </b-button>
                 </div>
@@ -78,9 +90,9 @@
 <script setup>
 import AuthLayout from '@/layouts/AuthLayout.vue';
 import LogoBox from '@/components/LogoBox.vue'; // Assuming this component exists
-import { ref, onMounted } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { api } from '@/services/authService';
+import { api, parseApiError } from '@/services/api';
 import { useToast } from 'primevue/usetoast';
 import { useAuthStore } from '@/stores/auth';
 import InputText from 'primevue/inputtext';
@@ -96,12 +108,17 @@ const form = ref({
   email: '',
   phone_number: '',
   password: '',
+  password_confirm: '',
   invitation_token: '',
 });
 
 const error = ref('');
 const loading = ref(false);
 const showPassword = ref(false);
+
+const passwordMismatch = computed(() =>
+  form.value.password_confirm.length > 0 && form.value.password !== form.value.password_confirm
+);
 
 // Check for invitation token on mount
 onMounted(() => {
@@ -117,63 +134,46 @@ const togglePassword = () => {
   showPassword.value = !showPassword.value;
 };
 
-// Register user and accept invitation if token is provided
+// Register user — POST /api/v1/accounts/users/ (invitation_token in body accepts invite)
 const registerUser = async () => {
+  if (passwordMismatch.value) {
+    error.value = 'Passwords do not match.';
+    toast.add({ severity: 'error', summary: 'Validation', detail: error.value, life: 3000 });
+    return;
+  }
+
   loading.value = true;
   error.value = '';
   try {
-    // Register the user using Djoser's endpoint
     const payload = {
+      email: form.value.email,
+      password: form.value.password,
+      phone_number: form.value.phone_number,
       first_name: form.value.first_name,
       last_name: form.value.last_name,
-      email: form.value.email,
-      phone_number: form.value.phone_number,
-      password: form.value.password,
+      invitation_token: form.value.invitation_token || '',
     };
 
-    // If there's an invitation token, include it in the payload
-    if (form.value.invitation_token) {
-      payload.invitation_token = form.value.invitation_token;
-    }
-
-    // Register the user (Djoser's endpoint, likely /api/v1/users/)
     await api.post('accounts/users/', payload);
 
     toast.add({
       severity: 'success',
       summary: 'Success',
-      detail: 'Registration successful! Please log in.',
+      detail: 'Registration successful! Please sign in.',
       life: 3000,
     });
 
-    // If there was an invitation token, accept the invitation
-    if (form.value.invitation_token) {
-      await api.post(`accept-invitation/${form.value.invitation_token}/`);
-      toast.add({
-        severity: 'success',
-        summary: 'Success',
-        detail: 'Invitation accepted successfully!',
-        life: 3000,
-      });
-    }
-
-    // Redirect to login page
-    router.push('/auth/sign-in');
-  } catch (error) {
-    console.error('Registration failed:', error);
-    const errorDetail = error.response?.data || { message: 'Registration failed' };
-    error.value = errorDetail.message || 'Registration failed';
+    router.push({ name: 'auth.sign-in' });
+  } catch (err) {
+    error.value = parseApiError(err) || 'Registration failed.';
     toast.add({
       severity: 'error',
-      summary: 'Error',
+      summary: 'Registration failed',
       detail: error.value,
-      life: 3000,
+      life: 5000,
     });
   } finally {
     loading.value = false;
   }
 };
 </script>
-
-
-<!-- TODO add add password confirmation -->

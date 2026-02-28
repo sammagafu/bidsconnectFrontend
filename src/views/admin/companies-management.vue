@@ -229,7 +229,7 @@
   import { FilterMatchMode } from '@primevue/core/api';
   import { useToast } from 'primevue/usetoast';
   import { useRouter } from 'vue-router';
-  import { api } from '@/services/authService';
+  import { companiesService, parseApiError } from '@/services';
   import { useAuthStore } from '@/stores/auth';
   import VerticalLayout from '@/layouts/VerticalLayout.vue';
   
@@ -265,11 +265,10 @@
   const fetchCompanies = async () => {
     try {
       loading.value = true;
-      const response = await api.get('accounts/companies/');
-      companies.value = response.data;
+      const data = await companiesService.list();
+      companies.value = Array.isArray(data) ? data : data?.results ?? data ?? [];
     } catch (error) {
-      console.error('Failed to fetch companies:', error);
-      toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to fetch companies', life: 3000 });
+      toast.add({ severity: 'error', summary: 'Error', detail: parseApiError(error) || 'Failed to fetch companies', life: 3000 });
     } finally {
       loading.value = false;
     }
@@ -296,18 +295,17 @@
   
     try {
       if (company.value.id) {
-        await api.put(`accounts/companies/${company.value.id}/`, company.value);
+        await companiesService.put(company.value.id, company.value);
         toast.add({ severity: 'success', summary: 'Successful', detail: 'Company Updated', life: 3000 });
       } else {
-        await api.post('accounts/companies/', company.value);
+        await companiesService.create(company.value);
         toast.add({ severity: 'success', summary: 'Successful', detail: 'Company Created', life: 3000 });
       }
       await fetchCompanies();
       companyDialog.value = false;
       company.value = {};
     } catch (error) {
-      console.error('Failed to save company:', error);
-      toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to save company', life: 3000 });
+      toast.add({ severity: 'error', summary: 'Error', detail: parseApiError(error) || 'Failed to save company', life: 3000 });
     }
   };
   
@@ -322,25 +320,23 @@
   
   const deleteCompany = async () => {
     try {
-      await api.delete(`accounts/companies/${company.value.id}/`);
+      await companiesService.delete(company.value.id);
       companies.value = companies.value.filter(val => val.id !== company.value.id);
       deleteCompanyDialog.value = false;
       company.value = {};
       toast.add({ severity: 'success', summary: 'Successful', detail: 'Company Deleted', life: 3000 });
     } catch (error) {
-      console.error('Failed to delete company:', error);
-      toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to delete company', life: 3000 });
+      toast.add({ severity: 'error', summary: 'Error', detail: parseApiError(error) || 'Failed to delete company', life: 3000 });
     }
   };
   
   const approveCompany = async (comp) => {
     try {
-      await api.patch(`accounts/companies/${comp.id}/`, { status: 'active', is_verified: true });
+      await companiesService.update(comp.id, { status: 'active', is_verified: true });
       await fetchCompanies();
       toast.add({ severity: 'success', summary: 'Successful', detail: 'Company Approved', life: 3000 });
     } catch (error) {
-      console.error('Failed to approve company:', error);
-      toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to approve company', life: 3000 });
+      toast.add({ severity: 'error', summary: 'Error', detail: parseApiError(error) || 'Failed to approve company', life: 3000 });
     }
   };
   
@@ -362,15 +358,14 @@
         decline_reason: declineRemarks.value,
         declined_by: authStore.user?.email || 'Unknown User',
       };
-      await api.patch(`accounts/companies/${company.value.id}/`, payload);
+      await companiesService.update(company.value.id, payload);
       await fetchCompanies();
       declineCompanyDialog.value = false;
       company.value = {};
       declineRemarks.value = '';
       toast.add({ severity: 'success', summary: 'Successful', detail: 'Company Approval Declined', life: 3000 });
     } catch (error) {
-      console.error('Failed to decline company approval:', error);
-      toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to decline company approval', life: 3000 });
+      toast.add({ severity: 'error', summary: 'Error', detail: parseApiError(error) || 'Failed to decline company approval', life: 3000 });
     }
   };
   
@@ -385,15 +380,14 @@
   const deleteSelectedCompanies = async () => {
     try {
       await Promise.all(
-        selectedCompanies.value.map(comp => api.delete(`accounts/companies/${comp.id}/`))
+        selectedCompanies.value.map(comp => companiesService.delete(comp.id))
       );
       companies.value = companies.value.filter(val => !selectedCompanies.value.includes(val));
       deleteCompaniesDialog.value = false;
       selectedCompanies.value = null;
       toast.add({ severity: 'success', summary: 'Successful', detail: 'Companies Deleted', life: 3000 });
     } catch (error) {
-      console.error('Failed to delete companies:', error);
-      toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to delete companies', life: 3000 });
+      toast.add({ severity: 'error', summary: 'Error', detail: parseApiError(error) || 'Failed to delete companies', life: 3000 });
     }
   };
   

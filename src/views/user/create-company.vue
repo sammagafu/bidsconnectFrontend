@@ -189,7 +189,7 @@
   import { ref, onMounted } from 'vue';
   import { useToast } from 'primevue/usetoast';
   import { useRouter } from 'vue-router';
-  import { api } from '@/services/authService';
+  import { companiesService, parseApiError } from '@/services';
   import VerticalLayout from '@/layouts/VerticalLayout.vue'; // Import the layout component
 
   const toast = useToast();
@@ -242,15 +242,15 @@
   // Fetch parent companies on mount
   onMounted(async () => {
     try {
-      const response = await api.get('accounts/companies/');
-      parentCompanyOptions.value = response.data.results || [];
+      const data = await companiesService.list();
+      const list = Array.isArray(data) ? data : data?.results ?? [];
+      parentCompanyOptions.value = list;
       parentCompanyOptions.value.unshift({ id: null, name: 'None' }); // Add "None" option
     } catch (error) {
-      console.error('Failed to fetch parent companies:', error);
       toast.add({
         severity: 'error',
         summary: 'Error',
-        detail: 'Failed to load parent companies',
+        detail: parseApiError(error) || 'Failed to load parent companies',
         life: 3000,
       });
     }
@@ -329,32 +329,19 @@
       formData.append('employee_count', companyDetails.value.employee_count || '');
       formData.append('parent_company', companyDetails.value.parent_company || '');
   
-      console.log('Submitting company data:');
-      for (let [key, value] of formData.entries()) {
-        console.log(`${key}: ${value}`);
-      }
-  
-      // Send the company data using the api instance
-      const response = await api.post('accounts/companies/', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-  
+      // Send the company data (FormData — Content-Type set by interceptor)
+      await companiesService.create(formData);
+
       toast.add({
         severity: 'success',
         summary: 'Success',
         detail: 'Company created successfully',
         life: 3000,
       });
-  
-      // Redirect to a success page or dashboard
+
       router.push('/company/tenders');
     } catch (error) {
-      console.error('Failed to create company:', error);
-      const errorDetail = error.response?.data || { message: 'Unknown error occurred' };
-      console.log('Backend Error Response:', errorDetail);
-      error.value = errorDetail.message || 'Failed to create company. Please check the form and try again.';
+      error.value = parseApiError(error) || 'Failed to create company. Please check the form and try again.';
       toast.add({
         severity: 'error',
         summary: 'Error',

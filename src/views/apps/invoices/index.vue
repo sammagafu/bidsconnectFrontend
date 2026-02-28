@@ -16,7 +16,7 @@
                          </b-card-body>
                          <div>
                               <b-table-simple responsive class="table-centered text-nowrap mb-0">
-                                   <b-thead class="bg-light bg-opacity-50">
+                                   <b-thead class="bg-body-tertiary">
                                         <b-tr>
                                              <b-th class="border-0 py-2">Invoice ID</b-th>
                                              <b-th class="border-0 py-2">Customer</b-th>

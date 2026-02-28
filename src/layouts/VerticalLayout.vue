@@ -11,8 +11,6 @@
       <Footer />
       <RightSideBar />
     </div>
-    <!-- Global Company Creation Modal -->
-    <CompanyCreationModal />
   </div>
 </template>
 
@@ -21,5 +19,4 @@ import TopBar from "@/layouts/partials/TopBar.vue";
 import Footer from "@/layouts/partials/Footer.vue";
 import LeftSideBar from "@/layouts/partials/LeftSideBar.vue";
 import RightSideBar from "@/layouts/partials/RightSideBar.vue";
-import CompanyCreationModal from '@/components/CompanyCreationModal.vue';
 </script>

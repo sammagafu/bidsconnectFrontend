@@ -28,7 +28,7 @@
           </b-card-header>
           <div class="table-responsive mb-0">
             <table class="table table-hover table-nowrap table-centered m-0">
-              <thead class="bg-light bg-opacity-50">
+              <thead class="bg-body-tertiary">
                 <tr>
                   <th class="text-muted py-1">Title</th>
                   <th class="text-muted py-1">Status</th>
@@ -56,7 +56,7 @@
           </b-card-header>
           <div class="table-responsive mb-0">
             <table class="table table-hover table-nowrap table-centered m-0">
-              <thead class="bg-light bg-opacity-50">
+              <thead class="bg-body-tertiary">
                 <tr>
                   <th class="text-muted py-1">Tender</th>
                   <th class="text-muted py-1">Status</th>
@@ -87,7 +87,7 @@
           </b-card-header>
           <div class="table-responsive mb-0">
             <table class="table table-hover table-nowrap table-centered m-0">
-              <thead class="bg-light bg-opacity-50">
+              <thead class="bg-body-tertiary">
                 <tr>
                   <th class="text-muted py-1">Item Name</th>
                   <th class="text-muted py-1">Description</th>
@@ -112,7 +112,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { api } from '@/services/authService'
+import { api, companiesService, tendersService, bidsService, parseApiError } from '@/services'
 import VerticalLayout from '@/layouts/VerticalLayout.vue'
 import { useToast } from 'primevue/usetoast' // If using PrimeVue toast, else replace
 import { useAuthStore } from '@/stores/auth'
@@ -128,15 +128,15 @@ const router = useRouter()
 const authStore = useAuthStore()
 
 const isAdmin = ref(false)
-const stats = ref([])
-const conversionsData = ref({}) // Adapt to ApexChart data for bids/tenders
-const performanceData = ref({})
-const browserData = ref([])
-const countryData = ref([])
-const pagesData = ref([])
-const companyTenders = ref([])
-const companyBids = ref([])
-const marketplaceItems = ref([])
+const stats = ref<any[]>([])
+const conversionsData = ref<any>({}) // Adapt to ApexChart data for bids/tenders
+const performanceData = ref<any>({})
+const browserData = ref<any[]>([])
+const countryData = ref<any[]>([])
+const pagesData = ref<any[]>([])
+const companyTenders = ref<any[]>([])
+const companyBids = ref<any[]>([])
+const marketplaceItems = ref<any[]>([])
 
 onMounted(async () => {
   try {
@@ -144,54 +144,60 @@ onMounted(async () => {
     isAdmin.value = authStore.isSuperAdmin || authStore.isStaffUser
 
     if (isAdmin.value) {
-      const [usersRes, companiesRes, tendersRes, bidsRes, auditRes] = await Promise.all([
+      const [usersRes, companiesData, tendersData, bidsData, auditRes] = await Promise.all([
         api.get('accounts/users/'),
-        api.get('accounts/companies/'),
-        api.get('tenders/tenders/'),
-        api.get('bids/'),
+        companiesService.list(),
+        tendersService.list(),
+        bidsService.list(),
         api.get('accounts/audit-logs/')
       ])
 
+      const companiesList = Array.isArray(companiesData) ? companiesData : companiesData?.results ?? []
+      const tendersList = Array.isArray(tendersData) ? tendersData : tendersData?.results ?? []
+      const bidsList = Array.isArray(bidsData) ? bidsData : bidsData?.results ?? []
+
       stats.value = [
-        { title: 'Total Users', statistic: usersRes.data.length, icon: 'users', prefix: '', suffix: '', growth: 5 },
-        { title: 'Total Companies', statistic: companiesRes.data.length, icon: 'building', prefix: '', suffix: '', growth: -2 },
-        { title: 'Total Tenders', statistic: tendersRes.data.length, icon: 'file-text', prefix: '', suffix: '', growth: 10 },
-        { title: 'Total Bids', statistic: bidsRes.data.length, icon: 'briefcase', prefix: '', suffix: '', growth: 3 }
+        { title: 'Total Users', statistic: usersRes.data?.length ?? 0, icon: 'users', prefix: '', suffix: '', growth: 5 },
+        { title: 'Total Companies', statistic: companiesList.length, icon: 'building', prefix: '', suffix: '', growth: -2 },
+        { title: 'Total Tenders', statistic: tendersList.length, icon: 'file-text', prefix: '', suffix: '', growth: 10 },
+        { title: 'Total Bids', statistic: bidsList.length, icon: 'briefcase', prefix: '', suffix: '', growth: 3 }
       ]
 
-      // Adapt data for components
-      conversionsData.value = { /* Apex chart series for conversions, e.g., bid success rates */ }
-      performanceData.value = { /* Performance over time */ }
-      browserData.value = bidsRes.data.reduce((acc, b) => { /* Group by status or something */ return acc }, [])
-      countryData.value = companiesRes.data.reduce((acc, c) => { /* Group by country */ return acc }, [])
-      pagesData.value = tendersRes.data.map(t => ({ path: t.title, views: /* mock */ 100, avgTime: '2m', exitRate: 20, variant: 'success' }))
+      conversionsData.value = {}
+      performanceData.value = {}
+      browserData.value = bidsList.reduce((acc: any[], _b: any) => acc, [])
+      countryData.value = companiesList.reduce((acc: any[], _c: any) => acc, [])
+      pagesData.value = tendersList.map((t: any) => ({ path: t.title, views: 100, avgTime: '2m', exitRate: 20, variant: 'success' }))
 
-      marketplaceItems.value = tendersRes.data.map(t => ({ name: t.title, description: t.description, price: t.estimated_value }))
+      marketplaceItems.value = tendersList.map((t: any) => ({ name: t.title, description: t.description, price: t.estimated_value }))
     } else {
       if (authStore.companies?.length > 0) {
         const companyId = authStore.companies[0].id
-        const [dashRes, tendersRes, bidsRes] = await Promise.all([
+        const [dashRes, tendersData, bidsData] = await Promise.all([
           api.get(`accounts/companies/${companyId}/dashboard/`),
-          api.get('tenders/tenders/?status=published'),
-          api.get(`bids/?company_id=${companyId}`)
+          tendersService.list({ status: 'published' }),
+          bidsService.listByCompany(companyId)
         ])
 
+        const tendersList = Array.isArray(tendersData) ? tendersData : tendersData?.results ?? []
+        const bidsList = Array.isArray(bidsData) ? bidsData : bidsData?.results ?? []
+
         stats.value = [
-          { title: 'Company Users', statistic: dashRes.data.total_users, icon: 'users', prefix: '', suffix: '', growth: 0 },
-          { title: 'Company Documents', statistic: dashRes.data.total_documents, icon: 'file', prefix: '', suffix: '', growth: 0 },
-          { title: 'Company Experiences', statistic: dashRes.data.total_experiences, icon: 'award', prefix: '', suffix: '', growth: 0 }
+          { title: 'Company Users', statistic: dashRes.data?.total_users ?? 0, icon: 'users', prefix: '', suffix: '', growth: 0 },
+          { title: 'Company Documents', statistic: dashRes.data?.total_documents ?? 0, icon: 'file', prefix: '', suffix: '', growth: 0 },
+          { title: 'Company Experiences', statistic: dashRes.data?.total_experiences ?? 0, icon: 'award', prefix: '', suffix: '', growth: 0 }
         ]
 
-        companyTenders.value = tendersRes.data.filter(t => t.agency === authStore.companies[0].name)
-        companyBids.value = bidsRes.data
-        marketplaceItems.value = companyTenders.value.map(t => ({ name: t.title, description: t.description, price: t.estimated_value }))
+        companyTenders.value = tendersList.filter((t: any) => t.agency === authStore.companies[0].name)
+        companyBids.value = bidsList
+        marketplaceItems.value = companyTenders.value.map((t: any) => ({ name: t.title, description: t.description, price: t.estimated_value }))
       } else {
         toast.add({ severity: 'warn', summary: 'No Company', detail: 'You are not associated with any company.' })
         router.push('/companies/create')
       }
     }
   } catch (e) {
-    toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to load dashboard data.' })
+    toast.add({ severity: 'error', summary: 'Error', detail: parseApiError(e) || 'Failed to load dashboard data.' })
   }
 })
 </script>

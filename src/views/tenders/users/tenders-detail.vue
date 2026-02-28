@@ -223,7 +223,7 @@
 import { ref, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
-import { api } from '@/services/authService';
+import { tendersService, parseApiError } from '@/services';
 import VerticalLayout from '@/layouts/VerticalLayout.vue';
 import html2pdf from 'html2pdf.js';
 
@@ -314,10 +314,9 @@ const getTechnicalCategoryDisplay = (value) => {
 const fetchTender = async () => {
   loading.value = true;
   try {
-    const { data } = await api.get(`tenders/tenders/${slug}/`);
-    tender.value = data;
+    tender.value = await tendersService.get(slug);
   } catch (e) {
-    console.error('Failed to fetch tender:', e);
+    // parseApiError(e) can be shown in UI if needed
   } finally {
     loading.value = false;
   }
@@ -365,6 +364,6 @@ onMounted(() => {
   vertical-align: top;
 }
 .table-primary {
-  background-color: #e9ecef;
+  background-color: var(--bs-tertiary-bg);
 }
 </style>

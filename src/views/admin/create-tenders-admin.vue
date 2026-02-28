@@ -769,6 +769,7 @@ import { useRouter, useRoute } from 'vue-router';
 import AutoComplete from 'primevue/autocomplete';
 import { useTenderStore } from '@/stores/tenderStore';
 import { api } from '@/services/authService';
+import { tendersService, parseApiError } from '@/services';
 import VerticalLayout from '@/layouts/VerticalLayout.vue';
 import DatePicker from 'primevue/datepicker';
 import { useToast } from 'primevue/usetoast';
@@ -999,9 +1000,10 @@ watch(() => store.tender.tender_securing_type, (newVal) => {
 
 async function fetchCategoriesWithSubcategories() {
   try {
-    const res = await api.get('tenders/categories-with-subcategories/');
-    categoriesWithSubs.value = res.data;
-    categories.value = res.data.map(c => ({ value: c.id, text: c.name }));
+    const data = await tendersService.getCategoriesWithSubcategories();
+    const list = Array.isArray(data) ? data : data?.results ?? data ?? [];
+    categoriesWithSubs.value = list;
+    categories.value = list.map(c => ({ value: c.id, text: c.name }));
   } catch {
     toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to load categories' });
   }
@@ -1009,23 +1011,21 @@ async function fetchCategoriesWithSubcategories() {
 
 async function fetchProcurementProcesses() {
   try {
-    const res = await api.get('tenders/procurement-processes/');
-    const items = Array.isArray(res.data) ? res.data : (res.data.results || []);
+    const data = await tendersService.getProcurementProcesses();
+    const items = Array.isArray(data) ? data : (data?.results || []);
     procurementProcesses.value = items.map(p => ({ value: p.id, text: p.name }));
   } catch (err) {
-    console.error(err);
-    toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to load processes' });
+    toast.add({ severity: 'error', summary: 'Error', detail: parseApiError(err) || 'Failed to load processes' });
   }
 }
 
 async function searchAgency(event) {
   const query = event.query || store.selectedAgencyName || '';
   try {
-    const res = await api.get(`tenders/agencies/?search=${encodeURIComponent(query)}`);
-    agencyResults.value = Array.isArray(res.data) ? res.data : (res.data.results || []);
+    const data = await tendersService.searchAgencies(query);
+    agencyResults.value = Array.isArray(data) ? data : (data?.results || []);
   } catch (err) {
-    console.error('Agency search error:', err);
-    toast.add({ severity: 'error', summary: 'Error', detail: 'Agency lookup failed' });
+    toast.add({ severity: 'error', summary: 'Error', detail: parseApiError(err) || 'Agency lookup failed' });
   }
 }
 
@@ -1052,8 +1052,7 @@ watch(() => store.selectedAgencyName, val => {
 
 async function fetchTenderData(slug) {
   try {
-    const res = await api.get(`tenders/tenders/${slug}/`);
-    const tender = res.data;
+    const tender = await tendersService.get(slug);
     store.tender = {
       ...tender,
       category_id: tender.category ? tender.category.id : null,
@@ -1081,8 +1080,7 @@ async function fetchTenderData(slug) {
     store.scheduleItems = tender.schedule_items || [];
     store.technicalSpecifications = tender.technical_specifications || [];
   } catch (err) {
-    console.error('Failed to load tender:', err);
-    toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to load tender data' });
+    toast.add({ severity: 'error', summary: 'Error', detail: parseApiError(err) || 'Failed to load tender data' });
   }
 }
 
@@ -1101,11 +1099,9 @@ async function submitTender() {
       if (newAgency.value.phone_number) agencyData.append('phone_number', newAgency.value.phone_number);
       if (newAgency.value.address) agencyData.append('address', newAgency.value.address);
       if (newAgency.value.logoFile) agencyData.append('logo', newAgency.value.logoFile);
-      const r = await api.post('tenders/agencies/', agencyData, {
-        headers: { 'Content-Type': 'multipart/form-data' }
-      });
-      store.tender.agency_id = r.data.id;
-      store.selectedAgencyName = r.data.name;
+      const r = await tendersService.createAgency(agencyData);
+      store.tender.agency_id = r.id;
+      store.selectedAgencyName = r.name;
     }
 
     // Build nested data
@@ -1202,17 +1198,15 @@ async function submitTender() {
     // Create or update tender
     const isEditMode = !!route.params.slug;
     const resTender = isEditMode
-      ? await api.patch(`tenders/tenders/${route.params.slug}/`, payload)
-      : await api.post('tenders/tenders/', payload);
-    const tenderSlug = resTender.data.slug;
+      ? await tendersService.update(route.params.slug, payload)
+      : await tendersService.create(payload);
+    const tenderSlug = resTender?.slug ?? resTender?.data?.slug;
 
     // Upload file if present
     if (tender_document) {
       const fd = new FormData();
       fd.append('tender_document', tender_document);
-      await api.patch(`tenders/tenders/${tenderSlug}/`, fd, {
-        headers: { 'Content-Type': 'multipart/form-data' }
-      });
+      await tendersService.update(tenderSlug, fd);
     }
 
     toast.add({ severity: 'success', summary: 'Done', detail: isEditMode ? 'Tender updated successfully' : 'Tender & all requirements created' });

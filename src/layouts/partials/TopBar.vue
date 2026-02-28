@@ -52,7 +52,7 @@
                     <h6 class="m-0 fs-16 fw-semibold"> Notifications</h6>
                   </div>
                   <div class="col-auto">
-                    <a href="javascript: void(0);" class="text-dark text-decoration-underline">
+                    <a href="javascript: void(0);" class="text-body text-decoration-underline">
                       <small>Clear All</small>
                     </a>
                   </div>

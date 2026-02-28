@@ -9,7 +9,7 @@
       </b-card-header>
       <div class="table-responsive mb-0">
         <table class="table table-hover table-nowrap table-centered m-0">
-          <thead class="bg-light bg-opacity-50">
+          <thead class="bg-body-tertiary">
             <tr>
               <th class="text-muted py-1">Page Path</th>
               <th class="text-muted py-1">Page Views</th>

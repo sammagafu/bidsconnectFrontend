@@ -150,7 +150,7 @@
 import { ref, onMounted, watch } from 'vue';
 import { FilterMatchMode } from '@primevue/core/api';
 import { useToast } from 'primevue/usetoast';
-import { api } from '@/services/authService';
+import { api, companiesService } from '@/services';
 import { useAuthStore } from '@/stores/auth';
 import VerticalLayout from '@/layouts/VerticalLayout.vue';
 import { useRouter } from 'vue-router';
@@ -226,8 +226,9 @@ async function fetchCategoriesWithSubcategories() {
 async function fetchCompanies() {
   if (auth.isSuperAdmin || auth.isStaffUser) {
     try {
-      const res = await api.get('accounts/companies/');
-      companiesList.value = res.data.map(c => ({ value: c.id, text: c.name }));
+      const list = await companiesService.list();
+      const arr = Array.isArray(list) ? list : list?.results ?? list ?? [];
+      companiesList.value = arr.map(c => ({ value: c.id, text: c.name }));
     } catch {
       toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to load companies' });
     }

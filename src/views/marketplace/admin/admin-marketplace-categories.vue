@@ -482,12 +482,12 @@ const saveButtonLabel = computed(() => {
 .form-control {
     width: 100%;
     padding: 0.5rem;
-    border: 1px solid #ced4da;
+    border: 1px solid var(--bs-border-color);
     border-radius: 4px;
 }
 
 .border {
-    border: 1px solid #e5e7eb;
+    border: 1px solid var(--bs-border-color);
 }
 
 .p-4 {

@@ -5,7 +5,7 @@
         {{ title }}
         <a class="anchor-link" :href="`#${id}`">#</a>
       </b-card-title>
-      <p class="text-muted" v-if="caption" v-html="caption"/>
+      <p class="text-muted" v-if="caption">{{ caption }}</p>
 
       <slot/>
     </b-card-body>

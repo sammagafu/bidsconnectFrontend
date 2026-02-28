@@ -126,7 +126,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { useToast } from 'primevue/usetoast'
 import { useAuthStore } from '@/stores/auth'
-import { api } from '@/services/authService'
+import { companiesService, parseApiError } from '@/services'
 import VerticalLayout from '@/layouts/VerticalLayout.vue'
 import {
   BCard, BButton, BListGroup, BListGroupItem,
@@ -167,12 +167,9 @@ function formatDate(d) {
 async function fetchDocs() {
   if (!companyId.value) return
   try {
-    const { data } = await api.get(
-      `accounts/companies/${companyId.value}/documents/`
-    )
-    docs.value = data
-  } catch {
-    toast.add({ severity:'error', summary:'Error', detail:'Could not load documents.' })
+    docs.value = await companiesService.listDocuments(companyId.value) || []
+  } catch (e) {
+    toast.add({ severity:'error', summary:'Error', detail: parseApiError(e) || 'Could not load documents.' })
   }
 }
 
@@ -244,16 +241,11 @@ async function submit() {
   }
 
   try {
-    const base = `accounts/companies/${companyId.value}/documents/`
-    const cfg  = { headers: { 'Content-Type': 'multipart/form-data' } }
-    let res
-
     if (editing.value) {
-      res = await api.put(`${base}${form.value.id}/`, payload, cfg)
+      await companiesService.updateDocument(companyId.value, form.value.id, payload)
     } else {
-      res = await api.post(base, payload, cfg)
+      await companiesService.createDocument(companyId.value, payload)
     }
-
     toast.add({
       severity:  'success',
       summary:   editing.value ? 'Updated' : 'Uploaded',
@@ -262,7 +254,7 @@ async function submit() {
     closeModal()
     fetchDocs()
   } catch (e) {
-    error.value = e.response?.data?.detail || 'Operation failed.'
+    error.value = parseApiError(e) || 'Operation failed.'
   } finally {
     loading.value = false
   }
@@ -271,13 +263,11 @@ async function submit() {
 async function removeDocument(id) {
   if (!confirm('Delete this document?')) return
   try {
-    await api.delete(
-      `accounts/companies/${companyId.value}/documents/${id}/`
-    )
+    await companiesService.deleteDocument(companyId.value, id)
     toast.add({ severity:'success', summary:'Deleted', detail:'Document removed.' })
     fetchDocs()
-  } catch {
-    toast.add({ severity:'error', summary:'Error', detail:'Delete failed.' })
+  } catch (e) {
+    toast.add({ severity:'error', summary:'Error', detail: parseApiError(e) || 'Delete failed.' })
   }
 }
 

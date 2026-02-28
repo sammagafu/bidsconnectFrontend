@@ -114,6 +114,36 @@ app.component('Calendar', Calendar); // Register Calendar
 app.component('Chips', Chips); // Register Chips
 app.component('Chart', Chart);
 
+// Global error handler
+app.config.errorHandler = (err, instance, info) => {
+  // Log error in development
+  if (import.meta.env.MODE === 'development') {
+    console.error('Global error:', err);
+    console.error('Error info:', info);
+  }
+  
+  // Send to error tracking service in production
+  // e.g., Sentry, LogRocket, etc.
+  
+  // Show user-friendly error message
+  if (instance?.$toast) {
+    instance.$toast.add({
+      severity: 'error',
+      summary: 'Application Error',
+      detail: 'An unexpected error occurred. Please try again.',
+      life: 5000
+    });
+  }
+};
+
+// Global warning handler (development only)
+if (import.meta.env.MODE === 'development') {
+  app.config.warnHandler = (msg, instance, trace) => {
+    console.warn('Warning:', msg);
+    console.warn('Trace:', trace);
+  };
+}
+
 authService.initializeAuth(); // Initialize auth before mounting
 
 app.mount('#app');

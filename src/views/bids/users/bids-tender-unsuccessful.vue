@@ -54,7 +54,7 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import VerticalLayout from "@/layouts/VerticalLayout.vue";
-import { api } from '@/services/authService';
+import { bidsService, parseApiError } from '@/services';
 import { useAuthStore } from '@/stores/auth';
 import { useRouter } from 'vue-router';
 
@@ -83,11 +83,10 @@ const fetchDeclinedBids = async () => {
     }
     
     try {
-        const response = await api.get(`bids/by-company/?company_id=${company_id}&status=rejected`);
-        declinedBids.value = response.data;
+        const data = await bidsService.listByCompany(company_id, 'rejected');
+        declinedBids.value = Array.isArray(data) ? data : data?.results ?? data ?? [];
     } catch (err) {
-        error.value = 'Failed to load declined bids. Please try again later.';
-        console.error('Error fetching declined bids:', err);
+        error.value = parseApiError(err) || 'Failed to load declined bids. Please try again later.';
     } finally {
         loading.value = false;
     }
@@ -163,7 +162,7 @@ p {
   font-size: 0.75rem;
 }
 .border-bottom {
-  border-bottom: 1px solid #dee2e6;
+  border-bottom: 1px solid var(--bs-border-color);
 }
 .py-3 {
   padding-top: 1rem;

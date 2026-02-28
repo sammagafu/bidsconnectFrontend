@@ -18,7 +18,7 @@
             </b-card-body>
             <div>
               <b-table-simple responsive class="text-nowrap table-centered mb-0">
-                <b-thead class="bg-light bg-opacity-50">
+                <b-thead class="bg-body-tertiary">
                   <b-tr>
                     <b-th class="border-0 py-2">Task Name</b-th>
                     <b-th class="border-0 py-2">Created Date</b-th>

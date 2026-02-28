@@ -96,7 +96,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { api } from '@/services/authService'
+import { tendersService, parseApiError } from '@/services'
 import VerticalLayout from '@/layouts/VerticalLayout.vue'
 import { useToast } from 'primevue/usetoast'
 
@@ -126,10 +126,10 @@ onMounted(fetchTenders)
 
 async function fetchTenders() {
   try {
-    const res = await api.get('tenders/tenders/')
-    tenders.value = res.data.results || res.data || []
-  } catch {
-    toast.add({ severity:'error', summary:'Error', detail:'Could not load tenders.' })
+    const data = await tendersService.list()
+    tenders.value = Array.isArray(data) ? data : data?.results ?? data ?? []
+  } catch (e) {
+    toast.add({ severity:'error', summary:'Error', detail: parseApiError(e) || 'Could not load tenders.' })
   }
 }
 
@@ -140,22 +140,22 @@ function formatDate(d) {
 async function changeState(t) {
   const prev = t.status
   try {
-    await api.patch(`tenders/tenders/${t.slug}/status/`, { status: t.status })
+    await tendersService.updateStatus(t.slug, t.status)
     toast.add({ severity:'success', summary:'Updated', detail:`Status changed to ${t.status}` })
-  } catch {
+  } catch (e) {
     t.status = prev
-    toast.add({ severity:'error', summary:'Error', detail:'Failed to change state.' })
+    toast.add({ severity:'error', summary:'Error', detail: parseApiError(e) || 'Failed to change state.' })
   }
 }
 
 async function confirmDelete(t) {
   if (!confirm(`Delete tender "${t.title}"?`)) return
   try {
-    await api.delete(`tenders/tenders/${t.slug}/`)
+    await tendersService.delete(t.slug)
     toast.add({ severity:'success', summary:'Deleted', detail:'Tender removed.' })
     await fetchTenders()
-  } catch {
-    toast.add({ severity:'error', summary:'Error', detail:'Failed to delete tender.' })
+  } catch (e) {
+    toast.add({ severity:'error', summary:'Error', detail: parseApiError(e) || 'Failed to delete tender.' })
   }
 }
 

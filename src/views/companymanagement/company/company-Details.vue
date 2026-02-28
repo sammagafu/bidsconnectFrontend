@@ -177,7 +177,7 @@
 import { ref, onMounted } from 'vue'
 import { useToast } from 'primevue/usetoast'
 import { useAuthStore } from '@/stores/auth'
-import { api } from '@/services/authService'
+import { companiesService, parseApiError } from '@/services'
 import VerticalLayout from '@/layouts/VerticalLayout.vue'
 import {
   BRow,
@@ -197,10 +197,9 @@ const company   = ref(null)
 async function fetchCompany() {
   if (!companyId.value) return
   try {
-    const { data } = await api.get(`accounts/companies/${companyId.value}/`)
-    company.value = data
-  } catch {
-    toast.add({ severity:'error', summary:'Error', detail:'Could not load company.' })
+    company.value = await companiesService.get(companyId.value)
+  } catch (e) {
+    toast.add({ severity:'error', summary:'Error', detail: parseApiError(e) || 'Could not load company.' })
   }
 }
 

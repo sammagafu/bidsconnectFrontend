@@ -20,7 +20,7 @@
         <b-card-body v-if="bid && !loading">
           <!-- Bid Info Section -->
           <h5 class="mb-3">Bid Information</h5>
-          <div class="border p-3 rounded bg-light mb-4">
+          <div class="border p-3 rounded bg-body-tertiary mb-4">
             <p class="mb-1"><strong>Bidder:</strong> {{ bid.bidder || 'N/A' }}</p>
             <p class="mb-1"><strong>Company:</strong> {{ bid.company?.name || 'N/A' }}</p>
             <p class="mb-1"><strong>Status:</strong> {{ bid.status.toUpperCase() }}</p>
@@ -36,7 +36,7 @@
 
           <!-- Tender Info Section (linked) -->
           <h5 class="mb-3">Associated Tender</h5>
-          <div class="border p-3 rounded bg-light mb-4" v-if="tender">
+          <div class="border p-3 rounded bg-body-tertiary mb-4" v-if="tender">
             <p class="mb-1"><strong>Title:</strong> {{ tender.title || 'N/A' }}</p>
             <p class="mb-1"><strong>Reference #:</strong> {{ tender.reference_number || 'N/A' }}</p>
             <p class="mb-1"><strong>Status:</strong> {{ tender.status.toUpperCase() }}</p>
@@ -161,7 +161,7 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { api } from '@/services/authService'
+import { bidsService, tendersService, parseApiError } from '@/services'
 import VerticalLayout from '@/layouts/VerticalLayout.vue'
 import { useToast } from 'primevue/usetoast'
 
@@ -265,14 +265,10 @@ async function fetchBidDetails() {
 
   loading.value = true
   try {
-    const res = await api.get(`bids/${id}/`).catch(err => {
-      throw new Error(err.response?.data?.detail || 'Network error')
-    })
-    bid.value = res.data
+    bid.value = await bidsService.get(id)
     tender.value = bid.value.tender
   } catch (err) {
-    error.value = err.message
-    console.error('Fetch error:', err)
+    error.value = parseApiError(err) || err.message
   } finally {
     loading.value = false
   }
@@ -281,22 +277,22 @@ async function fetchBidDetails() {
 async function awardBid() {
   if (!confirm('Award this bid? This will set the tender as awarded.')) return
   try {
-    await api.patch(`tenders/tenders/${tender.value.slug}/award/`, { awarded_bid: bid.value.id })
+    await tendersService.award(tender.value.slug, bid.value.id)
     toast.add({ severity: 'success', summary: 'Success', detail: 'Bid awarded.' })
-    await fetchBidDetails()  // Refresh
+    await fetchBidDetails()
   } catch (err) {
-    toast.add({ severity: 'error', summary: 'Error', detail: `Failed to award bid: ${err.response?.data?.detail || err.message}` })
+    toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to award bid: ' + (parseApiError(err) || err.message) })
   }
 }
 
 async function rejectBid() {
   if (!confirm('Reject this bid?')) return
   try {
-    await api.patch(`bids/${bid.value.id}/reject/`, { status: 'rejected' })
+    await bidsService.reject(bid.value.id)
     toast.add({ severity: 'success', summary: 'Success', detail: 'Bid rejected.' })
-    await fetchBidDetails()  // Refresh
+    await fetchBidDetails()
   } catch (err) {
-    toast.add({ severity: 'error', summary: 'Error', detail: `Failed to reject bid: ${err.response?.data?.detail || err.message}` })
+    toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to reject bid: ' + (parseApiError(err) || err.message) })
   }
 }
 
@@ -322,6 +318,5 @@ function viewDocument(url) {
 .mb-4 { margin-bottom: 1.5rem; }
 .mb-3 { margin-bottom: 1rem; }
 .mb-1 { margin-bottom: 0.25rem; }
-.bg-light { background-color: #f8f9fa !important; }
 .gap-2 { gap: .5rem; }
 </style>

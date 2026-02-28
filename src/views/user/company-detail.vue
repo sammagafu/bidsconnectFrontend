@@ -119,7 +119,7 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { api } from '@/services/authService';
+import { companiesService, parseApiError } from '@/services';
 import { useToast } from 'primevue/usetoast';
 import VerticalLayout from '@/layouts/VerticalLayout.vue';
 
@@ -134,14 +134,12 @@ onMounted(async () => {
 
 const fetchCompanyDetails = async () => {
   try {
-    const response = await api.get(`accounts/companies/${route.params.id}/`);
-    company.value = response.data;
+    company.value = await companiesService.get(route.params.id);
   } catch (error) {
-    console.error('Failed to load company details:', error);
     toast.add({
       severity: 'error',
       summary: 'Error',
-      detail: 'Failed to load company details',
+      detail: parseApiError(error) || 'Failed to load company details',
       life: 3000,
     });
   }

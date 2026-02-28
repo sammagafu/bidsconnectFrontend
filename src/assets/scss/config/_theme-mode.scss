@@ -101,3 +101,8 @@ html[data-bs-theme="dark"][data-topbar-color="light"] {
     --#{$prefix}topbar-item-color:                         #afb9cf;
     --#{$prefix}topbar-search-bg:                          #303943;
 }
+
+// Theme-aware subtle background (replaces bg-light for panels/sections)
+.bg-subtle {
+    background-color: var(--#{$prefix}tertiary-bg) !important;
+}

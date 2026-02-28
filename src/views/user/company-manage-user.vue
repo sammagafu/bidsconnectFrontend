@@ -68,7 +68,7 @@
 
           <!-- Show house icon and "Add a Company" button if no company -->
           <div v-else class="text-center mt-5">
-            <i class="pi pi-home" style="font-size: 5rem; color: #888;"></i>
+            <i class="pi pi-home" style="font-size: 5rem; color: var(--bs-secondary-color);"></i>
             <h3 class="mt-3">No Company Found</h3>
             <p class="text-muted">You don’t have a company yet. Create one to start managing users.</p>
             <b-button
@@ -89,7 +89,7 @@
 import VerticalLayout from "@/layouts/VerticalLayout.vue";
 import { ref, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { api } from '@/services/authService';
+import { companiesService, parseApiError } from '@/services';
 import { useToast } from 'primevue/usetoast';
 import { useAuthStore } from '@/stores/auth';
 
@@ -174,15 +174,12 @@ onMounted(async () => {
 // Fetch pending invitations for the company
 const fetchPendingInvitations = async (companyId) => {
   try {
-    // Updated endpoint to match backend URL
-    const response = await api.get(`accounts/companies/${companyId}/invitations/`);
-    pendingInvitations.value = response.data || [];
+    pendingInvitations.value = await companiesService.listInvitations(companyId) || [];
   } catch (error) {
-    console.error('Failed to load pending invitations:', error);
     toast.add({
       severity: 'error',
       summary: 'Error',
-      detail: 'Failed to load pending invitations',
+      detail: parseApiError(error) || 'Failed to load pending invitations',
       life: 3000,
     });
     if (error.response?.status === 401) {
@@ -196,13 +193,11 @@ const fetchPendingInvitations = async (companyId) => {
 const sendInvitation = async () => {
   loadingInvite.value = true;
   try {
-    const companyId = authStore.user.companies[0].id; // Use the first company's id
-    const payload = {
+    const companyId = authStore.user.companies[0].id;
+    await companiesService.sendInvitation(companyId, {
       invited_email: invitationForm.value.email,
       role: invitationForm.value.role,
-    };
-    // Updated endpoint to match backend URL
-    await api.post(`accounts/companies/${companyId}/invitations/`, payload);
+    });
     toast.add({
       severity: 'success',
       summary: 'Success',
@@ -211,14 +206,12 @@ const sendInvitation = async () => {
     });
     invitationForm.value.email = '';
     invitationForm.value.role = 'user';
-    await fetchPendingInvitations(companyId); // Refresh the invitations list
+    await fetchPendingInvitations(companyId);
   } catch (error) {
-    console.error('Failed to send invitation:', error);
-    const errorDetail = error.response?.data || { message: 'Failed to send invitation' };
     toast.add({
       severity: 'error',
       summary: 'Error',
-      detail: errorDetail.message || 'Failed to send invitation',
+      detail: parseApiError(error) || 'Failed to send invitation',
       life: 3000,
     });
     if (error.response?.status === 401) {
@@ -235,23 +228,20 @@ const revokeInvitation = async (invitationId) => {
   if (!confirm('Are you sure you want to revoke this invitation?')) return;
   loadingRevoke.value = true;
   try {
-    const companyId = authStore.user.companies[0].id; // Use the first company's id
-    // Updated endpoint to match backend URL
-    await api.delete(`accounts/companies/${companyId}/invitations/${invitationId}/`);
+    const companyId = authStore.user.companies[0].id;
+    await companiesService.deleteInvitation(companyId, invitationId);
     toast.add({
       severity: 'success',
       summary: 'Success',
       detail: 'Invitation revoked successfully',
       life: 3000,
     });
-    await fetchPendingInvitations(companyId); // Refresh the invitations list
+    await fetchPendingInvitations(companyId);
   } catch (error) {
-    console.error('Failed to revoke invitation:', error);
-    const errorDetail = error.response?.data || { message: 'Failed to revoke invitation' };
     toast.add({
       severity: 'error',
       summary: 'Error',
-      detail: errorDetail.message || 'Failed to revoke invitation',
+      detail: parseApiError(error) || 'Failed to revoke invitation',
       life: 3000,
     });
     if (error.response?.status === 401) {

@@ -71,7 +71,7 @@
   
             <!-- Show house icon and "Add a Company" button if no company -->
             <div v-else class="text-center mt-5">
-              <i class="pi pi-home" style="font-size: 5rem; color: #888;"></i>
+              <i class="pi pi-home" style="font-size: 5rem; color: var(--bs-secondary-color);"></i>
               <h3 class="mt-3">No Company Found</h3>
               <p class="text-muted">You don’t have a company yet. Create one to start managing documents.</p>
               <b-button
@@ -92,7 +92,7 @@
   import VerticalLayout from "@/layouts/VerticalLayout.vue";
   import { ref, onMounted } from 'vue';
   import { useRoute, useRouter } from 'vue-router';
-  import { api } from '@/services/authService';
+  import { companiesService, parseApiError } from '@/services';
   import { useToast } from 'primevue/usetoast';
   import { useAuthStore } from '@/stores/auth';
   
@@ -135,47 +135,46 @@
     }
   });
   
+  const companyId = () => route.params.id;
+
   // Fetch company details
   const fetchCompanyDetails = async () => {
     try {
-      const response = await api.get(`companies/${route.params.id}/`);
-      company.value = response.data;
+      company.value = await companiesService.get(companyId());
     } catch (error) {
-      console.error('Failed to load company details:', error);
       toast.add({
         severity: 'error',
         summary: 'Error',
-        detail: 'Failed to load company details',
+        detail: parseApiError(error) || 'Failed to load company details',
         life: 3000,
       });
     }
   };
-  
+
   // Fetch company documents
   const fetchCompanyDocuments = async () => {
     try {
-      const response = await api.get(`companies/${route.params.id}/documents/`);
-      documents.value = response.data.results || [];
+      const data = await companiesService.listDocuments(companyId());
+      documents.value = Array.isArray(data) ? data : data?.results ?? [];
     } catch (error) {
-      console.error('Failed to load company documents:', error);
       toast.add({
         severity: 'error',
         summary: 'Error',
-        detail: 'Failed to load company documents',
+        detail: parseApiError(error) || 'Failed to load company documents',
         life: 3000,
       });
     }
   };
-  
+
   // Upload a document
   const uploadDocument = async () => {
     loadingUpload.value = true;
     try {
       const formData = new FormData();
       formData.append('name', newDocument.value.name);
-      formData.append('file', newDocument.value.file);  
-  
-      await api.post(`companies/${route.params.id}/documents/`, formData);
+      formData.append('file', newDocument.value.file);
+
+      await companiesService.createDocument(companyId(), formData);
       toast.add({
         severity: 'success',
         summary: 'Success',
@@ -184,27 +183,25 @@
       });
       newDocument.value.name = '';
       newDocument.value.file = null;
-      await fetchCompanyDocuments(); // Refresh the document list
+      await fetchCompanyDocuments();
     } catch (error) {
-      console.error('Failed to upload document:', error);
-      const errorDetail = error.response?.data || { message: 'Failed to upload document' };
       toast.add({
         severity: 'error',
         summary: 'Error',
-        detail: errorDetail.message || 'Failed to upload document',
+        detail: parseApiError(error) || 'Failed to upload document',
         life: 3000,
       });
     } finally {
       loadingUpload.value = false;
     }
   };
-  
+
   // Delete document
   const deleteDocument = async (documentId) => {
     if (!confirm('Are you sure you want to delete this document?')) return;
     loadingDelete.value = true;
     try {
-      await api.delete(`companies/${route.params.id}/documents/${documentId}/`);
+      await companiesService.deleteDocument(companyId(), documentId);
       toast.add({
         severity: 'success',
         summary: 'Success',
@@ -213,19 +210,17 @@
       });
       await fetchCompanyDocuments(); // Refresh the document list
     } catch (error) {
-      console.error('Failed to delete document:', error);
-      const errorDetail = error.response?.data || { message: 'Failed to delete document' };
       toast.add({
         severity: 'error',
         summary: 'Error',
-        detail: errorDetail.message || 'Failed to delete document',
+        detail: parseApiError(error) || 'Failed to delete document',
         life: 3000,
       });
     } finally {
       loadingDelete.value = false;
     }
   };
-  
+
   // Redirect to create company page
   const goToCreateCompany = () => {
     router.push('/company/create-company');

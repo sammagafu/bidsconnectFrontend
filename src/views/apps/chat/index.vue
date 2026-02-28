@@ -134,7 +134,7 @@
                   </li>
                 </template>
               </simplebar>
-              <div class="bg-light bg-opacity-50 p-2">
+              <div class="bg-body-tertiary p-2">
                 <form class="needs-validation" name="chat-form" id="chat-form" @submit.prevent="handleYupSubmit">
                   <b-row class="align-items-center">
                     <div class="col mb-2 mb-sm-0 d-flex">

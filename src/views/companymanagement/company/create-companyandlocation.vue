@@ -107,7 +107,7 @@ import { ref, reactive } from 'vue'
 import { useToast } from 'primevue/usetoast'
 import { useRouter } from 'vue-router'
 import VerticalLayout from '@/layouts/VerticalLayout.vue'
-import { api } from '@/services/authService'
+import { companiesService, parseApiError } from '@/services'
 import {
   BFormGroup,
   BForm,
@@ -174,16 +174,11 @@ async function submit() {
     Object.entries(form).forEach(([k,v]) => {
       if (v !== null && v !== '') payload.append(k, v)
     })
-    const { data } = await api.post('accounts/companies/', payload, {
-      headers: { 'Content-Type': 'multipart/form-data' }
-    })
-    toast.add({ severity: 'success', summary: 'Created', detail: data.name })
-    router.push({ name: 'profile.financial', params: { companyId: data.id } })
+    const data = await companiesService.create(payload)
+    toast.add({ severity: 'success', summary: 'Created', detail: data?.name || 'Company created' })
+    router.push({ name: 'profile.financial', params: { companyId: data?.id } })
   } catch (err) {
-    const msg = err.response?.data?.detail
-      || JSON.stringify(err.response?.data)
-      || 'Create failed.'
-    toast.add({ severity: 'error', summary: 'Error', detail: msg })
+    toast.add({ severity: 'error', summary: 'Error', detail: parseApiError(err) || 'Create failed.' })
   } finally {
     loading.value = false
   }

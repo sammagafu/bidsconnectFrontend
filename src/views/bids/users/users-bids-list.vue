@@ -57,7 +57,7 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import VerticalLayout from "@/layouts/VerticalLayout.vue";
-import { api } from '@/services/authService';
+import { bidsService, parseApiError } from '@/services';
 import { useAuthStore } from '@/stores/auth';
 import { useRouter } from 'vue-router';
 
@@ -85,9 +85,8 @@ const fetchBids = async () => {
         if (!company_id) continue;
         
         try {
-            const response = await api.get(`bids/by-company/?company_id=${company_id}`);
-            const companyBids = response.data;
-            // For each bid, check readiness (add is_ready and errors flags)
+            const data = await bidsService.listByCompany(company_id);
+            const companyBids = Array.isArray(data) ? data : data?.results ?? data ?? [];
             for (const bid of companyBids) {
                 const readiness = await checkBidReadiness(bid.id);
                 bid.is_ready = readiness.is_ready;
@@ -95,8 +94,7 @@ const fetchBids = async () => {
             }
             allBids = [...allBids, ...companyBids];
         } catch (err) {
-            console.error(`Error fetching bids for company ${company_id}:`, err);
-            error.value = 'Failed to fetch bids from some companies. Please try again.';
+            error.value = parseApiError(err) || 'Failed to fetch bids from some companies. Please try again.';
         }
     }
     
@@ -109,16 +107,15 @@ const fetchBids = async () => {
 
 const checkBidReadiness = async (bidId) => {
     try {
-        const response = await api.get(`bids/${bidId}/validate-submit/`);
+        const data = await bidsService.validateSubmit(bidId);
         return {
-            is_ready: response.data.is_ready,
-            errors: response.data.errors || []
+            is_ready: data.is_ready,
+            errors: data.errors || []
         };
     } catch (err) {
-        console.error('Error checking bid readiness:', err);
         return {
             is_ready: false,
-            errors: ['Failed to validate bid readiness (server error)']
+            errors: [parseApiError(err) || 'Failed to validate bid readiness']
         };
     }
 };
@@ -131,13 +128,11 @@ const submitBid = async (bid) => {
     if (confirm(`Are you sure you want to publish (submit) this bid for tender ${bid.tender.reference_number}? This action cannot be undone.`)) {
         submittingBidId.value = bid.id;
         try {
-            await api.post(`bids/${bid.id}/submit/`);
+            await bidsService.submit(bid.id);
             alert('Bid published successfully!');
-            await fetchBids(); // Refresh to update status and readiness
+            await fetchBids();
         } catch (err) {
-            console.error('Error submitting bid:', err);
-            const errMsg = err.response?.data?.error || 'Unknown error';
-            alert(`Failed to publish bid: ${errMsg}`);
+            alert(`Failed to publish bid: ${parseApiError(err) || 'Unknown error'}`);
         } finally {
             submittingBidId.value = null;
         }
@@ -205,12 +200,10 @@ const viewDetails = (bid) => {
 const openingReport = async (bid) => {
     generatingReportId.value = bid.id;
     try {
-        const response = await api.get(`bids/${bid.id}/opening-report/`, { responseType: 'blob' });
-        const blob = new Blob([response.data], { type: 'application/pdf' });
+        const blob = await bidsService.getOpeningReport(bid.id);
         const url = window.URL.createObjectURL(blob);
         window.open(url, '_blank');
     } catch (err) {
-        console.error('Error generating opening report:', err);
         alert('Failed to generate opening report: ' + (err.response?.data?.error || 'Unknown error'));
     } finally {
         generatingReportId.value = null;
@@ -233,7 +226,7 @@ p {
   font-size: 0.75rem;
 }
 .border-bottom {
-  border-bottom: 1px solid #dee2e6;
+  border-bottom: 1px solid var(--bs-border-color);
 }
 .py-3 {
   padding-top: 1rem;

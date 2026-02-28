@@ -7,45 +7,70 @@ const router = createRouter({
   routes: allRoutes
 });
 
-router.beforeEach((to, from, next) => {
-  // Set document title if defined in route meta
+router.beforeEach(async (to, from, next) => {
   const title = to.meta.title;
-  if (title) {
-    document.title = title.toString();
-  }
+  if (title) document.title = title.toString();
 
-  // Initialize auth store
   const authStore = useAuthStore();
-  authStore.initialize();
-  console.log('Navigating to:', to.path);
-  console.log('Is Authenticated:', authStore.isAuthenticated);
+  await authStore.initialize();
 
-  // Check if auth is required on this route (including nested routes)
   const authRequired = to.matched.some(route => route.meta.authRequired);
+  const requiresAdmin = to.matched.some(route => route.meta.requiresAdmin);
+  const requiresStaff = to.matched.some(route => route.meta.requiresStaff);
+  const requiresCompanyOwner = to.matched.some(route => route.meta.requiresCompanyOwner);
+  const allowedRoles = to.meta.allowedRoles;
 
-  // If the user is already on the login page, prevent redirect loop
-  if (to.name === 'auth.sign-in') {
-    if (authStore.isAuthenticated) {
-      console.log('User is authenticated, redirecting to dashboards.index');
-      return next({ name: 'dashboards.index' });
-    }
-    return next();
+  // Authenticated user trying to access login → redirect to dashboard
+  if (to.name === 'auth.sign-in' && authStore.isAuthenticated) {
+    return next({ path: '/' });
   }
 
-  // If auth isn't required for the route, proceed
+  // Public route → allow
   if (!authRequired) {
     return next();
   }
 
-  // If auth is required and the user is logged in, proceed
-  if (authStore.isAuthenticated) {
-    console.log('User is authenticated, proceeding to route');
-    return next();
+  // Authentication check
+  if (!authStore.isAuthenticated) {
+    return next({
+      name: 'auth.sign-in',
+      query: { redirectedFrom: to.fullPath }
+    });
   }
 
-  // If auth is required and the user is not logged in, redirect to login
-  console.log('User is not authenticated, redirecting to login');
-  next({ name: 'auth.sign-in', query: { redirectedFrom: to.fullPath } });
+  // Role-based access control
+  if (requiresAdmin && !authStore.isSuperAdmin && !authStore.isStaffUser) {
+    return next({ path: '/', replace: true });
+  }
+
+  if (requiresStaff && !authStore.isStaffUser && !authStore.isSuperAdmin) {
+    return next({ path: '/', replace: true });
+  }
+
+  if (requiresCompanyOwner && !authStore.isCompanyOwner && !authStore.isSuperAdmin) {
+    return next({ path: '/', replace: true });
+  }
+
+  // Check specific allowed roles if defined
+  if (allowedRoles && allowedRoles.length > 0) {
+    const hasRole = allowedRoles.some(role => {
+      switch (role) {
+        case 'superadmin': return authStore.isSuperAdmin;
+        case 'staff': return authStore.isStaffUser;
+        case 'company_owner': return authStore.isCompanyOwner;
+        case 'company_admin': return authStore.isCompanyAdmin;
+        case 'company_member': return authStore.isCompanyMember;
+        default: return false;
+      }
+    });
+
+    if (!hasRole) {
+      return next({ path: '/', replace: true });
+    }
+  }
+
+  // All checks passed → proceed
+  next();
 });
 
 export default router;

@@ -2,7 +2,7 @@
   <VerticalLayout>
     <div class="card p-3">
       <!-- Filters -->
-      <div class="filters mb-4 p-3 bg-light rounded">
+      <div class="filters mb-4 p-3 bg-body-tertiary rounded">
         <div class="row g-3 align-items-center">
           <div class="col-auto">
             <input type="text" v-model="filters.keyword" class="form-control form-control-sm" placeholder="Search by keyword" />
@@ -77,7 +77,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
 import VerticalLayout from '@/layouts/VerticalLayout.vue';
-import { api } from '@/services/authService';
+import { tendersService, parseApiError } from '@/services';
 
 const tenders = ref([]);
 const categories = ref([]);
@@ -109,20 +109,20 @@ onMounted(async () => {
 
 const fetchCategories = async () => {
   try {
-    const res = await api.get('tenders/categories/');
-    categories.value = res.data;
+    const data = await tendersService.getCategories();
+    categories.value = Array.isArray(data) ? data : data?.results ?? data ?? [];
   } catch (error) {
-    console.error('Error loading categories', error);
+    // Categories optional; tenders still load
   }
 };
 
 const fetchTenders = async () => {
   try {
     loading.value = true;
-    const res = await api.get('tenders/tenders/', { params: { status: 'published' } });
-    tenders.value = res.data.results || res.data;
+    const data = await tendersService.list({ status: 'published' });
+    tenders.value = Array.isArray(data) ? data : data?.results ?? data ?? [];
   } catch (error) {
-    console.error('Error loading tenders', error);
+    // Show via UI if needed: parseApiError(error)
   } finally {
     loading.value = false;
   }
@@ -187,7 +187,7 @@ p {
   font-size: 0.75rem;
 }
 .border-bottom {
-  border-bottom: 1px solid #dee2e6;
+  border-bottom: 1px solid var(--bs-border-color);
 }
 .py-3 {
   padding-top: 1rem;

@@ -463,6 +463,7 @@
 import { ref, computed, onMounted, watch } from 'vue';
 import VerticalLayout from '@/layouts/VerticalLayout.vue';
 import { api } from '@/services/authService';
+import { tendersService, bidsService, companiesService, parseApiError } from '@/services';
 import { useAuthStore } from '@/stores/auth';
 import { useRouter, useRoute } from 'vue-router';
 import { useToast } from 'primevue/usetoast';
@@ -926,25 +927,14 @@ const fetchTenderData = async () => {
   try {
     loading.value = true;
     const slug = route.params.slug;
-    const response = await api.get(`tenders/tenders/${slug}/`);
-    tender.value = response.data;
-
-    const docsResponse = await api.get(`tenders/tenders/${slug}/required-documents/`);
-    requiredDocuments.value = docsResponse.data;
-
-    const financialResponse = await api.get(`tenders/tenders/${slug}/financial-requirements/`);
-    financialRequirements.value = financialResponse.data;
-
-    const turnoverResponse = await api.get(`tenders/tenders/${slug}/turnover-requirements/`);
-    turnoverRequirements.value = turnoverResponse.data;
-
-    const experienceResponse = await api.get(`tenders/tenders/${slug}/experience-requirements/`);
-    experienceRequirements.value = experienceResponse.data;
-
-    const personnelResponse = await api.get(`tenders/tenders/${slug}/personnel-requirements/`);
-    personnelRequirements.value = personnelResponse.data;
+    tender.value = await tendersService.get(slug);
+    requiredDocuments.value = await tendersService.getRequiredDocuments(slug);
+    financialRequirements.value = await tendersService.getFinancialRequirements(slug);
+    turnoverRequirements.value = await tendersService.getTurnoverRequirements(slug);
+    experienceRequirements.value = await tendersService.getExperienceRequirements(slug);
+    personnelRequirements.value = await tendersService.getPersonnelRequirements(slug);
   } catch (err) {
-    error.value = 'Failed to load tender data: ' + (err.response?.data?.detail || err.message);
+    error.value = 'Failed to load tender data: ' + (parseApiError(err) || err.message);
     toast.add({ severity: 'error', summary: 'Error', detail: error.value });
   } finally {
     loading.value = false;
@@ -955,8 +945,8 @@ const fetchTenderData = async () => {
 const fetchCompanyData = async () => {
   try {
     if (!company.value.id) return;
-    const response = await api.get(`accounts/companies/${company.value.id}/`);
-    company.value = response.data;
+    const data = await companiesService.get(company.value.id);
+    company.value = data;
     financialStatements.value = company.value.financial_statements || [];
     turnoverList.value = company.value.annual_turnovers || [];
     sources.value = company.value.sources_of_funds || [];
@@ -966,7 +956,7 @@ const fetchCompanyData = async () => {
     equipment.value = company.value.equipment || [];
     experiences.value = company.value.experiences || [];
   } catch (err) {
-    error.value = 'Failed to load company data: ' + (err.response?.data?.detail || err.message);
+    error.value = 'Failed to load company data: ' + (parseApiError(err) || err.message);
     toast.add({ severity: 'error', summary: 'Error', detail: error.value });
   }
 };
@@ -976,8 +966,8 @@ const fetchExistingBid = async () => {
   try {
     if (!tender.value?.id) return;
     const tenderId = tender.value.id;
-    const response = await api.get(`/bids/?tender=${tenderId}&status=draft`);
-    const drafts = response.data;
+    const list = await bidsService.list({ tender: tenderId, status: 'draft' });
+    const drafts = Array.isArray(list) ? list : list?.results ?? [];
     if (drafts.length > 0) {
       const draft = drafts[0];
       bidId.value = draft.id;
@@ -986,8 +976,8 @@ const fetchExistingBid = async () => {
       proposedCompletionDays.value = draft.proposed_completion_days;
 
       // Fetch documents
-      const docsRes = await api.get(`/bids/${bidId.value}/documents/`);
-      docsRes.data.forEach(d => {
+      const docsList = await bidsService.getDocuments(bidId.value);
+      (Array.isArray(docsList) ? docsList : []).forEach(d => {
         const docName = requiredDocuments.value.find(rd => rd.id === d.tender_document)?.name;
         if (docName) {
           documents.value[docName] = true; // Placeholder
@@ -1004,23 +994,25 @@ const fetchExistingBid = async () => {
       });
 
       // Fetch litigation responses
-      const litRes = await api.get(`/bids/${bidId.value}/litigation-responses/`);
-      if (litRes.data.length > 0) {
-        const lit = litRes.data[0];
+      const litList = await bidsService.getLitigationResponses(bidId.value);
+      const litArr = Array.isArray(litList) ? litList : [];
+      if (litArr.length > 0) {
+        const lit = litArr[0];
         noLitigation.value = lit.no_litigation;
         selectedLitigationIds.value = lit.litigations;
       }
 
       // Fetch source responses
-      const srcRes = await api.get(`/bids/${bidId.value}/source-responses/`);
-      if (srcRes.data.length > 0) {
-        const src = srcRes.data[0];
+      const srcList = await bidsService.getSourceResponses(bidId.value);
+      const srcArr = Array.isArray(srcList) ? srcList : [];
+      if (srcArr.length > 0) {
+        const src = srcArr[0];
         selectedSourceIds.value = src.sources;
       }
 
       // Fetch financial responses
-      const finRes = await api.get(`/bids/${bidId.value}/financial-responses/`);
-      finRes.data.forEach(fr => {
+      const finList = await bidsService.getFinancialResponses(bidId.value);
+      (Array.isArray(finList) ? finList : []).forEach(fr => {
         const req = financialRequirements.value.find(r => r.id === fr.financial_requirement);
         if (req) {
           selectedStatementsForReq.value[req.id] = fr.financial_statement;
@@ -1029,8 +1021,8 @@ const fetchExistingBid = async () => {
       });
 
       // Fetch turnover responses
-      const turnRes = await api.get(`/bids/${bidId.value}/turnover-responses/`);
-      turnRes.data.forEach(tr => {
+      const turnList = await bidsService.getTurnoverResponses(bidId.value);
+      (Array.isArray(turnList) ? turnList : []).forEach(tr => {
         const req = turnoverRequirements.value.find(r => r.id === tr.turnover_requirement);
         if (req) {
           selectedTurnoversForReq.value[req.id] = tr.turnovers;
@@ -1039,8 +1031,8 @@ const fetchExistingBid = async () => {
       });
 
       // Fetch experience responses
-      const expRes = await api.get(`/bids/${bidId.value}/experience-responses/`);
-      expRes.data.forEach(er => {
+      const expList = await bidsService.getExperienceResponses(bidId.value);
+      (Array.isArray(expList) ? expList : []).forEach(er => {
         const req = experienceRequirements.value.find(r => r.id === er.experience_requirement);
         if (req) {
           selectedExperiencesForReq.value[req.id] = er.company_experience;
@@ -1049,8 +1041,8 @@ const fetchExistingBid = async () => {
       });
 
       // Fetch personnel responses
-      const persRes = await api.get(`/bids/${bidId.value}/personnel-responses/`);
-      persRes.data.forEach(pr => {
+      const persList = await bidsService.getPersonnelResponses(bidId.value);
+      (Array.isArray(persList) ? persList : []).forEach(pr => {
         const req = personnelRequirements.value.find(r => r.id === pr.personnel_requirement);
         if (req) {
           assignedPersonnel.value[req.id] = pr.personnel;
@@ -1077,14 +1069,13 @@ const saveBidScalars = async () => {
     proposed_completion_days: proposedCompletionDays.value || null,
   };
 
-  let response;
   if (bidId.value) {
-    response = await api.patch(`/bids/${bidId.value}/`, data);
+    return await bidsService.update(bidId.value, data);
   } else {
-    response = await api.post('/bids/', data);
-    bidId.value = response.data.id;
+    const created = await bidsService.create(data);
+    bidId.value = created?.id ?? created?.data?.id;
+    return created;
   }
-  return response.data;
 };
 
 // General save simple document
@@ -1101,13 +1092,14 @@ const saveSimpleDocument = async (name, description = '') => {
   formData.append('description', description);
   formData.append('submitted_at', new Date().toISOString());
 
-  const existingRes = await api.get(`/bids/${bidId.value}/documents/`);
-  const existing = existingRes.data.find(d => d.tender_document === doc.id);
+  const existingList = await bidsService.getDocuments(bidId.value);
+  const arr = Array.isArray(existingList) ? existingList : [];
+  const existing = arr.find(d => d.tender_document === doc.id);
 
   if (existing) {
-    await api.patch(`/bids/${bidId.value}/documents/${existing.id}/`, formData, {headers: {'Content-Type': 'multipart/form-data'}});
+    await bidsService.updateDocument(bidId.value, existing.id, formData);
   } else {
-    await api.post(`/bids/${bidId.value}/documents/`, formData, {headers: {'Content-Type': 'multipart/form-data'}});
+    await bidsService.addDocument(bidId.value, formData);
   }
 };
 
@@ -1121,8 +1113,9 @@ const saveLitigation = async () => {
       no_litigation: noLitigation.value,
       notes: ''
     };
-    const existingRes = await api.get(`/bids/${bidId.value}/litigation-responses/`);
-    const existing = existingRes.data.find(lr => lr.tender_document === litDoc.id);
+    const litList = await bidsService.getLitigationResponses(bidId.value);
+    const litArr = Array.isArray(litList) ? litList : [];
+    const existing = litArr.find(lr => lr.tender_document === litDoc.id);
     if (existing) {
       await api.patch(`/bids/${bidId.value}/litigation-responses/${existing.id}/`, data);
     } else {
@@ -1140,8 +1133,9 @@ const saveSources = async () => {
       sources: selectedSourceIds.value,
       notes: ''
     };
-    const existingRes = await api.get(`/bids/${bidId.value}/source-responses/`);
-    const existing = existingRes.data.find(sr => sr.tender_document === srcDoc.id);
+    const srcList = await bidsService.getSourceResponses(bidId.value);
+    const srcArr = Array.isArray(srcList) ? srcList : [];
+    const existing = srcArr.find(sr => sr.tender_document === srcDoc.id);
     if (existing) {
       await api.patch(`/bids/${bidId.value}/source-responses/${existing.id}/`, data);
     } else {
@@ -1152,8 +1146,9 @@ const saveSources = async () => {
 
 // Save financial responses
 const saveFinancialResponses = async () => {
-  const existingRes = await api.get(`/bids/${bidId.value}/financial-responses/`);
-  const existingMap = new Map(existingRes.data.map(fr => [fr.financial_requirement, fr.id]));
+  const finList = await bidsService.getFinancialResponses(bidId.value);
+  const finArr = Array.isArray(finList) ? finList : [];
+  const existingMap = new Map(finArr.map(fr => [fr.financial_requirement, fr.id]));
 
   for (const req of financialRequirements.value) {
     if (selectedStatementsForReq.value[req.id]) {
@@ -1176,8 +1171,9 @@ const saveFinancialResponses = async () => {
 
 // Save turnover responses
 const saveTurnoverResponses = async () => {
-  const existingRes = await api.get(`/bids/${bidId.value}/turnover-responses/`);
-  const existingMap = new Map(existingRes.data.map(tr => [tr.turnover_requirement, tr.id]));
+  const turnList = await bidsService.getTurnoverResponses(bidId.value);
+  const turnArr = Array.isArray(turnList) ? turnList : [];
+  const existingMap = new Map(turnArr.map(tr => [tr.turnover_requirement, tr.id]));
 
   for (const req of turnoverRequirements.value) {
     const turnovers = selectedTurnoversForReq.value[req.id] || [];
@@ -1202,8 +1198,9 @@ const saveTurnoverResponses = async () => {
 
 // Save experience responses
 const saveExperienceResponses = async () => {
-  const existingRes = await api.get(`/bids/${bidId.value}/experience-responses/`);
-  const existingMap = new Map(existingRes.data.map(er => [er.experience_requirement, er.id]));
+  const expList = await bidsService.getExperienceResponses(bidId.value);
+  const expArr = Array.isArray(expList) ? expList : [];
+  const existingMap = new Map(expArr.map(er => [er.experience_requirement, er.id]));
 
   for (const req of experienceRequirements.value) {
     const experienceId = selectedExperiencesForReq.value[req.id];
@@ -1228,8 +1225,9 @@ const saveExperienceResponses = async () => {
 
 // Save personnel responses
 const savePersonnelResponses = async () => {
-  const existingRes = await api.get(`/bids/${bidId.value}/personnel-responses/`);
-  const existingMap = new Map(existingRes.data.map(pr => [pr.personnel_requirement, pr.id]));
+  const persList = await bidsService.getPersonnelResponses(bidId.value);
+  const persArr = Array.isArray(persList) ? persList : [];
+  const existingMap = new Map(persArr.map(pr => [pr.personnel_requirement, pr.id]));
 
   for (const req of personnelRequirements.value) {
     const personnelUuid = assignedPersonnel.value[req.id];
@@ -1365,12 +1363,12 @@ const submitBid = async () => {
     }
 
     await saveDraft(); // Ensure all data saved
-    await api.post(`/bids/${bidId.value}/submit/`);
+    await bidsService.submit(bidId.value);
 
     toast.add({ severity: 'success', summary: 'Success', detail: 'Bid submitted successfully!' });
     router.push({ name: 'BidConfirmation', params: { bidId: bidId.value } });
   } catch (err) {
-    error.value = 'Failed to publish bid: ' + (err.response?.data?.detail || err.message);
+    error.value = 'Failed to publish bid: ' + (parseApiError(err) || err.message);
     toast.add({ severity: 'error', summary: 'Error', detail: error.value });
   } finally {
     loading.value = false;

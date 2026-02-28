@@ -57,10 +57,6 @@ const errorRoutes = [
     },
     component: () => import('@/views/pages/error-404-alt.vue')
   },
-  {
-    path: '/:pathMatch(.*)*',
-    redirect: '404'
-  }
 ];
 
 const dashboardRoutes = [
@@ -776,7 +772,8 @@ const adminRoutes = [
     name: 'admin.companies-management',
     meta: {
       title: setTitle('Companies Management'),
-      authRequired: true
+      authRequired: true,
+      requiresAdmin: true
     },
     component: () => import('@/views/admin/companies-management.vue')
   },
@@ -785,7 +782,8 @@ const adminRoutes = [
     name: 'admin.companies-management-detail',
     meta: {
       title: setTitle('Companies Management'),
-      authRequired: true
+      authRequired: true,
+      requiresAdmin: true
     },
     component: () => import('@/views/admin/companies-management.vue')
   },
@@ -794,7 +792,8 @@ const adminRoutes = [
     name: 'admin.users',
     meta: {
       title: setTitle('User Management'),
-      authRequired: true
+      authRequired: true,
+      requiresAdmin: true
     },
     component: () => import('@/views/admin/users.vue')
   },
@@ -803,7 +802,8 @@ const adminRoutes = [
     name: 'admin.settings',
     meta: {
       title: setTitle('System Settings'),
-      authRequired: true
+      authRequired: true,
+      requiresAdmin: true
     },
     component: () => import('@/views/admin/settings.vue')
   },
@@ -812,25 +812,28 @@ const adminRoutes = [
     name: 'admin.tenders-create',
     meta: {
       title: setTitle('Tenders Create'),
-      authRequired: true
+      authRequired: true,
+      requiresAdmin: true
     },
     component: () => import('@/views/admin/create-tenders-admin.vue')  
   },
   {
-  path: '/admin/tenders/:slug/edit',
-  name: 'admin.tenders-edit',
-   meta: {
+    path: '/admin/tenders/:slug/edit',
+    name: 'admin.tenders-edit',
+    meta: {
       title: setTitle('Tenders Edit'),
-      authRequired: true
+      authRequired: true,
+      requiresAdmin: true
     },
-  component: () => import('@/views/admin/edit-tenders-admin.vue')  
+    component: () => import('@/views/admin/edit-tenders-admin.vue')  
   },
-    {
+  {
     path: '/admin/bids/:id',
     name: 'admin.bids-detail',
     meta: {
       title: setTitle('BIDS Details'),
-      authRequired: true
+      authRequired: true,
+      requiresAdmin: true
     },
     component: () => import('@/views/admin/bids-admin-detail.vue')  
   },
@@ -839,7 +842,8 @@ const adminRoutes = [
     name: 'admin.tenders-detail',
     meta: {
       title: setTitle('Tenders Management Details'),
-      authRequired: true
+      authRequired: true,
+      requiresAdmin: true
     },
     component: () => import('@/views/admin/tender-management-admin-details.vue')  
   },
@@ -848,7 +852,8 @@ const adminRoutes = [
     name: 'admin.tenders-management',
     meta: {
       title: setTitle('Tenders Management'),
-      authRequired: true
+      authRequired: true,
+      requiresAdmin: true
     },
     component: () => import('@/views/admin/tender-management-admin.vue')  
   },
@@ -857,7 +862,8 @@ const adminRoutes = [
     name: 'admin.categories-management',
     meta: {
       title: setTitle('Tenders Categories Management'),
-      authRequired: true
+      authRequired: true,
+      requiresAdmin: true
     },
     component: () => import('@/views/admin/CategorySubcategoryCreate.vue')  
   },
@@ -865,12 +871,9 @@ const adminRoutes = [
     path: '/admin/tenders/procurement-process/create',
     name: 'admin.procurement-process-management',
     meta: {
-      title: setTitle('Procurement Process Management'),
-      authRequired: true
-    },
-    meta: {
       title: setTitle('Tenders Procurement Process Management'),
-      authRequired: true
+      authRequired: true,
+      requiresAdmin: true
     },
     component: () => import('@/views/admin/ProcurementProcessCreate.vue')  
   },
@@ -879,7 +882,8 @@ const adminRoutes = [
     name: 'admin.marketplace',
     meta: {
       title: setTitle('Marketplace'),
-      authRequired: true
+      authRequired: true,
+      requiresAdmin: true
     },
     component: () => import('@/views/marketplace/admin/admin-market-place.vue')
   },
@@ -888,7 +892,8 @@ const adminRoutes = [
     name: 'admin.marketplace.categories-management',
     meta: {
       title: setTitle('Marketplace Categories Management'),
-      authRequired: true
+      authRequired: true,
+      requiresAdmin: true
     },
     component: () => import('@/views/marketplace/admin/admin-marketplace-categories.vue')
   },
@@ -1215,8 +1220,6 @@ const automationRoutes = [
 export const allRoutes = [
   ...dashboardRoutes,
   ...pagesRoutes,
-  ...errorRoutes,
-  ...authRoutes,
   ...appsRoutes,
   ...uiRoutes,
   ...advancedUIRoutes,
@@ -1228,5 +1231,8 @@ export const allRoutes = [
   ...adminRoutes,
   ...staffRoutes,
   ...userRoutes,
-  ...automationRoutes
+  ...automationRoutes,
+  ...authRoutes,
+  ...errorRoutes,
+  { path: '/:pathMatch(.*)*', redirect: '/404' } // LAST
 ];
