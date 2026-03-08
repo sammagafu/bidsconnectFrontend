@@ -61,13 +61,14 @@
                 </div>
               </b-form>
 
-              <p class="mt-3 fw-semibold no-span">OR sign with</p>
-
-              <div class="text-center">
-                <a href="javascript:void(0);" class="btn btn-light shadow-none"><i class='bx bxl-google fs-20'></i></a>{{ ' ' }}
-                <a href="javascript:void(0);" class="btn btn-light shadow-none"><i class='bx bxl-facebook fs-20'></i></a>{{ ' ' }}
-                <a href="javascript:void(0);" class="btn btn-light shadow-none"><i class='bx bxl-github fs-20'></i></a>
-              </div>
+              <template v-if="enableSocialOAuth">
+                <p class="mt-3 fw-semibold no-span">OR sign with</p>
+                <div class="text-center">
+                  <a href="javascript:void(0);" class="btn btn-light shadow-none"><i class='bx bxl-google fs-20'></i></a>{{ ' ' }}
+                  <a href="javascript:void(0);" class="btn btn-light shadow-none"><i class='bx bxl-facebook fs-20'></i></a>{{ ' ' }}
+                  <a href="javascript:void(0);" class="btn btn-light shadow-none"><i class='bx bxl-github fs-20'></i></a>
+                </div>
+              </template>
             </div>
           </b-card-body>
         </b-card>
@@ -110,6 +111,7 @@ const error = ref('');
 const checked = ref(false);
 const loading = ref(false);
 const showPassword = ref(false);
+const enableSocialOAuth = import.meta.env.VITE_ENABLE_SOCIAL_OAUTH === 'true';
 
 const togglePassword = () => {
   showPassword.value = !showPassword.value;

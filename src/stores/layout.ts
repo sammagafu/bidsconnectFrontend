@@ -3,7 +3,7 @@ import {useLocalStorage} from '@vueuse/core'
 import {toggleDocumentAttribute} from '@/helpers'
 
 type LayoutType = {
-    theme: 'light' | 'dark'
+    theme: 'light' | 'lighter' | 'dark'
     topBarColor: 'light' | 'dark'
     leftSideBarColor: 'light' | 'dark'
     leftSideBarSize: 'sm-hover-active' | 'sm-hover' | 'hidden' | 'condensed' | 'default'

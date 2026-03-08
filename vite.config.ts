@@ -19,6 +19,14 @@ export default defineConfig({
     }
   },
 
+  css: {
+    preprocessorOptions: {
+      scss: {
+        silenceDeprecations: ['import', 'if-function', 'global-builtin', 'color-functions'],
+      }
+    }
+  },
+
   // THIS IS THE MAGIC — PROXIES ALL /api/v1/ CALLS TO YOUR LIVE SERVER
   server: {
     port: 5173,

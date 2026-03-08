@@ -20,8 +20,8 @@
         </div>
 
         <div class="d-flex align-items-center gap-1">
-          <!-- Theme Color (Light/Dark) -->
-          <div class="topbar-item">
+          <!-- Theme Color (Light / Lighter / Dark) -->
+          <div class="topbar-item" :title="`Theme: ${layout.theme} (click to cycle)`">
             <button type="button" class="topbar-button" id="light-dark-mode" @click="toggleTheme">
               <Icon icon="solar:moon-broken" class="fs-24 align-middle light-mode" />
               <Icon icon="solar:sun-broken" class="fs-24 align-middle dark-mode" />
@@ -168,12 +168,13 @@ const toggleFullScreen = () => {
 };
 
 const useLayout = useLayoutStore();
+const { layout } = useLayout;
 
 const toggleTheme = () => {
-  if (useLayout.layout.theme === 'light') {
-    return useLayout.setTheme('dark');
-  }
-  useLayout.setTheme('light');
+  const themes = ['light', 'lighter', 'dark'];
+  const idx = themes.indexOf(useLayout.layout.theme);
+  const next = themes[(idx + 1) % themes.length];
+  useLayout.setTheme(next);
 };
 
 const toggleLeftSideBar = () => {

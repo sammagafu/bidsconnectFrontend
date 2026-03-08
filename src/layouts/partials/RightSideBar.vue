@@ -14,6 +14,7 @@
               <h5 class="mb-3 font-16 fw-semibold">Color Scheme</h5>
               <b-form-radio-group stacked v-model="layout.theme" name="theme" @change="setTheme(layout.theme)">
                 <b-form-radio value="light">Light</b-form-radio>
+                <b-form-radio value="lighter">Lighter</b-form-radio>
                 <b-form-radio value="dark">Dark</b-form-radio>
               </b-form-radio-group>
             </div>

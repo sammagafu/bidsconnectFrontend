@@ -1,0 +1,45 @@
+//
+// Lighter theme - softer, brighter color mode
+// Applied when html[data-bs-theme="lighter"]
+//
+
+html[data-bs-theme="lighter"] {
+  // Softer background and text
+  --#{$prefix}body-bg: #f8fafc;
+  --#{$prefix}body-color: #64748b;
+  --#{$prefix}body-bg-rgb: 248, 250, 252;
+  --#{$prefix}body-color-rgb: 100, 116, 139;
+
+  --#{$prefix}secondary-bg: #f1f5f9;
+  --#{$prefix}secondary-color: #64748b;
+  --#{$prefix}secondary-bg-rgb: 241, 245, 249;
+  --#{$prefix}secondary-color-rgb: 100, 116, 139;
+
+  --#{$prefix}tertiary-bg: #f1f5f9;
+  --#{$prefix}tertiary-color: #475569;
+  --#{$prefix}tertiary-bg-rgb: 241, 245, 249;
+  --#{$prefix}tertiary-color-rgb: 71, 85, 105;
+
+  --#{$prefix}border-color: #e2e8f0;
+  --#{$prefix}border-color-translucent: rgba(100, 116, 139, 0.15);
+
+  --#{$prefix}headings-color: #334155;
+
+  --#{$prefix}input-border-color: #e2e8f0;
+  --#{$prefix}input-focus-border-color: #94a3b8;
+}
+
+/* Lighter theme - Topbar and Menu overrides */
+html[data-bs-theme="lighter"][data-topbar-color="light"] {
+  --#{$prefix}topbar-bg: #ffffff;
+  --#{$prefix}topbar-item-color: #64748b;
+  --#{$prefix}topbar-search-bg: #f1f5f9;
+}
+
+html[data-bs-theme="lighter"][data-menu-color="light"] {
+  --#{$prefix}main-nav-bg: #ffffff;
+  --#{$prefix}main-nav-item-color: #64748b;
+  --#{$prefix}main-nav-item-hover-bg: #f8fafc;
+  --#{$prefix}main-nav-item-hover-color: #334155;
+  --#{$prefix}main-nav-border-color: #e2e8f0;
+}

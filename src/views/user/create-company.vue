@@ -126,11 +126,22 @@
           </div>
           <div class="field">
             <label for="country" class="block mb-2 font-semibold">Country</label>
-            <InputText
+            <Select
               id="country"
               v-model="companyDetails.country"
-              placeholder="Enter country"
+              :options="countryOptions"
+              optionLabel="label"
+              optionValue="value"
+              placeholder="Select country"
               fluid
+              @change="onCountryChange"
+            />
+            <InputText
+              v-if="companyDetails.country === 'other'"
+              v-model="companyDetails.countryOther"
+              placeholder="Enter your country"
+              fluid
+              class="mt-2"
             />
           </div>
           <div class="field">
@@ -212,6 +223,7 @@
     registration_number: '',
     founded_date: null,
     country: '',
+    countryOther: '',
     status: null,
     employee_count: null,
     parent_company: null,
@@ -236,6 +248,18 @@
     { label: 'Suspended', value: 'suspended' },
   ]);
   
+  // Country options (Tanzania + Other with free text)
+  const countryOptions = [
+    { label: 'Tanzania', value: 'Tanzania' },
+    { label: 'Other', value: 'other' },
+  ];
+
+  const onCountryChange = () => {
+    if (companyDetails.value.country !== 'other') {
+      companyDetails.value.countryOther = '';
+    }
+  };
+
   // Parent company options
   const parentCompanyOptions = ref([]);
   
@@ -324,7 +348,9 @@
       formData.append('founded_date', companyDetails.value.founded_date
         ? companyDetails.value.founded_date.toISOString().split('T')[0]
         : '');
-      formData.append('country', companyDetails.value.country || '');
+      formData.append('country', companyDetails.value.country === 'other'
+        ? (companyDetails.value.countryOther || '')
+        : (companyDetails.value.country || ''));
       formData.append('status', companyDetails.value.status || 'active');
       formData.append('employee_count', companyDetails.value.employee_count || '');
       formData.append('parent_company', companyDetails.value.parent_company || '');
@@ -353,5 +379,3 @@
     }
   };
   </script>
-  
-  //TODO: add a dropdown for the country field to have taznania and when pick others he can write his/her own country

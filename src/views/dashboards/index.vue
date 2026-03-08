@@ -76,7 +76,7 @@
       </b-col>
     </b-row>
 
-    <b-row v-else>
+    <b-row v-if="!isAdmin">
       <b-col lg="12">
         <b-card no-body class="card-height-100">
           <b-card-header class="d-flex align-items-center justify-content-between gap-2">
