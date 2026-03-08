@@ -1,5 +1,34 @@
 <template>
   <VerticalLayout>
+    <!-- Onboarding checklist for new users -->
+    <b-card v-if="showOnboarding" class="mb-4 border-primary">
+      <template #header>
+        <div class="d-flex align-items-center justify-content-between">
+          <h5 class="mb-0"><i class="bx bx-rocket me-2"></i>Get Started</h5>
+          <b-button size="sm" variant="link" @click="dismissOnboarding">Dismiss</b-button>
+        </div>
+      </template>
+      <p class="text-muted mb-3">Complete these steps to get the most out of BidsConnect:</p>
+      <div class="d-flex flex-wrap gap-3">
+        <div class="d-flex align-items-center gap-2">
+          <i :class="['bx fs-4', onboardingSteps.company ? 'bx-check-circle text-success' : 'bx-circle']"></i>
+          <router-link v-if="!onboardingSteps.company" to="/company/create-company">Create or join a company</router-link>
+          <span v-else>Company created</span>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+          <i :class="['bx fs-4', onboardingSteps.documents ? 'bx-check-circle text-success' : 'bx-circle']"></i>
+          <router-link v-if="!onboardingSteps.documents && onboardingSteps.company" :to="{ name: 'user.company-management' }">Upload company documents</router-link>
+          <span v-else-if="onboardingSteps.documents">Documents uploaded</span>
+          <span v-else class="text-muted">Upload documents (after company)</span>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+          <i :class="['bx fs-4', onboardingSteps.tenders ? 'bx-check-circle text-success' : 'bx-circle']"></i>
+          <router-link v-if="!onboardingSteps.tenders" :to="{ name: 'company.tenders-list' }">Browse tenders</router-link>
+          <span v-else>Exploring tenders</span>
+        </div>
+      </div>
+    </b-card>
+
     <b-row>
       <b-col md="6" xl="3" v-for="(item, idx) in stats" :key="idx">
         <StatisticsCard :item="item" />
@@ -110,7 +139,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { api, companiesService, tendersService, bidsService, parseApiError } from '@/services'
 import VerticalLayout from '@/layouts/VerticalLayout.vue'
@@ -126,6 +155,30 @@ import TopPages from '@/views/dashboards/admin/components/TopPages.vue'
 const toast = useToast()
 const router = useRouter()
 const authStore = useAuthStore()
+
+const ONBOARDING_DISMISSED_KEY = 'bidsconnect_onboarding_dismissed'
+
+const documentCount = ref(0)
+const onboardingSteps = computed(() => {
+  const companies = authStore.companies || []
+  const hasCompany = companies.length > 0
+  return {
+    company: hasCompany,
+    documents: hasCompany && documentCount.value > 0,
+    tenders: true,
+  }
+})
+
+const showOnboarding = computed(() => {
+  if (isAdmin.value) return false
+  if (localStorage.getItem(ONBOARDING_DISMISSED_KEY)) return false
+  const allDone = onboardingSteps.value.company && onboardingSteps.value.documents
+  return !allDone
+})
+
+const dismissOnboarding = () => {
+  localStorage.setItem(ONBOARDING_DISMISSED_KEY, '1')
+}
 
 const isAdmin = ref(false)
 const stats = ref<any[]>([])
@@ -182,9 +235,10 @@ onMounted(async () => {
         const tendersList = Array.isArray(tendersData) ? tendersData : tendersData?.results ?? []
         const bidsList = Array.isArray(bidsData) ? bidsData : bidsData?.results ?? []
 
+        documentCount.value = dashRes.data?.total_documents ?? 0
         stats.value = [
           { title: 'Company Users', statistic: dashRes.data?.total_users ?? 0, icon: 'users', prefix: '', suffix: '', growth: 0 },
-          { title: 'Company Documents', statistic: dashRes.data?.total_documents ?? 0, icon: 'file', prefix: '', suffix: '', growth: 0 },
+          { title: 'Company Documents', statistic: documentCount.value, icon: 'file', prefix: '', suffix: '', growth: 0 },
           { title: 'Company Experiences', statistic: dashRes.data?.total_experiences ?? 0, icon: 'award', prefix: '', suffix: '', growth: 0 }
         ]
 
@@ -193,7 +247,7 @@ onMounted(async () => {
         marketplaceItems.value = companyTenders.value.map((t: any) => ({ name: t.title, description: t.description, price: t.estimated_value }))
       } else {
         toast.add({ severity: 'warn', summary: 'No Company', detail: 'You are not associated with any company.' })
-        router.push('/companies/create')
+        router.push({ name: 'user.create-company' })
       }
     }
   } catch (e) {

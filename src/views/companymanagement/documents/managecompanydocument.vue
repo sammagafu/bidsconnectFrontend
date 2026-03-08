@@ -6,6 +6,9 @@
         <div class="d-flex justify-content-between align-items-center">
           <h3 class="mb-0">Documents</h3>
           <div>
+            <b-button size="sm" variant="outline-success" class="me-2" @click="exportDocuments" :disabled="!docs.length || exportLoading">
+              <i class="bx bx-download"></i> {{ exportLoading ? 'Exporting...' : 'Export CSV' }}
+            </b-button>
             <b-button size="sm" variant="outline-primary" @click="openModal()">
               <i class="bx bx-plus"></i> Create
             </b-button>
@@ -137,11 +140,12 @@ const toast      = useToast()
 const auth       = useAuthStore()
 const companyId  = computed(() => auth.user?.companies?.[0]?.id || null)
 
-const docs       = ref([])
-const showModal  = ref(false)
-const editing    = ref(false)
-const loading    = ref(false)
-const error      = ref('')
+const docs         = ref([])
+const showModal    = ref(false)
+const editing      = ref(false)
+const loading      = ref(false)
+const exportLoading = ref(false)
+const error        = ref('')
 
 // our reactive form
 const form       = ref({
@@ -268,6 +272,25 @@ async function removeDocument(id) {
     fetchDocs()
   } catch (e) {
     toast.add({ severity:'error', summary:'Error', detail: parseApiError(e) || 'Delete failed.' })
+  }
+}
+
+async function exportDocuments() {
+  if (!companyId.value || !docs.value.length) return
+  exportLoading.value = true
+  try {
+    const blob = await companiesService.exportDocuments(companyId.value)
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `company-documents-${new Date().toISOString().slice(0, 10)}.csv`
+    a.click()
+    URL.revokeObjectURL(url)
+    toast.add({ severity:'success', summary:'Exported', detail:'Documents exported as CSV.' })
+  } catch (e) {
+    toast.add({ severity:'error', summary:'Error', detail: parseApiError(e) || 'Export failed.' })
+  } finally {
+    exportLoading.value = false
   }
 }
 

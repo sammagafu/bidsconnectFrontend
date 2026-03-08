@@ -105,4 +105,24 @@ export const tendersService = {
   award(slug, awardedBidId) {
     return api.patch(`tenders/tenders/${slug}/award/`, { awarded_bid: awardedBidId }).then(r => r.data);
   },
+
+  /** POST /tenders/tenders/{slug}/publish/ */
+  publish(slug) {
+    return api.post(`tenders/tenders/${slug}/publish/`).then(r => r.data);
+  },
+
+  /** GET /tenders/tender-status-history/ — query: ?tender=<slug> */
+  getStatusHistory(params = {}) {
+    return api.get('tenders/tender-status-history/', { params }).then(r => r.data);
+  },
+
+  /** GET /tenders/pricing/ — platform pricing (tender document fee, tender summary) */
+  getPricing() {
+    return api.get('tenders/pricing/').then(r => r.data);
+  },
+
+  /** GET /tenders/pricing/{fee_type}/ — e.g. tender_document, tender_summary_one_time */
+  getPricingByType(feeType) {
+    return api.get(`tenders/pricing/${feeType}/`).then(r => r.data);
+  },
 };

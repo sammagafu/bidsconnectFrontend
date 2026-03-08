@@ -85,13 +85,14 @@ import AuthLayout from '@/layouts/AuthLayout.vue';
 import { required, email } from '@vuelidate/validators';
 import { useVuelidate } from '@vuelidate/core';
 import { ref, reactive, computed } from 'vue';
-import { useRouter } from 'vue-router';
+import { useRouter, useRoute } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
 import { parseApiError } from '@/services/api';
 import { useToast } from 'primevue/usetoast';
 import InputText from 'primevue/inputtext';
 
 const router = useRouter();
+const route = useRoute();
 const authStore = useAuthStore();
 const toast = useToast();
 
@@ -144,7 +145,8 @@ const handleSignIn = async () => {
 
     await authStore.initialize();
 
-    await router.push({ path: '/' });  // Always redirect to dashboard root
+    const redirect = route.query.redirect || route.query.redirectedFrom;
+    await router.push(redirect ? { path: redirect } : { path: '/' });
 
   } catch (err) {
     error.value = parseApiError(err) || 'Invalid credentials';

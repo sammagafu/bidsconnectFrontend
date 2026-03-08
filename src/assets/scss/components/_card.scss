@@ -6,6 +6,11 @@
     margin-bottom: $spacer;
 }
 
+// Standardized card body padding (24px)
+.card-body {
+    padding: var(--#{$prefix}spacing-5, 1.5rem);
+}
+
 .card-link+.card-link {
     margin-left: $card-spacer-x;
     margin-right: 0;

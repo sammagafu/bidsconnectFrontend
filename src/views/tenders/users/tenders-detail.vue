@@ -201,7 +201,7 @@
           </table>
 
           <!-- Action Buttons -->
-          <div class="d-flex gap-2">
+          <div class="d-flex gap-2 mb-4">
             <button class="btn btn-primary" @click="downloadPDF">
               Download Checklist PDF
             </button>
@@ -209,6 +209,47 @@
               Bid on Tender
             </button>
           </div>
+
+          <!-- Activity Timeline -->
+          <b-card v-if="authStore.isAuthenticated" class="mb-3">
+            <template #header>
+              <h5 class="mb-0" v-b-toggle.tender-timeline style="cursor: pointer;">
+                <i class="bx bx-time-five me-2"></i>Activity Timeline
+              </h5>
+            </template>
+            <b-collapse id="tender-timeline" visible>
+              <ul v-if="statusHistory.length" class="list-unstyled mb-0">
+                <li v-for="(ev, i) in statusHistory" :key="i" class="d-flex gap-2 mb-2">
+                  <span class="text-muted small">{{ formatDateTime(ev.created_at || ev.timestamp) }}</span>
+                  <span>{{ ev.status || ev.action || ev.message || 'Status change' }}</span>
+                </li>
+              </ul>
+              <p v-else class="text-muted mb-0">No activity history.</p>
+            </b-collapse>
+          </b-card>
+
+          <!-- Team Chat -->
+          <b-card v-if="authStore.isAuthenticated" class="mb-3">
+            <template #header>
+              <h5 class="mb-0" v-b-toggle.tender-chat style="cursor: pointer;">
+                <i class="bx bx-message-dots me-2"></i>Team Chat
+              </h5>
+            </template>
+            <b-collapse id="tender-chat" visible>
+              <div class="mb-3" style="max-height: 200px; overflow-y: auto;">
+                <div v-for="(msg, i) in conversationMessages" :key="i" class="mb-2">
+                  <small class="text-muted">{{ msg.sender?.email || 'User' }} · {{ formatDateTime(msg.created_at) }}</small>
+                  <p class="mb-0">{{ msg.content }}</p>
+                </div>
+                <p v-if="!conversationMessages.length && !chatLoading" class="text-muted mb-0">No messages yet. Start the conversation.</p>
+                <div v-if="chatLoading" class="text-muted">Loading...</div>
+              </div>
+              <b-input-group>
+                <b-form-input v-model="newMessage" placeholder="Type a message..." @keyup.enter="sendMessage" />
+                <b-button variant="primary" @click="sendMessage" :disabled="!newMessage.trim() || chatSending">Send</b-button>
+              </b-input-group>
+            </b-collapse>
+          </b-card>
         </div>
 
         <div v-else class="text-center my-5">
@@ -223,7 +264,7 @@
 import { ref, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
-import { tendersService, parseApiError } from '@/services';
+import { tendersService, tenderConversationsService, parseApiError } from '@/services';
 import VerticalLayout from '@/layouts/VerticalLayout.vue';
 import html2pdf from 'html2pdf.js';
 
@@ -234,6 +275,12 @@ const slug = route.params.slug;
 const tender = ref(null);
 const loading = ref(false);
 const printSection = ref(null);
+const statusHistory = ref([]);
+const conversationMessages = ref([]);
+const conversationId = ref(null);
+const newMessage = ref('');
+const chatLoading = ref(false);
+const chatSending = ref(false);
 
 const processTypeDisplay = {
   open: 'Open Tendering',
@@ -315,10 +362,53 @@ const fetchTender = async () => {
   loading.value = true;
   try {
     tender.value = await tendersService.get(slug);
+    if (authStore.isAuthenticated && tender.value) {
+      fetchStatusHistory();
+      fetchConversation();
+    }
   } catch (e) {
     // parseApiError(e) can be shown in UI if needed
   } finally {
     loading.value = false;
+  }
+};
+
+const fetchStatusHistory = async () => {
+  try {
+    const data = await tendersService.getStatusHistory({ tender: slug });
+    statusHistory.value = Array.isArray(data) ? data : (data.results || []);
+  } catch {
+    statusHistory.value = [];
+  }
+};
+
+const fetchConversation = async () => {
+  if (!slug) return;
+  chatLoading.value = true;
+  try {
+    const conv = await tenderConversationsService.getOrCreate(slug);
+    conversationId.value = conv.id;
+    const msgs = await tenderConversationsService.listMessages(conv.id);
+    conversationMessages.value = Array.isArray(msgs) ? msgs : (msgs.results || msgs.messages || []);
+  } catch {
+    conversationMessages.value = [];
+  } finally {
+    chatLoading.value = false;
+  }
+};
+
+const sendMessage = async () => {
+  const content = newMessage.value?.trim();
+  if (!content || !conversationId.value || chatSending.value) return;
+  chatSending.value = true;
+  try {
+    const msg = await tenderConversationsService.postMessage(conversationId.value, content);
+    conversationMessages.value.push(msg);
+    newMessage.value = '';
+  } catch (e) {
+    console.warn('Send message failed:', e);
+  } finally {
+    chatSending.value = false;
   }
 };
 

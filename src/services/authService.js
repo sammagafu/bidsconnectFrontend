@@ -130,6 +130,14 @@ const authService = {
     }
   },
 
+  async getUserFromApi() {
+    const res = await api.get('accounts/users/me/');
+    const user = res.data;
+    const storage = localStorage.getItem(TOKEN_KEY) ? localStorage : sessionStorage;
+    storage.setItem(USER_KEY, JSON.stringify(user));
+    return user;
+  },
+
   async refreshToken() {
     const refresh = localStorage.getItem(REFRESH_TOKEN_KEY) || sessionStorage.getItem(REFRESH_TOKEN_KEY);
     if (!refresh) {

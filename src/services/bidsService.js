@@ -112,4 +112,9 @@ export const bidsService = {
   reject(bidId, payload = { status: 'rejected' }) {
     return api.patch(`bids/${bidId}/reject/`, payload).then(r => r.data);
   },
+
+  /** GET /bids/{id}/audit-logs/ */
+  getAuditLogs(bidId) {
+    return api.get(`bids/${bidId}/audit-logs/`).then(r => r.data);
+  },
 };

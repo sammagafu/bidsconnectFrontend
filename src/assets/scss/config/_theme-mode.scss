@@ -24,6 +24,20 @@
 
     --#{$prefix}input-border-color:             #d8dfe7;
     --#{$prefix}input-focus-border-color:       #b0b0bb;
+
+    // Spacing scale (4, 8, 12, 16, 24, 32, 48, 64px)
+    --#{$prefix}spacing-1:                     4px;
+    --#{$prefix}spacing-2:                     8px;
+    --#{$prefix}spacing-3:                     12px;
+    --#{$prefix}spacing-4:                     16px;
+    --#{$prefix}spacing-5:                     24px;
+    --#{$prefix}spacing-6:                     32px;
+    --#{$prefix}spacing-7:                     48px;
+    --#{$prefix}spacing-8:                     64px;
+
+    // App theming
+    --#{$prefix}app-primary:                    #1976d2;
+    --#{$prefix}app-surface:                    #ffffff;
 }
 
 

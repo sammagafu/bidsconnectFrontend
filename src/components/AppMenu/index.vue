@@ -1,7 +1,7 @@
 <template>
   <ul class="navbar-nav">
     <template v-for="(item, idx) in menuItems || []" :key="idx">
-      <li v-if="item.isTitle" class="menu-title" :class="idx && 'mt-2'" >{{ item.label }}</li>
+      <li v-if="item.isTitle" class="menu-title" :class="idx > 0 ? 'mt-2' : undefined">{{ item.label }}</li>
       <template v-else>
         <MenuItemWithChildren v-if="item.children" :item="item" className="nav-item" linkClassName="nav-link" subMenuClassName="nav sub-navbar-nav" />
         <MenuItem v-else :item="item" linkClassName="nav-link" className="nav-item" />

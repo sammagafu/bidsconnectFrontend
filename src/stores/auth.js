@@ -185,6 +185,18 @@ export const useAuthStore = defineStore('auth', {
       }
     },
 
+    async refreshUser() {
+      if (!this.token) return;
+      try {
+        const userRes = await authService.getUserFromApi();
+        if (userRes) {
+          this.updateUser(userRes);
+        }
+      } catch {
+        // ignore
+      }
+    },
+
     hasCompanies() {
       return (this.companies ?? []).length > 0;
     },

@@ -2,6 +2,11 @@
 // forms.scss
 //
 
+// Consistent form group spacing
+.b-form-group,
+.form-group {
+    margin-bottom: var(--#{$prefix}spacing-3, 0.75rem);
+}
 
 // Forms
 label {

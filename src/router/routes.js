@@ -37,6 +37,15 @@ const authRoutes = [
       title: setTitle('Lock Screen')
     },
     component: () => import('@/views/auth/lock-screen.vue')
+  },
+  {
+    path: '/invitations/accept/:token',
+    name: 'auth.accept-invitation',
+    meta: {
+      title: setTitle('Accept Invitation'),
+      authRequired: true
+    },
+    component: () => import('@/views/auth/accept-invitation.vue')
   }
 ];
 
@@ -1038,7 +1047,7 @@ const userRoutes = [
   },
    {
     path: '/marketplace/request-for-quote/',
-    name: 'user.marketplace-list', 
+    name: 'user.marketplace.request-for-quote', 
     component: () => import('@/views/marketplace/user/request-for-quote.vue'),
     meta: {
       title: setTitle('Marketplace'),

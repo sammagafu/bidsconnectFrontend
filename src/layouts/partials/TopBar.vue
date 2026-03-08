@@ -37,12 +37,11 @@
           </div>
 
           <!-- Notification -->
-          <DropDown class="topbar-item">
+          <DropDown class="topbar-item" :title="`${unreadCount} unread`">
             <button type="button" class="topbar-button position-relative" id="page-header-notifications-dropdown"
-              data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" @click="fetchNotifications">
               <Icon icon="solar:bell-bing-broken" class="fs-24 align-middle" />
-              <span class="position-absolute topbar-badge fs-10 translate-middle badge bg-danger rounded-pill">3<span
-                  class="visually-hidden">unread messages</span></span>
+              <span v-if="unreadCount > 0" class="position-absolute topbar-badge fs-10 translate-middle badge bg-danger rounded-pill">{{ unreadCount }}<span class="visually-hidden">unread messages</span></span>
             </button>
             <div class="dropdown-menu py-0 dropdown-lg dropdown-menu-end"
               aria-labelledby="page-header-notifications-dropdown">
@@ -52,56 +51,44 @@
                     <h6 class="m-0 fs-16 fw-semibold"> Notifications</h6>
                   </div>
                   <div class="col-auto">
-                    <a href="javascript: void(0);" class="text-body text-decoration-underline">
+                    <a v-if="unreadCount > 0" href="javascript:void(0);" class="text-body text-decoration-underline" @click.prevent="markAllAsRead">
                       <small>Clear All</small>
                     </a>
                   </div>
                 </b-row>
               </div>
               <simplebar data-simplebar style="max-height: 280px;">
-                <a v-for="(item, idx) in notifications" :key="idx" href="javascript:void(0);"
-                  class="dropdown-item py-3 border-bottom text-wrap">
+                <a v-for="(item, idx) in notifications" :key="item.id || idx" href="javascript:void(0);"
+                  class="dropdown-item py-3 border-bottom text-wrap" :class="{ 'bg-light': !item.is_read }"
+                  @click="handleNotificationClick(item)">
                   <div class="d-flex">
                     <div class="flex-shrink-0">
-                      <img v-if="item.user?.avatar" :src="item.user.avatar"
-                        class="img-fluid me-2 avatar-sm rounded-circle" alt="avatar-1" />
-
-                      <div v-else-if="item.icon" class="avatar-sm me-2">
+                      <div v-if="item.icon" class="avatar-sm me-2">
                         <span class="avatar-title bg-soft-warning text-warning fs-20 rounded-circle">
                           <Icon :icon="item.icon" />
                         </span>
                       </div>
-
                       <div v-else class="avatar-sm me-2">
                         <span class="avatar-title bg-soft-info text-info fs-20 rounded-circle">
-                          {{ item.user?.name?.slice(0, 1) }}
+                          {{ (item.title || item.content || 'N').slice(0, 1) }}
                         </span>
                       </div>
                     </div>
-
                     <div class="flex-grow-1">
-                      <p v-if="item.user?.name" class="mb-0 fw-semibold">
-                        {{ item.user.name }}
-                      </p>
-
-                      <p v-if="item.title" class="mb-0 fw-semibold text-wrap">
-                        {{ item.title }}
-                      </p>
-
-                      <p v-if="item.message" class="mb-0 text-wrap">
-                        {{ item.message }}
-                      </p>
-                      <p v-if="item.content" class="mb-0 text-wrap">
-                        {{ item.content }}
-                      </p>
+                      <p v-if="item.title" class="mb-0 fw-semibold text-wrap">{{ item.title }}</p>
+                      <p v-if="item.content" class="mb-0 text-wrap">{{ item.content }}</p>
+                      <p v-if="item.message" class="mb-0 text-wrap">{{ item.message }}</p>
+                      <small v-if="item.created_at" class="text-muted">{{ formatDate(item.created_at) }}</small>
                     </div>
                   </div>
                 </a>
+                <div v-if="notificationsLoading" class="text-center py-3">
+                  <span class="spinner-border spinner-border-sm"></span>
+                </div>
+                <div v-else-if="!notifications.length" class="text-center py-4 text-muted">
+                  No notifications
+                </div>
               </simplebar>
-              <div class="text-center py-3">
-                <a href="javascript:void(0);" class="btn btn-primary btn-sm">View All Notification <i
-                    class="bx bx-right-arrow-alt ms-1"></i></a>
-              </div>
             </div>
           </DropDown>
 
@@ -143,16 +130,65 @@
 </template>
 
 <script setup>
-import { onMounted } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { Icon } from "@iconify/vue";
 import simplebar from 'simplebar-vue';
 import { useLayoutStore } from '@/stores/layout';
 import { useAuthStore } from '@/stores/auth';
 import { useRouter } from 'vue-router';
 import { toggleDocumentAttribute } from "@/helpers";
-import { profileMenuItems, notifications } from "@/layouts/partials/data";
+import { profileMenuItems } from "@/layouts/partials/data";
+import { notificationsService } from '@/services';
 import DropDown from "@/components/DropDown.vue";
 import avatar1 from "@/assets/images/users/avatar-1.jpg";
+
+const notifications = ref([]);
+const notificationsLoading = ref(false);
+
+const unreadCount = computed(() => notifications.value.filter(n => !n.is_read).length);
+
+function formatDate(d) {
+  if (!d) return '';
+  const dt = new Date(d);
+  const now = new Date();
+  const diff = now - dt;
+  if (diff < 60000) return 'Just now';
+  if (diff < 3600000) return `${Math.floor(diff / 60000)}m ago`;
+  if (diff < 86400000) return `${Math.floor(diff / 3600000)}h ago`;
+  return dt.toLocaleDateString();
+}
+
+async function fetchNotifications() {
+  if (!authStore.isAuthenticated) return;
+  notificationsLoading.value = true;
+  try {
+    const data = await notificationsService.list({ page_size: 20 });
+    notifications.value = Array.isArray(data) ? data : (data.results || []);
+  } catch {
+    notifications.value = [];
+  } finally {
+    notificationsLoading.value = false;
+  }
+}
+
+async function markAllAsRead() {
+  const ids = notifications.value.filter(n => !n.is_read).map(n => n.id).filter(Boolean);
+  if (!ids.length) return;
+  try {
+    await notificationsService.markAllAsRead(ids);
+    notifications.value = notifications.value.map(n => ({ ...n, is_read: true }));
+  } catch {
+    // ignore
+  }
+}
+
+function handleNotificationClick(item) {
+  if (item.id && !item.is_read) {
+    notificationsService.markAsRead(item.id).then(() => {
+      item.is_read = true;
+    }).catch(() => {});
+  }
+}
 
 const authStore = useAuthStore();
 const router = useRouter();

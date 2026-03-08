@@ -232,6 +232,12 @@ const NORMAL_MENU_ITEMS = [
         route: { name: 'user.company' },
         parentKey: 'company-management-group',
       },
+      {
+        key: 'company-tasks',
+        label: 'Tasks',
+        route: { name: 'staff.tasks' },
+        parentKey: 'company-management-group',
+      },
     ],
   },
   {

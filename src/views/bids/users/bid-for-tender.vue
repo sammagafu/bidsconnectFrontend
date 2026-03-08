@@ -10,6 +10,31 @@
             </template>
           </b-table>
           <b-alert v-if="error" variant="danger" show>{{ error }}</b-alert>
+
+          <!-- Bid Readiness / Submission Checklist -->
+          <b-card v-if="bidId && bidReadiness" class="mb-4" :class="bidReadiness.is_ready ? 'border-success' : 'border-warning'">
+            <template #header>
+              <div class="d-flex align-items-center justify-content-between">
+                <h5 class="mb-0">
+                  <i :class="['bx me-2', bidReadiness.is_ready ? 'bx-check-circle text-success' : 'bx-error-circle text-warning']"></i>
+                  Bid Readiness
+                </h5>
+                <b-badge :variant="bidReadiness.is_ready ? 'success' : 'warning'">
+                  {{ bidReadiness.is_ready ? 'Ready to Submit' : 'Not Ready' }}
+                </b-badge>
+              </div>
+            </template>
+            <p v-if="bidReadiness.is_ready" class="text-success mb-0">
+              All requirements are met. You can submit your bid.
+            </p>
+            <div v-else>
+              <p class="text-muted mb-2">Resolve the following before submitting:</p>
+              <ul class="mb-0">
+                <li v-for="(err, i) in (bidReadiness.errors || [])" :key="i" class="text-danger">{{ err }}</li>
+              </ul>
+            </div>
+          </b-card>
+
           <b-overlay :show="loading" rounded="sm">
             <b-progress :max="100" class="mb-4">
               <b-progress-bar :value="completionPercentage" variant="success">
@@ -491,6 +516,7 @@ const complianceData = ref({});
 const selectedUserId = ref(null);
 const bidId = ref(null);
 const proposedCompletionDays = ref(null);
+const bidReadiness = ref(null);
 
 // Accordion states
 const isPricedScheduleOpen = ref(true);
@@ -1054,6 +1080,19 @@ const fetchExistingBid = async () => {
   } catch (err) {
     console.warn('No existing draft found or error:', err);
   }
+  if (bidId.value) {
+    fetchBidReadiness();
+  }
+};
+
+// Fetch bid readiness from validate-submit API
+const fetchBidReadiness = async () => {
+  if (!bidId.value) return;
+  try {
+    bidReadiness.value = await bidsService.validateSubmit(bidId.value);
+  } catch {
+    bidReadiness.value = null;
+  }
 };
 
 // Save/Update bid scalars
@@ -1070,10 +1109,13 @@ const saveBidScalars = async () => {
   };
 
   if (bidId.value) {
-    return await bidsService.update(bidId.value, data);
+    const updated = await bidsService.update(bidId.value, data);
+    fetchBidReadiness();
+    return updated;
   } else {
     const created = await bidsService.create(data);
     bidId.value = created?.id ?? created?.data?.id;
+    fetchBidReadiness();
     return created;
   }
 };
@@ -1340,6 +1382,7 @@ const saveDraft = async () => {
     await saveExperienceResponses();
     await savePersonnelResponses();
 
+    fetchBidReadiness();
     toast.add({ severity: 'success', summary: 'Success', detail: 'Draft saved successfully!' });
   } catch (err) {
     error.value = 'Failed to save draft: ' + (err.response?.data?.detail || err.message);

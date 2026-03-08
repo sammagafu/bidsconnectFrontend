@@ -90,4 +90,20 @@ export const companiesService = {
   deleteInvitation(companyPk, invitationId) {
     return api.delete(`accounts/companies/${companyPk}/invitations/${invitationId}/`).then(r => r.data);
   },
+
+  /**
+   * POST /accounts/invitations/accept/{token}/
+   * Auth: required. Logged-in user email must match invitation.
+   */
+  acceptInvitation(token) {
+    return api.post(`accounts/invitations/accept/${token}/`).then(r => r.data);
+  },
+
+  /**
+   * GET /accounts/companies/{company_pk}/documents/export/
+   * Returns CSV blob.
+   */
+  exportDocuments(companyPk) {
+    return api.get(`accounts/companies/${companyPk}/documents/export/`, { responseType: 'blob' }).then(r => r.data);
+  },
 };
