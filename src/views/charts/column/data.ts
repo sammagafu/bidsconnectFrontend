@@ -690,9 +690,7 @@ export const distributedColumn: ApexChartType = {
         show: false
       },
       events: {
-        click: function (chart, w, e) {
-          console.log(chart, w, e)
-        }
+        click: () => {}
       }
     },
     colors: ['#1e84c4', '#53389f', '#7f56da', '#ff86c8', '#ed5565', '#23c6c8', '#f9b931', '#1bb394'],

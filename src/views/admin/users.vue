@@ -44,7 +44,7 @@
       <Column header="Role" filterField="role" :showFilterMenu="false" style="min-width: 14rem">
         <template #body="{ data }">
           <div class="flex items-center gap-2">
-            <span>{{ data.role }}</span>
+            <span>{{ data.role?.name ?? data.role }}</span>
           </div>
         </template>
         <template #filter="{ filterModel, filterCallback }">
@@ -101,7 +101,8 @@
 import { ref, onMounted } from 'vue';
 import VerticalLayout from '@/layouts/VerticalLayout.vue';
 import { FilterMatchMode } from '@primevue/core/api';
-import { api } from '@/services/authService'; // Use named export from authService
+import { useToast } from 'primevue/usetoast';
+import { api, parseApiError } from '@/services';
 
 const users = ref([]);
 const filters = ref({
@@ -119,25 +120,24 @@ const roles = ref([
 ]);
 const statuses = ref(['Active', 'Inactive']);
 const loading = ref(true);
+const toast = useToast();
 
 onMounted(async () => {
-  console.log('onMounted triggered');
   await fetchUsers();
 });
 
 const fetchUsers = async () => {
   try {
     loading.value = true;
-    console.log('Fetching users with Authorization header:', api.defaults.headers.common['Authorization']);
     const response = await api.get('accounts/users/');
-    console.log('Fetched users:', response.data);
     users.value = transformUserData(response.data);
   } catch (error) {
-    console.error('Failed to fetch users:', error);
-    if (error.response) {
-      console.error('Error response:', error.response.data);
-      console.error('Error status:', error.response.status);
-    }
+    toast.add({
+      severity: 'error',
+      summary: 'Error',
+      detail: parseApiError(error) || 'Failed to fetch users',
+      life: 3000,
+    });
   } finally {
     loading.value = false;
   }

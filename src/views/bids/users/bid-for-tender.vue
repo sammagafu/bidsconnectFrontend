@@ -1078,7 +1078,6 @@ const fetchExistingBid = async () => {
 
     }
   } catch (err) {
-    console.warn('No existing draft found or error:', err);
   }
   if (bidId.value) {
     fetchBidReadiness();
@@ -1385,8 +1384,9 @@ const saveDraft = async () => {
     fetchBidReadiness();
     toast.add({ severity: 'success', summary: 'Success', detail: 'Draft saved successfully!' });
   } catch (err) {
-    error.value = 'Failed to save draft: ' + (err.response?.data?.detail || err.message);
-    toast.add({ severity: 'error', summary: 'Error', detail: error.value });
+    const msg = parseApiError(err) || err.message;
+    error.value = msg;
+    toast.add({ severity: 'error', summary: 'Error', detail: msg });
   } finally {
     loading.value = false;
   }
@@ -1409,10 +1409,11 @@ const submitBid = async () => {
     await bidsService.submit(bidId.value);
 
     toast.add({ severity: 'success', summary: 'Success', detail: 'Bid submitted successfully!' });
-    router.push({ name: 'BidConfirmation', params: { bidId: bidId.value } });
+    router.push({ name: 'company.bids-detail', params: { id: bidId.value } });
   } catch (err) {
-    error.value = 'Failed to publish bid: ' + (parseApiError(err) || err.message);
-    toast.add({ severity: 'error', summary: 'Error', detail: error.value });
+    const msg = parseApiError(err) || err.message;
+    error.value = msg;
+    toast.add({ severity: 'error', summary: 'Submit failed', detail: msg, life: 6000 });
   } finally {
     loading.value = false;
   }

@@ -2680,9 +2680,7 @@ export const stackedChart: ApexChartType = {
         show: false
       },
       events: {
-        selection: function (e: any) {
-          console.log(new Date(e.xaxis.min))
-        }
+        selection: () => {}
       }
     },
     colors: ["#1e84c4", "#7f56da", "#1bb394"],

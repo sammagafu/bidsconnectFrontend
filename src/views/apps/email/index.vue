@@ -256,8 +256,7 @@ const filterEmails = (categoryType: string, category: any) => {
     if (categoryType === 'type') {
       return emailData.filter((item) => item.type === category)
     } else {
-      // @ts-ignore
-      return emailData.filter((item) => item[category] === true)
+      return emailData.filter((item: Record<string, unknown>) => item[category] === true)
     }
   } else {
     return emailData

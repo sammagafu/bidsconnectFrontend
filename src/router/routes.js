@@ -1,6 +1,3 @@
-
-import path from 'path';
-
 const setTitle = (title) => {
   return title ? `${title} | Bidsconnect - Responsive Admin Dashboard Template` : 'Bidsconnect - Responsive Admin Dashboard Template';
 };

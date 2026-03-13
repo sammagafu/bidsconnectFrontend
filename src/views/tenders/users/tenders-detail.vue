@@ -406,7 +406,6 @@ const sendMessage = async () => {
     conversationMessages.value.push(msg);
     newMessage.value = '';
   } catch (e) {
-    console.warn('Send message failed:', e);
   } finally {
     chatSending.value = false;
   }
@@ -433,7 +432,6 @@ const downloadPDF = () => {
 };
 
 const bidForTender = (slug) => {
-  console.log('Bid for tender:', slug);
   router.push({ name: 'company.bids-create', params: { slug } });
 };
 

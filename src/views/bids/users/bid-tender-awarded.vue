@@ -143,7 +143,6 @@ const viewBid = (bid) => {
 };
 
 const openingReport = (bid) => {
-    console.log('Opening report for bid:', bid.id);
 };
 
 onMounted(() => {

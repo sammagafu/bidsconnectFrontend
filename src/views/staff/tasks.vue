@@ -49,14 +49,14 @@
                       <small class="text-muted">
                         Assignee: {{ task.assignee?.email || 'Unassigned' }}
                         <span v-if="task.due_date"> · Due: {{ formatDate(task.due_date) }}</span>
-                        <span v-if="task.tender"> · Tender: {{ task.tender }}</span>
+                        <span v-if="task.tender"> · Tender: {{ typeof task.tender === 'object' ? (task.tender?.title ?? task.tender?.reference_number ?? '—') : task.tender }}</span>
                       </small>
                     </div>
                     <div class="d-flex gap-1">
                       <b-button size="sm" variant="outline-primary" @click="openEditModal(task)">
                         <i class="bx bx-pencil"></i>
                       </b-button>
-                      <b-button size="sm" variant="outline-danger" @click="confirmDelete(task)">
+                      <b-button size="sm" variant="outline-danger" @click="openDeleteModal(task)">
                         <i class="bx bx-trash"></i>
                       </b-button>
                     </div>
@@ -70,6 +70,15 @@
           </template>
         </b-col>
       </b-row>
+
+      <!-- Delete Confirmation Modal -->
+      <b-modal v-model="showDeleteModal" title="Delete Task" hide-footer>
+        <p v-if="taskToDelete">Are you sure you want to delete "{{ taskToDelete.title }}"?</p>
+        <div class="d-flex justify-content-end gap-2 mt-3">
+          <b-button variant="secondary" @click="showDeleteModal = false">Cancel</b-button>
+          <b-button variant="danger" @click="doDelete" :disabled="deleting">Delete</b-button>
+        </div>
+      </b-modal>
 
       <!-- Create/Edit Modal -->
       <b-modal v-model="showModal" :title="editing ? 'Edit Task' : 'New Task'" @hide="resetForm" hide-footer>
@@ -116,7 +125,10 @@ const companyId = computed(() => authStore.user?.companies?.[0]?.id || null);
 const tasks = ref([]);
 const loading = ref(false);
 const saving = ref(false);
+const deleting = ref(false);
 const showModal = ref(false);
+const showDeleteModal = ref(false);
+const taskToDelete = ref(null);
 const editing = ref(false);
 
 const filters = ref({ status: '', assignee: '' });
@@ -234,14 +246,24 @@ async function submitTask() {
   }
 }
 
-async function confirmDelete(task) {
-  if (!confirm(`Delete task "${task.title}"?`)) return;
+function openDeleteModal(task) {
+  taskToDelete.value = task;
+  showDeleteModal.value = true;
+}
+
+async function doDelete() {
+  if (!taskToDelete.value || !companyId.value) return;
+  deleting.value = true;
   try {
-    await tasksService.delete(companyId.value, task.id);
+    await tasksService.delete(companyId.value, taskToDelete.value.id);
     toast.add({ severity: 'success', summary: 'Deleted', detail: 'Task removed.' });
+    showDeleteModal.value = false;
+    taskToDelete.value = null;
     fetchTasks();
   } catch (e) {
     toast.add({ severity: 'error', summary: 'Error', detail: parseApiError(e) || 'Delete failed.' });
+  } finally {
+    deleting.value = false;
   }
 }
 

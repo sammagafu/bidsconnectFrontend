@@ -26,7 +26,7 @@
                   </div>
                 </b-form-group>
                 <div class="mb-3">
-                  <router-link :to="{ name: 'auth.reset-password' }" class="float-end text-muted text-unline-dashed ms-1">
+                  <router-link :to="{ name: 'auth.reset-password' }" class="float-end text-muted text-underline-dashed ms-1">
                     Reset password
                   </router-link>
                   <label class="form-label" for="example-password">Password</label>

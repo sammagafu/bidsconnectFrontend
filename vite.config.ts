@@ -7,6 +7,18 @@ import { BootstrapVueNextResolver } from 'unplugin-vue-components/resolvers'
 // https://vitejs.dev/config/
 export default defineConfig({
   base: '/',
+  build: {
+    chunkSizeWarningLimit: 1300,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'vue-vendor': ['vue', 'vue-router', 'pinia'],
+          'primevue': ['primevue'],
+          'charts': ['apexcharts', 'chart.js', 'vue3-apexcharts'],
+        },
+      },
+    },
+  },
   plugins: [
     vue(),
     Components({

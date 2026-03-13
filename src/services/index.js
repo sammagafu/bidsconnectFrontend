@@ -8,6 +8,7 @@ export { companiesService } from '@/services/companiesService';
 export { tendersService } from '@/services/tendersService';
 export { bidsService } from '@/services/bidsService';
 export { notificationsService } from '@/services/notificationsService';
+export { tenderNotificationsService } from '@/services/tenderNotificationsService';
 export { tasksService } from '@/services/tasksService';
 export { tenderConversationsService } from '@/services/tenderConversationsService';
 export { paymentsService } from '@/services/paymentsService';

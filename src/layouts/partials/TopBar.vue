@@ -86,7 +86,7 @@
                   <span class="spinner-border spinner-border-sm"></span>
                 </div>
                 <div v-else-if="!notifications.length" class="text-center py-4 text-muted">
-                  No notifications
+                  You're all caught up
                 </div>
               </simplebar>
             </div>
@@ -172,10 +172,10 @@ async function fetchNotifications() {
 }
 
 async function markAllAsRead() {
-  const ids = notifications.value.filter(n => !n.is_read).map(n => n.id).filter(Boolean);
-  if (!ids.length) return;
+  const toMark = notifications.value.filter(n => !n.is_read && n.id);
+  if (!toMark.length) return;
   try {
-    await notificationsService.markAllAsRead(ids);
+    await notificationsService.markAllAsRead(toMark);
     notifications.value = notifications.value.map(n => ({ ...n, is_read: true }));
   } catch {
     // ignore
@@ -184,7 +184,7 @@ async function markAllAsRead() {
 
 function handleNotificationClick(item) {
   if (item.id && !item.is_read) {
-    notificationsService.markAsRead(item.id).then(() => {
+    notificationsService.markAsRead(item.id, item.notification_type).then(() => {
       item.is_read = true;
     }).catch(() => {});
   }
@@ -246,10 +246,8 @@ const showBackdrop = () => {
 const handleLogout = async () => {
   try {
     await authStore.logout();
-    console.log('Logout successful, redirecting to login');
     await router.push({ name: 'auth.sign-in' });
   } catch (error) {
-    console.error('Logout failed:', error);
   }
 };
 

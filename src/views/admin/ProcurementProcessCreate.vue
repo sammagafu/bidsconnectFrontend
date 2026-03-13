@@ -152,7 +152,6 @@ const fetchProcurementProcesses = async () => {
         const response = await api.get('tenders/procurement-processes/');
         procurementProcesses.value = response.data.results || response.data || [];
     } catch (error) {
-        console.error('Failed to fetch procurement processes:', error);
         toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to fetch procurement processes', life: 3000 });
     } finally {
         loading.value = false;
@@ -209,7 +208,6 @@ const saveProcurementProcess = async () => {
                 toast.add({ severity: 'error', summary: `Validation Error: ${field}`, detail: messages.join(', '), life: 3000 });
             }
         } else {
-            console.error('Failed to save procurement process:', error);
             toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to save procurement process', life: 3000 });
         }
     }
@@ -236,7 +234,6 @@ const deleteProcess = async () => {
         procurementProcess.value = {};
         toast.add({ severity: 'success', summary: 'Successful', detail: 'Procurement Process Deleted', life: 3000 });
     } catch (error) {
-        console.error('Failed to delete procurement process:', error);
         toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to delete procurement process', life: 3000 });
     }
 };
@@ -257,7 +254,6 @@ const deleteSelectedProcesses = async () => {
         selectedProcesses.value = null;
         toast.add({ severity: 'success', summary: 'Successful', detail: 'Procurement Processes Deleted', life: 3000 });
     } catch (error) {
-        console.error('Failed to delete procurement processes:', error);
         toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to delete procurement processes', life: 3000 });
     }
 };

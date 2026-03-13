@@ -232,7 +232,6 @@ const fetchCategories = async () => {
     try {
         loading.value = true;
         const response = await api.get('marketplaces/categories-with-subcategories/');
-        console.log('Fetched categories response:', response.data);
         categories.value = response.data;
         // Fetch subcategories for each category if not included
         await Promise.all(categories.value.map(async (cat) => {
@@ -243,9 +242,7 @@ const fetchCategories = async () => {
                 cat.subcategories = subResponse.data.results || subResponse.data;
             }
         }));
-        console.log('Processed categories:', categories.value);
     } catch (error) {
-        console.error('Failed to fetch categories:', error);
         toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to fetch categories', life: 3000 });
     } finally {
         loading.value = false;
@@ -260,7 +257,6 @@ const fetchSubcategories = async (categoryId) => {
         });
         category.value.subcategories = response.data.results || response.data;
     } catch (error) {
-        console.error('Failed to fetch subcategories:', error);
         toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to fetch subcategories', life: 3000 });
         category.value.subcategories = [];
     }
@@ -339,7 +335,6 @@ const deleteSubcategory = async () => {
         subcategoryToDelete.value = null;
         toast.add({ severity: 'success', summary: 'Successful', detail: 'Subcategory Deleted', life: 3000 });
     } catch (error) {
-        console.error('Failed to delete subcategory:', error);
         toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to delete subcategory', life: 3000 });
     }
 };
@@ -408,7 +403,6 @@ const saveCategory = async () => {
                 toast.add({ severity: 'error', summary: `Validation Error: ${field}`, detail: messages.join(', '), life: 3000 });
             }
         } else {
-            console.error('Failed to save category:', error);
             toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to save category', life: 3000 });
         }
     }
@@ -436,7 +430,6 @@ const deleteCategory = async () => {
         category.value = { name: '', description: '', subcategories: [] };
         toast.add({ severity: 'success', summary: 'Successful', detail: 'Category Deleted', life: 3000 });
     } catch (error) {
-        console.error('Failed to delete category:', error);
         toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to delete category', life: 3000 });
     }
 };
@@ -457,7 +450,6 @@ const deleteSelectedCategories = async () => {
         selectedCategories.value = null;
         toast.add({ severity: 'success', summary: 'Successful', detail: 'Categories Deleted', life: 3000 });
     } catch (error) {
-        console.error('Failed to delete categories:', error);
         toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to delete categories', life: 3000 });
     }
 };

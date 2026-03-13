@@ -926,39 +926,28 @@ function nextStep() {
   if (store.step === 4 && !validateStep4()) {
     return;
   }
-  console.log('Moving to next step from:', store.step, 'to', store.step + 1);
   if (store.step < 12) {
     store.$patch({ step: store.step + 1 });
   }
-  console.log('After advancing in nextStep, current step:', store.step);
 }
 
 function skipSection() {
-  console.log('Skipping section at step:', store.step);
   if (store.step === 6) {
     store.financialRequirements = [];
-    console.log('Financial requirements cleared. Length now:', store.financialRequirements.length);
   } else if (store.step === 7) {
     store.turnoverRequirements = [];
-    console.log('Turnover requirements cleared. Length now:', store.turnoverRequirements.length);
   } else if (store.step === 8) {
     store.experienceRequirements = [];
-    console.log('Experience requirements cleared. Length now:', store.experienceRequirements.length);
   } else if (store.step === 9) {
     store.personnelRequirements = [];
-    console.log('Personnel requirements cleared. Length now:', store.personnelRequirements.length);
   } else if (store.step === 10) {
     store.scheduleItems = [];
-    console.log('Schedule items cleared. Length now:', store.scheduleItems.length);
   } else if (store.step === 11) {
     store.technicalSpecifications = [];
-    console.log('Technical specifications cleared. Length now:', store.technicalSpecifications.length);
   }
-  console.log('Section skipped. Moving to step:', store.step + 1);
   if (store.step < 12) {
     store.$patch({ step: store.step + 1 });
   }
-  console.log('After advancing in skipSection, current step:', store.step);
 }
 
 function resetAll() {
@@ -1121,7 +1110,6 @@ async function submitTender() {
       financial_sources: req.financial_sources,
       jv_compliance: req.jv_compliance
     }));
-    console.log('Submitting financial_requirements. Length:', financial_requirements.length);
     const turnover_requirements = store.turnoverRequirements.map(req => ({
       label: req.label,
       amount: req.amount,
@@ -1131,7 +1119,6 @@ async function submitTender() {
       jv_compliance: req.jv_compliance,
       jv_percentage: req.jv_percentage
     }));
-    console.log('Submitting turnover_requirements. Length:', turnover_requirements.length);
     const experience_requirements = store.experienceRequirements.map(req => ({
       type: req.type,
       description: req.description,
@@ -1145,7 +1132,6 @@ async function submitTender() {
       jv_aggregation_note: req.jv_aggregation_note,
       reputation_notes: req.reputation_notes
     }));
-    console.log('Submitting experience_requirements. Length:', experience_requirements.length);
     const personnel_requirements = store.personnelRequirements.map(req => ({
       role: req.role,
       min_education: req.min_education,
@@ -1161,7 +1147,6 @@ async function submitTender() {
       jv_compliance: req.jv_compliance,
       notes: req.notes
     }));
-    console.log('Submitting personnel_requirements. Length:', personnel_requirements.length);
     const schedule_items = store.scheduleItems.map(item => ({
       commodity: item.commodity,
       code: item.code,
@@ -1169,12 +1154,10 @@ async function submitTender() {
       quantity: item.quantity,
       specification: item.specification
     }));
-    console.log('Submitting schedule_items. Length:', schedule_items.length);
     const technical_specifications = store.technicalSpecifications.map(spec => ({
       category: spec.category,
       description: spec.description
     }));
-    console.log('Submitting technical_specifications. Length:', technical_specifications.length);
 
     // Pull off file
     const { tender_document, ...rest } = store.tender;
@@ -1215,7 +1198,6 @@ async function submitTender() {
     }
     resetAll();
   } catch (err) {
-    console.error('Validation errors:', err.response?.data);
     let errorMessage = 'Submission failed – check console';
     if (err.response?.data) {
       errorMessage = Object.entries(err.response.data)

@@ -62,7 +62,6 @@ const textareaEle = ref('Mussum ipsum cacilds, vidis litro abertis. Consetis adi
 const doCopy = (text: string, e: any) => {
   copyText(text, undefined, (error: string) => {
     if (error) {
-      console.log(error)
       return
     } else {
       const text = e.srcElement.innerText

@@ -1,7 +1,6 @@
 <template>
-  <div class="auth-page">
-    <b-container>
-      <b-row class="justify-content-center">
+  <AuthLayout>
+    <b-row class="justify-content-center">
         <b-col md="6" lg="5">
           <b-card class="shadow-sm">
             <template #header>
@@ -32,13 +31,13 @@
           </b-card>
         </b-col>
       </b-row>
-    </b-container>
-  </div>
+  </AuthLayout>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+import AuthLayout from '@/layouts/AuthLayout.vue';
 import { companiesService, parseApiError } from '@/services';
 import { useAuthStore } from '@/stores/auth';
 import { useToast } from 'primevue/usetoast';
@@ -69,10 +68,14 @@ onMounted(async () => {
     const data = await companiesService.acceptInvitation(token);
     success.value = true;
     successMessage.value = data.detail || `Successfully joined the company.`;
-    authStore.refreshUser();
+    await authStore.refreshUser();
   } catch (e) {
-    error.value = parseApiError(e) || 'Could not accept invitation.';
-    toast.add({ severity: 'error', summary: 'Error', detail: error.value });
+    let msg = parseApiError(e) || 'Could not accept invitation.';
+    if (e?.response?.status === 403 && msg?.toLowerCase?.().includes('different email')) {
+      msg += ' Please log in with the invited email address.';
+    }
+    error.value = msg;
+    toast.add({ severity: 'error', summary: 'Error', detail: msg });
   } finally {
     loading.value = false;
   }
@@ -80,10 +83,5 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-.auth-page {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  padding: 2rem 0;
-}
+/* AuthLayout provides authentication-bg; extra centering if needed */
 </style>

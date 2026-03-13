@@ -8,16 +8,21 @@ export { api };
 
 /**
  * Parse API error for user display.
- * 400: { "field_name": ["error"] } or { "detail": "message" }
+ * 400: { "field_name": ["error"] } or { "detail": "message" } or { "detail": "...", "errors": ["..."] } (bid submit)
  * 401/403/404/500: check detail or message.
  */
 export function parseApiError(err) {
   const data = err?.response?.data;
   const status = err?.response?.status;
   if (data && typeof data === 'object') {
+    let msg = '';
     if (data.detail) {
-      return typeof data.detail === 'string' ? data.detail : JSON.stringify(data.detail);
+      msg = typeof data.detail === 'string' ? data.detail : JSON.stringify(data.detail);
     }
+    if (Array.isArray(data.errors) && data.errors.length > 0) {
+      msg = msg ? `${msg}\n\n• ${data.errors.join('\n• ')}` : data.errors.join('\n• ');
+    }
+    if (msg) return msg;
     const firstKey = Object.keys(data)[0];
     if (firstKey && Array.isArray(data[firstKey])) {
       return data[firstKey][0];

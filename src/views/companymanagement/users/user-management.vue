@@ -133,7 +133,6 @@ onMounted(async () => {
 
   // Check if the user is authenticated
   if (!authStore.isAuthenticated) {
-    console.log('User is not authenticated, redirecting to login');
     router.push({ path: '/auth/sign-in', query: { redirect: route.fullPath } });
     return;
   }
@@ -144,7 +143,6 @@ onMounted(async () => {
 
     // Check if the current route matches the expected company ID; if not, redirect
     if (route.params.id && route.params.id !== companyId) {
-      console.log('Route company ID does not match stored company ID, redirecting...');
       router.replace(`/company/${companyId}/invite-users`);
       return;
     }
@@ -157,7 +155,6 @@ onMounted(async () => {
       hasCompany.value = true;
       await fetchPendingInvitations(companyId); // Fetch pending invitations
     } else {
-      console.log('Company not found in storage, redirecting to company list');
       toast.add({
         severity: 'error',
         summary: 'Error',
@@ -168,7 +165,6 @@ onMounted(async () => {
     }
   } else {
     // No companies found, redirect to create company page
-    console.log('No companies found, redirecting to create company page');
     router.push('/company/create-company');
   }
 });

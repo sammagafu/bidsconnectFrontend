@@ -6,7 +6,7 @@ Summary of remaining work from project analysis and API alignment.
 
 - **Light/dark mode**: All major `bg-light` panels, table headers, borders, and hardcoded colors have been switched to theme-aware tokens (`bg-body-tertiary`, `var(--bs-border-color)`, `var(--bs-tertiary-bg)`, `var(--bs-secondary-color)`). Inputs and cards already use Bootstrap theme variables.
 
-- **Country field (create company)**: Added dropdown in `src/views/user/create-company.vue` with Tanzania + "Other" option. When "Other" is selected, a free-text input appears for the user to enter their country.
+- **Country field (create company)**: Added dropdown in `src/views/companymanagement/company/create-companyandlocation.vue` with Tanzania + "Other" option. When "Other" is selected, a free-text input appears for the user to enter their country.
 
 - **Social sign-in (auth)**: Social buttons (Google, Facebook, GitHub) are now hidden by default. Set `VITE_ENABLE_SOCIAL_OAUTH=true` in `.env` when backend OAuth is implemented.
 

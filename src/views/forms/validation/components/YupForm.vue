@@ -80,12 +80,11 @@ const yupState = reactive({
 const handleYupSubmit = async (event: Event) => {
   await yupSchema
     .validate(yupState)
-    .then((res) =>
-      // validated data
-      console.log(res)
-    )
+    .then(() => {
+      error.value = ''
+    })
     .catch((e) => {
-      return (error.value = e.message)
+      error.value = e.message
     })
 }
 </script>

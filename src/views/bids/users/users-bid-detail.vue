@@ -461,7 +461,6 @@ const getStatusClass = (status) => {
 
 const viewBidderDetails = (bidder) => {
     alert('Bidder details view not implemented yet.');
-    console.log('View bidder:', bidder);
     // router.push(`/bids/${bidder.id}`);
 };
 

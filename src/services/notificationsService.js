@@ -1,9 +1,11 @@
 /**
  * Notifications API — aligned with backend doc.
  * GET /notifications/ — unified in-app notifications (tender + marketplace)
- * PATCH /notifications/{id}/ — mark as read
+ * PATCH /notifications/{id}/ — mark marketplace notification as read
+ * PATCH /tenders/tender-notifications/{id}/ — mark tender notification as read
  */
 import { api } from '@/services/authService';
+import { tenderNotificationsService } from '@/services/tenderNotificationsService';
 
 export const notificationsService = {
   /**
@@ -15,15 +17,24 @@ export const notificationsService = {
   },
 
   /**
-   * PATCH /notifications/{id}/
-   * Body: { is_read: true }
+   * Mark notification as read.
+   * @param {string} id - Notification id
+   * @param {string} [notificationType] - 'tender' | 'marketplace' | undefined. If 'tender', uses tender-notifications endpoint.
    */
-  markAsRead(id) {
+  markAsRead(id, notificationType) {
+    if (notificationType === 'tender') {
+      return tenderNotificationsService.markAsRead(id);
+    }
     return api.patch(`notifications/${id}/`, { is_read: true }).then(r => r.data);
   },
 
-  /** Mark all as read (client-side: call markAsRead for each) */
-  async markAllAsRead(ids) {
-    await Promise.all(ids.map(id => this.markAsRead(id)));
+  /** Mark all as read (client-side: call markAsRead for each). Pass items with id and optional notification_type. */
+  async markAllAsRead(items) {
+    const list = Array.isArray(items) ? items : items.map((id) => ({ id }));
+    await Promise.all(
+      list.map((item) =>
+        typeof item === 'object' ? this.markAsRead(item.id, item.notification_type) : this.markAsRead(item)
+      )
+    );
   },
 };
