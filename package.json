@@ -8,7 +8,7 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "run-p type-check \"build-only {@}\" --",
+    "build": "vue-tsc --build --force && vite build",
     "preview": "vite preview",
     "build-only": "node --max-old-space-size=4096 node_modules/.bin/vite build",
     "type-check": "vue-tsc --build --force",
