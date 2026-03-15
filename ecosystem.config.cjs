@@ -18,7 +18,7 @@ module.exports = {
     },
     {
       name: "bidsconnect-back",
-      cwd: "/var/www/bidsconnectBack",
+      cwd: "/var/www/bidsconnect",
       script: "bin/gunicorn",
       args: "bidsconnectBack.wsgi:application \
              --bind 127.0.0.1:8000 \
