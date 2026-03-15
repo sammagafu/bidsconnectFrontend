@@ -7,6 +7,9 @@ import { BootstrapVueNextResolver } from 'unplugin-vue-components/resolvers'
 // https://vitejs.dev/config/
 export default defineConfig({
   base: '/',
+  preview:{
+    allowedHosts: ['bidsconnect.co.tz', 'www.bidsconnect.co.tz'],
+  },
   build: {
     chunkSizeWarningLimit: 1300,
     rollupOptions: {
