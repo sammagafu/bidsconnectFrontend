@@ -8,7 +8,7 @@ import { BootstrapVueNextResolver } from 'unplugin-vue-components/resolvers'
 export default defineConfig({
   base: '/',
   preview:{
-    allowedHosts: ['bidsconnect.co.tz', 'www.bidsconnect.co.tz'],
+    allowedHosts: ['bidsconnect.co.tz', 'www.bidsconnect.co.tz', 'api.bidsconnect.co.tz', 'https://api.bidsconnect.co.tz', 'https://www.bidsconnect.co.tz'],
   },
   build: {
     chunkSizeWarningLimit: 1300,
