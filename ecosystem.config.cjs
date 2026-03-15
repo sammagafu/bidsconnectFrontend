@@ -4,7 +4,7 @@ module.exports = {
       name: 'bidsconnect-front',
       cwd: '.',
       script: './node_modules/.bin/vite',
-      args: 'preview --host --port 4173',
+      args: 'preview --host --port 5173',
       env: {
         NODE_ENV: 'production',
       },
