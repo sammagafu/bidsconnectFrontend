@@ -4,19 +4,19 @@
 </template>
 
 <script setup lang="ts">
-import Choices from 'choices.js'
-import type { InputType } from 'bootstrap-vue-next'
-import { onMounted } from 'vue'
+import Choices from 'choices.js';
+import type { InputType } from 'bootstrap-vue-next';
+import { onMounted } from 'vue';
 
 type ChoicesInputPropsType = {
-  id: string
-  type?: InputType
-  label?: string
-  choiceOptions?: object
-}
-const props = defineProps<ChoicesInputPropsType>()
+  id: string;
+  type?: InputType;
+  label?: string;
+  choiceOptions?: object;
+};
+const props = defineProps<ChoicesInputPropsType>();
 
 onMounted(() => {
-  new Choices(`#${props.id}`, { ...props.choiceOptions })
-})
+  new Choices(`#${props.id}`, { ...props.choiceOptions });
+});
 </script>

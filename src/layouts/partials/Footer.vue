@@ -14,5 +14,5 @@
 
 <script setup lang="ts">
 import { Icon } from '@iconify/vue';
-import { currentYear } from "@/helpers/constants";
+import { currentYear } from '@/helpers/constants';
 </script>

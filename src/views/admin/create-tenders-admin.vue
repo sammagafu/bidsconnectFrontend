@@ -3,10 +3,7 @@
     <b-card>
       <!-- Progress bar -->
       <b-progress :value="progress" max="100" class="mb-3">
-        <b-progress-bar
-          :value="progress"
-          :label="`Step ${Math.min(store.step, 11)}/11`"
-        />
+        <b-progress-bar :value="progress" :label="`Step ${Math.min(store.step, 11)}/11`" />
       </b-progress>
 
       <!-- Step 1: Basic Info -->
@@ -60,11 +57,7 @@
         </b-form-group>
 
         <b-form-group class="mb-3" label="Description" label-for="description">
-          <b-form-textarea
-            id="description"
-            v-model="store.tender.description"
-            rows="3"
-          />
+          <b-form-textarea id="description" v-model="store.tender.description" rows="3" />
         </b-form-group>
 
         <b-form-group class="mb-3" label="Category" label-for="category">
@@ -182,37 +175,22 @@
       <!-- Step 4: Additional Details -->
       <b-form v-else-if="store.step === 4" novalidate>
         <b-form-group class="mb-3" label="Validity Period (days)">
-          <b-form-input
-            type="number"
-            v-model.number="store.tender.validity_period_days"
-          />
+          <b-form-input type="number" v-model.number="store.tender.validity_period_days" />
         </b-form-group>
         <b-form-group class="mb-3" label="Completion Period (days)">
-          <b-form-input
-            type="number"
-            v-model.number="store.tender.completion_period_days"
-          />
+          <b-form-input type="number" v-model.number="store.tender.completion_period_days" />
         </b-form-group>
         <b-form-group class="mb-3" label="Allow Alternative Delivery">
           <b-form-checkbox v-model="store.tender.allow_alternative_delivery" />
         </b-form-group>
         <b-form-group class="mb-3" label="Litigation Start Date">
-          <DatePicker
-            v-model="store.tender.litigation_history_start"
-            dateFormat="yy-mm-dd"
-          />
+          <DatePicker v-model="store.tender.litigation_history_start" dateFormat="yy-mm-dd" />
         </b-form-group>
         <b-form-group class="mb-3" label="Litigation End Date">
-          <DatePicker
-            v-model="store.tender.litigation_history_end"
-            dateFormat="yy-mm-dd"
-          />
+          <DatePicker v-model="store.tender.litigation_history_end" dateFormat="yy-mm-dd" />
         </b-form-group>
         <b-form-group class="mb-3" label="Tender Document">
-          <b-form-file
-            accept=".pdf,.doc,.docx"
-            v-model="store.tender.tender_document"
-          />
+          <b-form-file accept=".pdf,.doc,.docx" v-model="store.tender.tender_document" />
         </b-form-group>
         <b-form-group class="mb-3" label="Security Type" label-for="tender_securing_type">
           <b-form-select
@@ -249,73 +227,50 @@
 
       <!-- Step 5: Required Documents -->
       <b-form v-else-if="store.step === 5" novalidate>
-        <div
-          v-for="(doc, i) in requiredDocuments"
-          :key="i"
-          class="mb-3 border p-2 rounded"
-        >
-          <b-form-group class="mb-2" :label="`Document ${i+1} Name`">
+        <div v-for="(doc, i) in requiredDocuments" :key="i" class="mb-3 border p-2 rounded">
+          <b-form-group class="mb-2" :label="`Document ${i + 1} Name`">
             <b-form-select
               v-model="requiredDocuments[i].selectedName"
               :options="documentNameOptions"
             />
           </b-form-group>
-          <b-form-group v-if="requiredDocuments[i].selectedName === 'other'" class="mb-2" label="Custom Name">
-            <b-form-input
-              v-model="requiredDocuments[i].customName"
-            />
+          <b-form-group
+            v-if="requiredDocuments[i].selectedName === 'other'"
+            class="mb-2"
+            label="Custom Name"
+          >
+            <b-form-input v-model="requiredDocuments[i].customName" />
           </b-form-group>
-          <b-form-group class="mb-2" :label="`Document ${i+1} Description`">
-            <b-form-textarea
-              v-model="requiredDocuments[i].description"
-              rows="2"
-            />
+          <b-form-group class="mb-2" :label="`Document ${i + 1} Description`">
+            <b-form-textarea v-model="requiredDocuments[i].description" rows="2" />
           </b-form-group>
-          <b-form-group class="mb-2" :label="`Document ${i+1} Type`">
+          <b-form-group class="mb-2" :label="`Document ${i + 1} Type`">
             <b-form-select
               v-model="requiredDocuments[i].document_type"
               :options="documentTypeOptions"
             />
           </b-form-group>
-          <b-form-group class="mb-2" :label="`Document ${i+1} Required`">
+          <b-form-group class="mb-2" :label="`Document ${i + 1} Required`">
             <b-form-select
               v-model="requiredDocuments[i].is_required"
               :options="isRequiredOptions"
             />
           </b-form-group>
-          <b-button
-            size="sm"
-            variant="danger"
-            @click="store.removeDocument(i)"
-          >
-            Remove
-          </b-button>
+          <b-button size="sm" variant="danger" @click="store.removeDocument(i)"> Remove </b-button>
         </div>
-        <b-button
-          size="sm"
-          variant="outline-primary"
-          @click="store.addDocument"
-        >
+        <b-button size="sm" variant="outline-primary" @click="store.addDocument">
           + Add Document
         </b-button>
       </b-form>
 
       <!-- Step 6: Financial Requirements -->
       <b-form v-else-if="store.step === 6" novalidate>
-        <div
-          v-for="(req, i) in financialRequirements"
-          :key="i"
-          class="mb-3 border p-2 rounded"
-        >
-          <b-form-group class="mb-2" :label="`Financial Req ${i+1} Name`">
-            <b-form-input
-              v-model="financialRequirements[i].name"
-            />
+        <div v-for="(req, i) in financialRequirements" :key="i" class="mb-3 border p-2 rounded">
+          <b-form-group class="mb-2" :label="`Financial Req ${i + 1} Name`">
+            <b-form-input v-model="financialRequirements[i].name" />
           </b-form-group>
           <b-form-group class="mb-2" :label="`Formula`">
-            <b-form-input
-              v-model="financialRequirements[i].formula"
-            />
+            <b-form-input v-model="financialRequirements[i].formula" />
           </b-form-group>
           <b-form-group class="mb-2" :label="`Minimum`">
             <b-form-input
@@ -325,9 +280,7 @@
             />
           </b-form-group>
           <b-form-group class="mb-2" :label="`Unit`">
-            <b-form-input
-              v-model="financialRequirements[i].unit"
-            />
+            <b-form-input v-model="financialRequirements[i].unit" />
           </b-form-group>
           <b-form-group class="mb-2" :label="`Actual Value`">
             <b-form-input
@@ -337,16 +290,10 @@
             />
           </b-form-group>
           <b-form-group class="mb-2" :label="`Notes`">
-            <b-form-textarea
-              v-model="financialRequirements[i].notes"
-              rows="2"
-            />
+            <b-form-textarea v-model="financialRequirements[i].notes" rows="2" />
           </b-form-group>
           <b-form-group class="mb-2" :label="`Financial Sources`">
-            <b-form-textarea
-              v-model="financialRequirements[i].financial_sources"
-              rows="2"
-            />
+            <b-form-textarea v-model="financialRequirements[i].financial_sources" rows="2" />
           </b-form-group>
           <b-form-group class="mb-2" :label="`JV Compliance`">
             <b-form-select
@@ -354,34 +301,20 @@
               :options="jvComplianceOptions"
             />
           </b-form-group>
-          <b-button
-            size="sm"
-            variant="danger"
-            @click="store.removeFinancialRequirement(i)"
-          >
+          <b-button size="sm" variant="danger" @click="store.removeFinancialRequirement(i)">
             Remove
           </b-button>
         </div>
-        <b-button
-          size="sm"
-          variant="outline-primary"
-          @click="store.addFinancialRequirement"
-        >
+        <b-button size="sm" variant="outline-primary" @click="store.addFinancialRequirement">
           + Add Financial Requirement
         </b-button>
       </b-form>
 
       <!-- Step 7: Turnover Requirements -->
       <b-form v-else-if="store.step === 7" novalidate>
-        <div
-          v-for="(req, i) in turnoverRequirements"
-          :key="i"
-          class="mb-3 border p-2 rounded"
-        >
-          <b-form-group class="mb-2" :label="`Turnover Req ${i+1} Label`">
-            <b-form-input
-              v-model="turnoverRequirements[i].label"
-            />
+        <div v-for="(req, i) in turnoverRequirements" :key="i" class="mb-3 border p-2 rounded">
+          <b-form-group class="mb-2" :label="`Turnover Req ${i + 1} Label`">
+            <b-form-input v-model="turnoverRequirements[i].label" />
           </b-form-group>
           <b-form-group class="mb-2" :label="`Amount`">
             <b-form-input
@@ -391,22 +324,13 @@
             />
           </b-form-group>
           <b-form-group class="mb-2" :label="`Currency`">
-            <b-form-select
-              v-model="turnoverRequirements[i].currency"
-              :options="currencyOptions"
-            />
+            <b-form-select v-model="turnoverRequirements[i].currency" :options="currencyOptions" />
           </b-form-group>
           <b-form-group class="mb-2" :label="`Start Date`">
-            <DatePicker
-              v-model="turnoverRequirements[i].start_date"
-              dateFormat="yy-mm-dd"
-            />
+            <DatePicker v-model="turnoverRequirements[i].start_date" dateFormat="yy-mm-dd" />
           </b-form-group>
           <b-form-group class="mb-2" :label="`End Date`">
-            <DatePicker
-              v-model="turnoverRequirements[i].end_date"
-              dateFormat="yy-mm-dd"
-            />
+            <DatePicker v-model="turnoverRequirements[i].end_date" dateFormat="yy-mm-dd" />
           </b-form-group>
           <b-form-group class="mb-2" :label="`JV Compliance`">
             <b-form-select
@@ -421,47 +345,29 @@
               v-model.number="turnoverRequirements[i].jv_percentage"
             />
           </b-form-group>
-          <b-button
-            size="sm"
-            variant="danger"
-            @click="store.removeTurnoverRequirement(i)"
-          >
+          <b-button size="sm" variant="danger" @click="store.removeTurnoverRequirement(i)">
             Remove
           </b-button>
         </div>
-        <b-button
-          size="sm"
-          variant="outline-primary"
-          @click="store.addTurnoverRequirement"
-        >
+        <b-button size="sm" variant="outline-primary" @click="store.addTurnoverRequirement">
           + Add Turnover Requirement
         </b-button>
       </b-form>
 
       <!-- Step 8: Experience Requirements -->
       <b-form v-else-if="store.step === 8" novalidate>
-        <div
-          v-for="(req, i) in experienceRequirements"
-          :key="i"
-          class="mb-3 border p-2 rounded"
-        >
-          <b-form-group class="mb-2" :label="`Experience Req ${i+1} Type`">
+        <div v-for="(req, i) in experienceRequirements" :key="i" class="mb-3 border p-2 rounded">
+          <b-form-group class="mb-2" :label="`Experience Req ${i + 1} Type`">
             <b-form-select
               v-model="experienceRequirements[i].type"
               :options="experienceTypeOptions"
             />
           </b-form-group>
           <b-form-group class="mb-2" :label="`Description`">
-            <b-form-textarea
-              v-model="experienceRequirements[i].description"
-              rows="2"
-            />
+            <b-form-textarea v-model="experienceRequirements[i].description" rows="2" />
           </b-form-group>
           <b-form-group class="mb-2" :label="`Contract Count`">
-            <b-form-input
-              type="number"
-              v-model.number="experienceRequirements[i].contract_count"
-            />
+            <b-form-input type="number" v-model.number="experienceRequirements[i].contract_count" />
           </b-form-group>
           <b-form-group class="mb-2" :label="`Min Value`">
             <b-form-input
@@ -477,16 +383,10 @@
             />
           </b-form-group>
           <b-form-group class="mb-2" :label="`Start Date`">
-            <DatePicker
-              v-model="experienceRequirements[i].start_date"
-              dateFormat="yy-mm-dd"
-            />
+            <DatePicker v-model="experienceRequirements[i].start_date" dateFormat="yy-mm-dd" />
           </b-form-group>
           <b-form-group class="mb-2" :label="`End Date`">
-            <DatePicker
-              v-model="experienceRequirements[i].end_date"
-              dateFormat="yy-mm-dd"
-            />
+            <DatePicker v-model="experienceRequirements[i].end_date" dateFormat="yy-mm-dd" />
           </b-form-group>
           <b-form-group class="mb-2" :label="`JV Compliance`">
             <b-form-select
@@ -502,45 +402,25 @@
             />
           </b-form-group>
           <b-form-group class="mb-2" :label="`JV Aggregation Note`">
-            <b-form-textarea
-              v-model="experienceRequirements[i].jv_aggregation_note"
-              rows="2"
-            />
+            <b-form-textarea v-model="experienceRequirements[i].jv_aggregation_note" rows="2" />
           </b-form-group>
           <b-form-group class="mb-2" :label="`Reputation Notes`">
-            <b-form-textarea
-              v-model="experienceRequirements[i].reputation_notes"
-              rows="2"
-            />
+            <b-form-textarea v-model="experienceRequirements[i].reputation_notes" rows="2" />
           </b-form-group>
-          <b-button
-            size="sm"
-            variant="danger"
-            @click="store.removeExperienceRequirement(i)"
-          >
+          <b-button size="sm" variant="danger" @click="store.removeExperienceRequirement(i)">
             Remove
           </b-button>
         </div>
-        <b-button
-          size="sm"
-          variant="outline-primary"
-          @click="store.addExperienceRequirement"
-        >
+        <b-button size="sm" variant="outline-primary" @click="store.addExperienceRequirement">
           + Add Experience Requirement
         </b-button>
       </b-form>
 
       <!-- Step 9: Personnel Requirements -->
       <b-form v-else-if="store.step === 9" novalidate>
-        <div
-          v-for="(req, i) in personnelRequirements"
-          :key="i"
-          class="mb-3 border p-2 rounded"
-        >
-          <b-form-group class="mb-2" :label="`Personnel Req ${i+1} Role`">
-            <b-form-input
-              v-model="personnelRequirements[i].role"
-            />
+        <div v-for="(req, i) in personnelRequirements" :key="i" class="mb-3 border p-2 rounded">
+          <b-form-group class="mb-2" :label="`Personnel Req ${i + 1} Role`">
+            <b-form-input v-model="personnelRequirements[i].role" />
           </b-form-group>
           <b-form-group class="mb-2" :label="`Min Education`">
             <b-form-select
@@ -549,9 +429,7 @@
             />
           </b-form-group>
           <b-form-group class="mb-2" :label="`Professional Registration`">
-            <b-form-input
-              v-model="personnelRequirements[i].professional_registration"
-            />
+            <b-form-input v-model="personnelRequirements[i].professional_registration" />
           </b-form-group>
           <b-form-group class="mb-2" :label="`Min Experience Years`">
             <b-form-input
@@ -566,32 +444,19 @@
             />
           </b-form-group>
           <b-form-group class="mb-2" :label="`Nationality Required`">
-            <b-form-input
-              v-model="personnelRequirements[i].nationality_required"
-            />
+            <b-form-input v-model="personnelRequirements[i].nationality_required" />
           </b-form-group>
           <b-form-group class="mb-2" :label="`Language Required`">
-            <b-form-input
-              v-model="personnelRequirements[i].language_required"
-            />
+            <b-form-input v-model="personnelRequirements[i].language_required" />
           </b-form-group>
           <b-form-group class="mb-2" :label="`Age Minimum`">
-            <b-form-input
-              type="number"
-              v-model.number="personnelRequirements[i].age_min"
-            />
+            <b-form-input type="number" v-model.number="personnelRequirements[i].age_min" />
           </b-form-group>
           <b-form-group class="mb-2" :label="`Age Maximum`">
-            <b-form-input
-              type="number"
-              v-model.number="personnelRequirements[i].age_max"
-            />
+            <b-form-input type="number" v-model.number="personnelRequirements[i].age_max" />
           </b-form-group>
           <b-form-group class="mb-2" :label="`Specialized Education`">
-            <b-form-textarea
-              v-model="personnelRequirements[i].specialized_education"
-              rows="2"
-            />
+            <b-form-textarea v-model="personnelRequirements[i].specialized_education" rows="2" />
           </b-form-group>
           <b-form-group class="mb-2" :label="`Professional Certifications`">
             <b-form-textarea
@@ -606,111 +471,61 @@
             />
           </b-form-group>
           <b-form-group class="mb-2" :label="`Notes`">
-            <b-form-textarea
-              v-model="personnelRequirements[i].notes"
-              rows="2"
-            />
+            <b-form-textarea v-model="personnelRequirements[i].notes" rows="2" />
           </b-form-group>
-          <b-button
-            size="sm"
-            variant="danger"
-            @click="store.removePersonnelRequirement(i)"
-          >
+          <b-button size="sm" variant="danger" @click="store.removePersonnelRequirement(i)">
             Remove
           </b-button>
         </div>
-        <b-button
-          size="sm"
-          variant="outline-primary"
-          @click="store.addPersonnelRequirement"
-        >
+        <b-button size="sm" variant="outline-primary" @click="store.addPersonnelRequirement">
           + Add Personnel Requirement
         </b-button>
       </b-form>
 
       <!-- Step 10: Schedule Items -->
       <b-form v-else-if="store.step === 10" novalidate>
-        <div
-          v-for="(item, i) in scheduleItems"
-          :key="i"
-          class="mb-3 border p-2 rounded"
-        >
-          <b-form-group class="mb-2" :label="`Schedule Item ${i+1} Commodity`">
-            <b-form-input
-              v-model="scheduleItems[i].commodity"
-            />
+        <div v-for="(item, i) in scheduleItems" :key="i" class="mb-3 border p-2 rounded">
+          <b-form-group class="mb-2" :label="`Schedule Item ${i + 1} Commodity`">
+            <b-form-input v-model="scheduleItems[i].commodity" />
           </b-form-group>
           <b-form-group class="mb-2" :label="`Code`">
-            <b-form-input
-              v-model="scheduleItems[i].code"
-            />
+            <b-form-input v-model="scheduleItems[i].code" />
           </b-form-group>
           <b-form-group class="mb-2" :label="`Unit`">
-            <b-form-input
-              v-model="scheduleItems[i].unit"
-            />
+            <b-form-input v-model="scheduleItems[i].unit" />
           </b-form-group>
           <b-form-group class="mb-2" :label="`Quantity`">
-            <b-form-input
-              type="number"
-              v-model.number="scheduleItems[i].quantity"
-            />
+            <b-form-input type="number" v-model.number="scheduleItems[i].quantity" />
           </b-form-group>
           <b-form-group class="mb-2" :label="`Specification`">
-            <b-form-textarea
-              v-model="scheduleItems[i].specification"
-              rows="2"
-            />
+            <b-form-textarea v-model="scheduleItems[i].specification" rows="2" />
           </b-form-group>
-          <b-button
-            size="sm"
-            variant="danger"
-            @click="store.removeScheduleItem(i)"
-          >
+          <b-button size="sm" variant="danger" @click="store.removeScheduleItem(i)">
             Remove
           </b-button>
         </div>
-        <b-button
-          size="sm"
-          variant="outline-primary"
-          @click="store.addScheduleItem"
-        >
+        <b-button size="sm" variant="outline-primary" @click="store.addScheduleItem">
           + Add Schedule Item
         </b-button>
       </b-form>
 
       <!-- Step 11: Technical Specifications -->
       <b-form v-else-if="store.step === 11" novalidate>
-        <div
-          v-for="(spec, i) in technicalSpecifications"
-          :key="i"
-          class="mb-3 border p-2 rounded"
-        >
-          <b-form-group class="mb-2" :label="`Technical Spec ${i+1} Category`">
+        <div v-for="(spec, i) in technicalSpecifications" :key="i" class="mb-3 border p-2 rounded">
+          <b-form-group class="mb-2" :label="`Technical Spec ${i + 1} Category`">
             <b-form-select
               v-model="technicalSpecifications[i].category"
               :options="technicalCategoryOptions"
             />
           </b-form-group>
           <b-form-group class="mb-2" :label="`Description`">
-            <b-form-textarea
-              v-model="technicalSpecifications[i].description"
-              rows="3"
-            />
+            <b-form-textarea v-model="technicalSpecifications[i].description" rows="3" />
           </b-form-group>
-          <b-button
-            size="sm"
-            variant="danger"
-            @click="store.removeTechnicalSpecification(i)"
-          >
+          <b-button size="sm" variant="danger" @click="store.removeTechnicalSpecification(i)">
             Remove
           </b-button>
         </div>
-        <b-button
-          size="sm"
-          variant="outline-primary"
-          @click="store.addTechnicalSpecification"
-        >
+        <b-button size="sm" variant="outline-primary" @click="store.addTechnicalSpecification">
           + Add Technical Specification
         </b-button>
       </b-form>
@@ -718,12 +533,8 @@
       <!-- Step 12: Success -->
       <div v-else class="text-center py-4">
         <h4 class="text-success mb-4">✅ Tender created!</h4>
-        <b-button class="me-2" variant="outline-primary" @click="resetAll">
-          New Tender
-        </b-button>
-        <b-button variant="primary" @click="goToList">
-          Go to Tenders Management
-        </b-button>
+        <b-button class="me-2" variant="outline-primary" @click="resetAll"> New Tender </b-button>
+        <b-button variant="primary" @click="goToList"> Go to Tenders Management </b-button>
       </div>
 
       <!-- Footer -->
@@ -743,18 +554,8 @@
           >
             Skip Section
           </b-button>
-          <b-button
-            v-if="store.step < 12"
-            variant="primary"
-            @click="nextStep"
-          >
-            Next
-          </b-button>
-          <b-button
-            v-if="store.step === 11"
-            variant="success"
-            @click="submitTender"
-          >
+          <b-button v-if="store.step < 12" variant="primary" @click="nextStep"> Next </b-button>
+          <b-button v-if="store.step === 11" variant="success" @click="submitTender">
             Submit Tender
           </b-button>
         </div>
@@ -904,7 +705,11 @@ function validateStep4() {
     if (!store.tender.tender_security_percentage && !store.tender.tender_security_amount) {
       errors.value.tender_security_percentage = true;
       errors.value.tender_security_amount = true;
-      toast.add({ severity: 'error', summary: 'Validation Error', detail: 'Either Security Percentage or Security Amount is required for Tender Security.' });
+      toast.add({
+        severity: 'error',
+        summary: 'Validation Error',
+        detail: 'Either Security Percentage or Security Amount is required for Tender Security.',
+      });
     }
   }
   return Object.keys(errors.value).length === 0;
@@ -912,15 +717,27 @@ function validateStep4() {
 
 function nextStep() {
   if (store.step === 1 && !validateStep1()) {
-    toast.add({ severity: 'error', summary: 'Validation Error', detail: 'Please fill all required fields.' });
+    toast.add({
+      severity: 'error',
+      summary: 'Validation Error',
+      detail: 'Please fill all required fields.',
+    });
     return;
   }
   if (store.step === 2 && !validateStep2()) {
-    toast.add({ severity: 'error', summary: 'Validation Error', detail: 'Please fill all required fields.' });
+    toast.add({
+      severity: 'error',
+      summary: 'Validation Error',
+      detail: 'Please fill all required fields.',
+    });
     return;
   }
   if (store.step === 3 && !store.tender.agency_id && !newAgency.value.name) {
-    toast.add({ severity: 'error', summary: 'Validation Error', detail: 'Please select an agency or provide a new agency name.' });
+    toast.add({
+      severity: 'error',
+      summary: 'Validation Error',
+      detail: 'Please select an agency or provide a new agency name.',
+    });
     return;
   }
   if (store.step === 4 && !validateStep4()) {
@@ -965,34 +782,42 @@ function onCategoryChange() {
   store.tender.subcategory_id = null;
 }
 
-watch(() => store.tender.category_id, id => {
-  const cat = categoriesWithSubs.value.find(c => c.id === id);
-  subcategories.value = cat
-    ? cat.subcategories.map(sc => ({ value: sc.id, text: sc.name }))
-    : [];
-  store.tender.subcategory_id = null;
-});
+watch(
+  () => store.tender.category_id,
+  (id) => {
+    const cat = categoriesWithSubs.value.find((c) => c.id === id);
+    subcategories.value = cat
+      ? cat.subcategories.map((sc) => ({ value: sc.id, text: sc.name }))
+      : [];
+    store.tender.subcategory_id = null;
+  }
+);
 
-watch(() => store.tender.tender_securing_type, (newVal) => {
-  if (newVal === 'Tender Securing Declaration') {
-    const hasDecl = store.requiredDocuments.some(doc => doc.selectedName === 'tender-securing-declaration');
-    if (!hasDecl) {
-      store.addDocument();
-      const lastIndex = store.requiredDocuments.length - 1;
-      store.requiredDocuments[lastIndex].selectedName = 'tender-securing-declaration';
-      store.requiredDocuments[lastIndex].description = 'Signed Tender Securing Declaration Form';
-      store.requiredDocuments[lastIndex].document_type = 'other';
-      store.requiredDocuments[lastIndex].is_required = 'required';
+watch(
+  () => store.tender.tender_securing_type,
+  (newVal) => {
+    if (newVal === 'Tender Securing Declaration') {
+      const hasDecl = store.requiredDocuments.some(
+        (doc) => doc.selectedName === 'tender-securing-declaration'
+      );
+      if (!hasDecl) {
+        store.addDocument();
+        const lastIndex = store.requiredDocuments.length - 1;
+        store.requiredDocuments[lastIndex].selectedName = 'tender-securing-declaration';
+        store.requiredDocuments[lastIndex].description = 'Signed Tender Securing Declaration Form';
+        store.requiredDocuments[lastIndex].document_type = 'other';
+        store.requiredDocuments[lastIndex].is_required = 'required';
+      }
     }
   }
-});
+);
 
 async function fetchCategoriesWithSubcategories() {
   try {
     const data = await tendersService.getCategoriesWithSubcategories();
-    const list = Array.isArray(data) ? data : data?.results ?? data ?? [];
+    const list = Array.isArray(data) ? data : (data?.results ?? data ?? []);
     categoriesWithSubs.value = list;
-    categories.value = list.map(c => ({ value: c.id, text: c.name }));
+    categories.value = list.map((c) => ({ value: c.id, text: c.name }));
   } catch {
     toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to load categories' });
   }
@@ -1001,10 +826,14 @@ async function fetchCategoriesWithSubcategories() {
 async function fetchProcurementProcesses() {
   try {
     const data = await tendersService.getProcurementProcesses();
-    const items = Array.isArray(data) ? data : (data?.results || []);
-    procurementProcesses.value = items.map(p => ({ value: p.id, text: p.name }));
+    const items = Array.isArray(data) ? data : data?.results || [];
+    procurementProcesses.value = items.map((p) => ({ value: p.id, text: p.name }));
   } catch (err) {
-    toast.add({ severity: 'error', summary: 'Error', detail: parseApiError(err) || 'Failed to load processes' });
+    toast.add({
+      severity: 'error',
+      summary: 'Error',
+      detail: parseApiError(err) || 'Failed to load processes',
+    });
   }
 }
 
@@ -1012,9 +841,13 @@ async function searchAgency(event) {
   const query = event.query || store.selectedAgencyName || '';
   try {
     const data = await tendersService.searchAgencies(query);
-    agencyResults.value = Array.isArray(data) ? data : (data?.results || []);
+    agencyResults.value = Array.isArray(data) ? data : data?.results || [];
   } catch (err) {
-    toast.add({ severity: 'error', summary: 'Error', detail: parseApiError(err) || 'Agency lookup failed' });
+    toast.add({
+      severity: 'error',
+      summary: 'Error',
+      detail: parseApiError(err) || 'Agency lookup failed',
+    });
   }
 }
 
@@ -1030,14 +863,19 @@ function onAgencySelect(event) {
   }
 }
 
-watch(() => store.selectedAgencyName, val => {
-  if (!val) {
-    store.tender.agency_id = null;
-    return;
+watch(
+  () => store.selectedAgencyName,
+  (val) => {
+    if (!val) {
+      store.tender.agency_id = null;
+      return;
+    }
+    const matchedAgency = agencyResults.value.find(
+      (a) => a.name.toLowerCase() === val.toLowerCase()
+    );
+    store.tender.agency_id = matchedAgency ? matchedAgency.id : null;
   }
-  const matchedAgency = agencyResults.value.find(a => a.name.toLowerCase() === val.toLowerCase());
-  store.tender.agency_id = matchedAgency ? matchedAgency.id : null;
-});
+);
 
 async function fetchTenderData(slug) {
   try {
@@ -1050,18 +888,25 @@ async function fetchTenderData(slug) {
       agency_id: tender.agency ? tender.agency.id : null,
       submission_deadline: tender.submission_deadline ? new Date(tender.submission_deadline) : null,
       publication_date: tender.publication_date ? new Date(tender.publication_date) : null,
-      litigation_history_start: tender.litigation_history_start ? new Date(tender.litigation_history_start) : null,
-      litigation_history_end: tender.litigation_history_end ? new Date(tender.litigation_history_end) : null,
+      litigation_history_start: tender.litigation_history_start
+        ? new Date(tender.litigation_history_start)
+        : null,
+      litigation_history_end: tender.litigation_history_end
+        ? new Date(tender.litigation_history_end)
+        : null,
     };
     store.selectedAgencyName = tender.agency ? tender.agency.name : '';
     agencyResults.value = tender.agency ? [tender.agency] : [];
-    store.requiredDocuments = tender.required_documents.map(doc => ({
-      selectedName: documentNameOptions.some(opt => opt.value === doc.name) ? doc.name : 'other',
-      customName: documentNameOptions.some(opt => opt.value === doc.name) ? '' : doc.name,
-      description: doc.description,
-      document_type: doc.document_type,
-      is_required: doc.is_required
-    })) || [];
+    store.requiredDocuments =
+      tender.required_documents.map((doc) => ({
+        selectedName: documentNameOptions.some((opt) => opt.value === doc.name)
+          ? doc.name
+          : 'other',
+        customName: documentNameOptions.some((opt) => opt.value === doc.name) ? '' : doc.name,
+        description: doc.description,
+        document_type: doc.document_type,
+        is_required: doc.is_required,
+      })) || [];
     store.financialRequirements = tender.financial_requirements || [];
     store.turnoverRequirements = tender.turnover_requirements || [];
     store.experienceRequirements = tender.experience_requirements || [];
@@ -1069,14 +914,22 @@ async function fetchTenderData(slug) {
     store.scheduleItems = tender.schedule_items || [];
     store.technicalSpecifications = tender.technical_specifications || [];
   } catch (err) {
-    toast.add({ severity: 'error', summary: 'Error', detail: parseApiError(err) || 'Failed to load tender data' });
+    toast.add({
+      severity: 'error',
+      summary: 'Error',
+      detail: parseApiError(err) || 'Failed to load tender data',
+    });
   }
 }
 
 async function submitTender() {
   try {
     if (!store.tender.agency_id && !newAgency.value.name) {
-      toast.add({ severity: 'error', summary: 'Error', detail: 'Please select an agency or provide a new agency name.' });
+      toast.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Please select an agency or provide a new agency name.',
+      });
       return;
     }
 
@@ -1085,7 +938,8 @@ async function submitTender() {
       const agencyData = new FormData();
       agencyData.append('name', newAgency.value.name);
       if (newAgency.value.email) agencyData.append('email', newAgency.value.email);
-      if (newAgency.value.phone_number) agencyData.append('phone_number', newAgency.value.phone_number);
+      if (newAgency.value.phone_number)
+        agencyData.append('phone_number', newAgency.value.phone_number);
       if (newAgency.value.address) agencyData.append('address', newAgency.value.address);
       if (newAgency.value.logoFile) agencyData.append('logo', newAgency.value.logoFile);
       const r = await tendersService.createAgency(agencyData);
@@ -1094,13 +948,13 @@ async function submitTender() {
     }
 
     // Build nested data
-    const required_documents = store.requiredDocuments.map(doc => ({
+    const required_documents = store.requiredDocuments.map((doc) => ({
       name: doc.selectedName === 'other' ? doc.customName : doc.selectedName,
       description: doc.description,
       document_type: doc.document_type,
-      is_required: doc.is_required
+      is_required: doc.is_required,
     }));
-    const financial_requirements = store.financialRequirements.map(req => ({
+    const financial_requirements = store.financialRequirements.map((req) => ({
       name: req.name,
       formula: req.formula,
       minimum: req.minimum,
@@ -1108,18 +962,18 @@ async function submitTender() {
       actual_value: req.actual_value,
       notes: req.notes,
       financial_sources: req.financial_sources,
-      jv_compliance: req.jv_compliance
+      jv_compliance: req.jv_compliance,
     }));
-    const turnover_requirements = store.turnoverRequirements.map(req => ({
+    const turnover_requirements = store.turnoverRequirements.map((req) => ({
       label: req.label,
       amount: req.amount,
       currency: req.currency,
       start_date: req.start_date ? new Date(req.start_date).toISOString().split('T')[0] : null,
       end_date: req.end_date ? new Date(req.end_date).toISOString().split('T')[0] : null,
       jv_compliance: req.jv_compliance,
-      jv_percentage: req.jv_percentage
+      jv_percentage: req.jv_percentage,
     }));
-    const experience_requirements = store.experienceRequirements.map(req => ({
+    const experience_requirements = store.experienceRequirements.map((req) => ({
       type: req.type,
       description: req.description,
       contract_count: req.contract_count,
@@ -1130,9 +984,9 @@ async function submitTender() {
       jv_compliance: req.jv_compliance,
       jv_percentage: req.jv_percentage,
       jv_aggregation_note: req.jv_aggregation_note,
-      reputation_notes: req.reputation_notes
+      reputation_notes: req.reputation_notes,
     }));
-    const personnel_requirements = store.personnelRequirements.map(req => ({
+    const personnel_requirements = store.personnelRequirements.map((req) => ({
       role: req.role,
       min_education: req.min_education,
       professional_registration: req.professional_registration,
@@ -1145,18 +999,18 @@ async function submitTender() {
       specialized_education: req.specialized_education,
       professional_certifications: req.professional_certifications,
       jv_compliance: req.jv_compliance,
-      notes: req.notes
+      notes: req.notes,
     }));
-    const schedule_items = store.scheduleItems.map(item => ({
+    const schedule_items = store.scheduleItems.map((item) => ({
       commodity: item.commodity,
       code: item.code,
       unit: item.unit,
       quantity: item.quantity,
-      specification: item.specification
+      specification: item.specification,
     }));
-    const technical_specifications = store.technicalSpecifications.map(spec => ({
+    const technical_specifications = store.technicalSpecifications.map((spec) => ({
       category: spec.category,
-      description: spec.description
+      description: spec.description,
     }));
 
     // Pull off file
@@ -1165,17 +1019,25 @@ async function submitTender() {
     // Build JSON payload with ISO dates and nested
     const payload = {
       ...rest,
-      submission_deadline: rest.submission_deadline ? new Date(rest.submission_deadline).toISOString() : null,
-      publication_date: rest.publication_date ? new Date(rest.publication_date).toISOString() : null,
-      litigation_history_start: rest.litigation_history_start ? new Date(rest.litigation_history_start).toISOString().split('T')[0] : null,
-      litigation_history_end: rest.litigation_history_end ? new Date(rest.litigation_history_end).toISOString().split('T')[0] : null,
+      submission_deadline: rest.submission_deadline
+        ? new Date(rest.submission_deadline).toISOString()
+        : null,
+      publication_date: rest.publication_date
+        ? new Date(rest.publication_date).toISOString()
+        : null,
+      litigation_history_start: rest.litigation_history_start
+        ? new Date(rest.litigation_history_start).toISOString().split('T')[0]
+        : null,
+      litigation_history_end: rest.litigation_history_end
+        ? new Date(rest.litigation_history_end).toISOString().split('T')[0]
+        : null,
       required_documents,
       financial_requirements,
       turnover_requirements,
       experience_requirements,
       personnel_requirements,
       schedule_items,
-      technical_specifications
+      technical_specifications,
     };
 
     // Create or update tender
@@ -1192,7 +1054,11 @@ async function submitTender() {
       await tendersService.update(tenderSlug, fd);
     }
 
-    toast.add({ severity: 'success', summary: 'Done', detail: isEditMode ? 'Tender updated successfully' : 'Tender & all requirements created' });
+    toast.add({
+      severity: 'success',
+      summary: 'Done',
+      detail: isEditMode ? 'Tender updated successfully' : 'Tender & all requirements created',
+    });
     if (store.step < 12) {
       store.$patch({ step: store.step + 1 });
     }

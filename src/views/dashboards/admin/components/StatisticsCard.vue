@@ -11,7 +11,9 @@
         </b-col>
         <b-col cols="6" class="text-end">
           <p class="text-muted mb-0 text-truncate">{{ item.title }}</p>
-          <h3 class="text-dark mt-1 mb-0">{{ item.prefix }}{{ item.statistic }}{{ item.suffix }}</h3>
+          <h3 class="text-dark mt-1 mb-0">
+            {{ item.prefix }}{{ item.statistic }}{{ item.suffix }}
+          </h3>
         </b-col>
       </b-row>
     </b-card-body>
@@ -31,14 +33,14 @@
 </template>
 
 <script setup lang="ts">
-import type { PropType } from "vue";
-import type { StatisticCardType } from "@/types";
-import { Icon } from "@iconify/vue";
+import type { PropType } from 'vue';
+import type { StatisticCardType } from '@/types';
+import { Icon } from '@iconify/vue';
 
 defineProps({
   item: {
     type: Object as PropType<StatisticCardType>,
-    required: true
-  }
+    required: true,
+  },
 });
 </script>

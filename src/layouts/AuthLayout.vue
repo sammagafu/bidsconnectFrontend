@@ -7,7 +7,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, onUnmounted } from "vue";
+import { onMounted, onUnmounted } from 'vue';
 
 const body = document.body;
 

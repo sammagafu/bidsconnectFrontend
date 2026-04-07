@@ -15,7 +15,8 @@
             {{ item.title }}
           </p>
           <h3 class="text-dark mt-1 mb-0">
-            <span v-if="item.prefix">{{ item.prefix }}</span>{{ item.statistic }}<span v-if="item.suffix">{{ item.suffix }}</span>
+            <span v-if="item.prefix">{{ item.prefix }}</span
+            >{{ item.statistic }}<span v-if="item.suffix">{{ item.suffix }}</span>
           </h3>
         </b-col>
       </b-row>
@@ -45,7 +46,7 @@ import { Icon } from '@iconify/vue';
 defineProps({
   item: {
     type: Object as PropType<StatisticCardType>,
-    required: true
-  }
+    required: true,
+  },
 });
 </script>

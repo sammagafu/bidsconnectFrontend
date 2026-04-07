@@ -13,7 +13,9 @@
       </h2>
 
       <ul class="card-pricing-features text-muted border-top pt-2 mt-2 ps-0 list-unstyled">
-        <li class="text-dark" v-for="(feat, idx) in item.features" :key="idx"><i class="bx bx-check-circle text-primary fs-15 me-1"></i>{{ feat }}</li>
+        <li class="text-dark" v-for="(feat, idx) in item.features" :key="idx">
+          <i class="bx bx-check-circle text-primary fs-15 me-1"></i>{{ feat }}
+        </li>
       </ul>
 
       <div class="mt-4 text-center">
@@ -25,14 +27,14 @@
   </b-card>
 </template>
 <script setup lang="ts">
-import type { PropType } from 'vue'
-import type { PlanType } from '@/views/pages/components/types'
-import { currency } from '@/helpers/constants'
+import type { PropType } from 'vue';
+import type { PlanType } from '@/views/pages/components/types';
+import { currency } from '@/helpers/constants';
 
 defineProps({
   item: {
     type: Object as PropType<PlanType>,
-    required: true
-  }
-})
+    required: true,
+  },
+});
 </script>

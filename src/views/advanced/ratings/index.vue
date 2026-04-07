@@ -40,11 +40,12 @@
             <div dir="ltr">
               <div id="raterreset" class="align-middle"></div>
               <span class="clear-rating"></span>
-              <b-button variant="light" size="sm" id="raterreset-button" class="ms-2"> Reset</b-button>
+              <b-button variant="light" size="sm" id="raterreset-button" class="ms-2">
+                Reset</b-button
+              >
             </div>
           </div>
         </UIComponentCard>
-
       </b-col>
 
       <b-col xl="3">
@@ -57,37 +58,37 @@
 <script setup lang="ts">
 import { onMounted } from 'vue';
 
-import VerticalLayout from "@/layouts/VerticalLayout.vue";
+import VerticalLayout from '@/layouts/VerticalLayout.vue';
 import AnchorNavigation from '@/components/AnchorNavigation.vue';
 
 import raterJs from 'rater-js/index';
-import UIComponentCard from "@/components/UIComponentCard.vue";
+import UIComponentCard from '@/components/UIComponentCard.vue';
 
 const anchorNavigation = [
   {
     id: 'basic',
-    title: 'Basic Example'
+    title: 'Basic Example',
   },
   {
     id: 'step',
-    title: 'Rater with Step Example'
+    title: 'Rater with Step Example',
   },
   {
     id: 'custom-message',
-    title: 'Custom Messages Example'
+    title: 'Custom Messages Example',
   },
   {
     id: 'readOnly',
-    title: 'ReadOnly Example'
+    title: 'ReadOnly Example',
   },
   {
     id: 'onhover',
-    title: 'On Hover Event Example'
+    title: 'On Hover Event Example',
   },
   {
     id: 'reset',
-    title: 'Clear/Reset Rater Example'
-  }
+    title: 'Clear/Reset Rater Example',
+  },
 ];
 
 onMounted(() => {
@@ -100,7 +101,7 @@ onMounted(() => {
       rateCallback: function rateCallback(rating: number, done: any) {
         this.setRating(rating);
         done();
-      }
+      },
     });
   }
 
@@ -113,7 +114,7 @@ onMounted(() => {
       rateCallback: function rateCallback(rating: number, done: any) {
         this.setRating(rating);
         done();
-      }
+      },
     });
   }
 
@@ -125,9 +126,9 @@ onMounted(() => {
           setTimeout(function () {
             callback(Math.random() * 5);
           }, 1000);
-        }
+        },
       };
-    }
+    },
   };
 
   if (document.querySelector('#rater-message')) {
@@ -141,7 +142,7 @@ onMounted(() => {
           starRatingMessage.setRating(avgRating);
           done();
         });
-      }
+      },
     });
   }
 
@@ -152,7 +153,7 @@ onMounted(() => {
       max: 5,
       readOnly: true,
       rating: 3.5,
-      element: document.querySelector('#rater-unlimitedstar')
+      element: document.querySelector('#rater-unlimitedstar'),
     });
   }
 
@@ -171,7 +172,7 @@ onMounted(() => {
       },
       onLeave: function (currentIndex: number, currentRating: number) {
         document.querySelector('.ratingnum')!.textContent = currentRating.toString();
-      }
+      },
     });
   }
 
@@ -184,7 +185,7 @@ onMounted(() => {
       rateCallback: function rateCallback(rating: number, done: any) {
         this.setRating(rating);
         done();
-      }
+      },
     });
 
     const resetButton = document.querySelector('#raterreset-button');

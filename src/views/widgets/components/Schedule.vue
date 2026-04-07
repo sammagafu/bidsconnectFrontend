@@ -2,8 +2,12 @@
   <b-card no-body>
     <b-card-body>
       <DropDown custom-class="float-end">
-        <a href="javascript:void(0);" class="dropdown-toggle arrow-none" data-bs-toggle="dropdown"
-          aria-expanded="false">
+        <a
+          href="javascript:void(0);"
+          class="dropdown-toggle arrow-none"
+          data-bs-toggle="dropdown"
+          aria-expanded="false"
+        >
           <i class="bx bx-dots-vertical-rounded fs-18 text-dark"></i>
         </a>
         <div class="dropdown-menu dropdown-menu-end">
@@ -24,8 +28,14 @@
           <p :class="{ 'mb-0': idx === scheduleData.length - 1 }">{{ schedule.time.startAt }}</p>
         </b-col>
         <b-col sm="10" cols="9">
-          <b-alert :variant="schedule.variant" :model-value="true" class="px-2" :class="{ 'mb-0': idx === scheduleData.length - 1 }" role="alert">
-            <p class="mb-0"> {{ schedule.task }} </p>
+          <b-alert
+            :variant="schedule.variant"
+            :model-value="true"
+            class="px-2"
+            :class="{ 'mb-0': idx === scheduleData.length - 1 }"
+            role="alert"
+          >
+            <p class="mb-0">{{ schedule.task }}</p>
             <p class="mb-0">{{ schedule.time.startAt }} - {{ schedule.time.endAt }}</p>
           </b-alert>
         </b-col>

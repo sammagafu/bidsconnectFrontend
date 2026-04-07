@@ -1,8 +1,17 @@
 <template>
   <div class="main-nav">
     <LogoBox />
-    <button type="button" class="button-sm-hover" aria-label="Show Full Sidebar" @click="toggleMenuSize">
-      <Icon icon="solar:hamburger-menu-broken" class="button-sm-hover-icon mt-1 me-1" style="height: 25px; width: 25px" />
+    <button
+      type="button"
+      class="button-sm-hover"
+      aria-label="Show Full Sidebar"
+      @click="toggleMenuSize"
+    >
+      <Icon
+        icon="solar:hamburger-menu-broken"
+        class="button-sm-hover-icon mt-1 me-1"
+        style="height: 25px; width: 25px"
+      />
     </button>
     <simplebar class="scrollbar">
       <AppMenu :menu-items="getMenuItems()" />
@@ -11,7 +20,7 @@
 </template>
 
 <script setup>
-import { Icon } from "@iconify/vue";
+import { Icon } from '@iconify/vue';
 import simplebar from 'simplebar-vue';
 import AppMenu from '@/components/AppMenu/index.vue';
 import { getMenuItems } from '@/assets/data/menu';
@@ -31,7 +40,9 @@ const resize = () => {
   if (window.innerWidth < 1140) {
     setLeftSideBarSize('hidden');
   } else {
-    setLeftSideBarSize(layout.leftSideBarSize === 'hidden' ? 'sm-hover-active' : layout.leftSideBarSize);
+    setLeftSideBarSize(
+      layout.leftSideBarSize === 'hidden' ? 'sm-hover-active' : layout.leftSideBarSize
+    );
   }
 };
 

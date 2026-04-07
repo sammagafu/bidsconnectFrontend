@@ -1,6 +1,6 @@
 export type IntegrationType = {
-  name: string
-  image: string
-  description: string
-  checked: boolean
-}
+  name: string;
+  image: string;
+  description: string;
+  checked: boolean;
+};

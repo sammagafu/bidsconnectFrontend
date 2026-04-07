@@ -23,8 +23,12 @@
         <template #list="slotProps">
           <div class="flex flex-col">
             <div v-for="item in slotProps.items" :key="item.id">
-              <div class="flex flex-col xl:flex-row xl:items-start p-6 gap-6 border-t border-surface-200 dark:border-surface-700">
-                <div class="flex flex-col sm:flex-row justify-between items-center xl:items-start flex-1 gap-6">
+              <div
+                class="flex flex-col xl:flex-row xl:items-start p-6 gap-6 border-t border-surface-200 dark:border-surface-700"
+              >
+                <div
+                  class="flex flex-col sm:flex-row justify-between items-center xl:items-start flex-1 gap-6"
+                >
                   <div class="flex flex-col items-center sm:items-start gap-4">
                     <h3 class="text-xl">{{ item.company_name }}</h3>
                     <p class="text-sm">Tender No: {{ item.tender_no }}</p>
@@ -41,8 +45,14 @@
         </template>
         <template #grid="slotProps">
           <div class="grid grid-cols-12 gap-4">
-            <div v-for="item in slotProps.items" :key="item.id" class="col-span-12 sm:col-span-6 xl:col-span-4 p-2">
-              <div class="p-6 border border-surface-200 dark:border-surface-700 bg-surface-0 dark:bg-surface-900 rounded">
+            <div
+              v-for="item in slotProps.items"
+              :key="item.id"
+              class="col-span-12 sm:col-span-6 xl:col-span-4 p-2"
+            >
+              <div
+                class="p-6 border border-surface-200 dark:border-surface-700 bg-surface-0 dark:bg-surface-900 rounded"
+              >
                 <div class="flex flex-wrap items-center justify-between gap-2">
                   <h3 class="text-lg">{{ item.company_name }}</h3>
                 </div>
@@ -60,7 +70,12 @@
         </template>
       </DataView>
     </div>
-    <Dialog v-model:visible="showAddDialog" header="Add Power of Attorney" modal :style="{ width: '50vw' }">
+    <Dialog
+      v-model:visible="showAddDialog"
+      header="Add Power of Attorney"
+      modal
+      :style="{ width: '50vw' }"
+    >
       <div class="p-fluid">
         <div class="p-field">
           <label for="company_name">Company Name</label>
@@ -139,13 +154,17 @@ const newItem = ref({
   tender_description: '',
   date: null,
   board_resolution_no: '',
-  board_resolution_year: null
+  board_resolution_year: null,
 });
 
 const filteredItems = computed(() => {
   if (!Array.isArray(items.value)) return [];
-  return items.value.filter(i => {
-    return (!search.value || i.company_name.toLowerCase().includes(search.value.toLowerCase()) || i.tender_no.toLowerCase().includes(search.value.toLowerCase()));
+  return items.value.filter((i) => {
+    return (
+      !search.value ||
+      i.company_name.toLowerCase().includes(search.value.toLowerCase()) ||
+      i.tender_no.toLowerCase().includes(search.value.toLowerCase())
+    );
   });
 });
 
@@ -167,30 +186,52 @@ async function submitNew() {
     items.value.push(res.data);
     toast.add({ severity: 'success', summary: 'Success', detail: 'Added' });
     showAddDialog.value = false;
-    newItem.value = { company_name: '', address: '', po_box: '', attorney_name: '', attorney_address: '', tender_no: '', tender_description: '', date: null, board_resolution_no: '', board_resolution_year: null };
+    newItem.value = {
+      company_name: '',
+      address: '',
+      po_box: '',
+      attorney_name: '',
+      attorney_address: '',
+      tender_no: '',
+      tender_description: '',
+      date: null,
+      board_resolution_no: '',
+      board_resolution_year: null,
+    };
   } catch (err) {
     toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to add' });
   }
 }
 
 function generatePDF(item) {
-  api.get(`automation/power-of-attorney/${item.id}/`, { responseType: 'blob' }).then(response => {
-    const blob = new Blob([response.data], { type: 'application/pdf' });
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.download = 'power_of_attorney.pdf';
-    link.click();
-    URL.revokeObjectURL(link.href);
-  }).catch(err => {
-    toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to generate PDF' });
-  });
+  api
+    .get(`automation/power-of-attorney/${item.id}/`, { responseType: 'blob' })
+    .then((response) => {
+      const blob = new Blob([response.data], { type: 'application/pdf' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = 'power_of_attorney.pdf';
+      link.click();
+      URL.revokeObjectURL(link.href);
+    })
+    .catch((err) => {
+      toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to generate PDF' });
+    });
 }
 
 onMounted(fetchItems);
 </script>
 
 <style scoped>
-.mb-4 { margin-bottom: 1rem !important; }
-.p-field { margin-bottom: 1.5rem; padding: 0.5rem; }
-.p-field label { display: block; margin-bottom: 0.5rem; }
+.mb-4 {
+  margin-bottom: 1rem !important;
+}
+.p-field {
+  margin-bottom: 1.5rem;
+  padding: 0.5rem;
+}
+.p-field label {
+  display: block;
+  margin-bottom: 0.5rem;
+}
 </style>

@@ -1,36 +1,36 @@
 <template>
   <AuthLayout>
     <b-row class="justify-content-center">
-        <b-col md="6" lg="5">
-          <b-card class="shadow-sm">
-            <template #header>
-              <h4 class="mb-0">Accept Invitation</h4>
-            </template>
-            <div v-if="loading" class="text-center py-5">
-              <b-spinner></b-spinner>
-              <p class="mt-2 mb-0">Processing invitation...</p>
-            </div>
-            <div v-else-if="success" class="text-center py-3">
-              <i class="bx bx-check-circle text-success" style="font-size: 4rem;"></i>
-              <h5 class="mt-3 text-success">Success!</h5>
-              <p class="mb-0">{{ successMessage }}</p>
-              <b-button variant="primary" class="mt-3" :to="{ name: 'dashboards.index' }">
-                Go to Dashboard
-              </b-button>
-            </div>
-            <div v-else-if="error" class="py-3">
-              <b-alert variant="danger" show>{{ error }}</b-alert>
-              <b-button variant="outline-primary" :to="{ name: 'dashboards.index' }">
-                Go to Dashboard
-              </b-button>
-            </div>
-            <div v-else class="py-3">
-              <p class="text-muted">No invitation token provided.</p>
-              <b-button variant="primary" :to="{ name: 'auth.sign-in' }">Sign In</b-button>
-            </div>
-          </b-card>
-        </b-col>
-      </b-row>
+      <b-col md="6" lg="5">
+        <b-card class="shadow-sm">
+          <template #header>
+            <h4 class="mb-0">Accept Invitation</h4>
+          </template>
+          <div v-if="loading" class="text-center py-5">
+            <b-spinner></b-spinner>
+            <p class="mt-2 mb-0">Processing invitation...</p>
+          </div>
+          <div v-else-if="success" class="text-center py-3">
+            <i class="bx bx-check-circle text-success" style="font-size: 4rem"></i>
+            <h5 class="mt-3 text-success">Success!</h5>
+            <p class="mb-0">{{ successMessage }}</p>
+            <b-button variant="primary" class="mt-3" :to="{ name: 'dashboards.index' }">
+              Go to Dashboard
+            </b-button>
+          </div>
+          <div v-else-if="error" class="py-3">
+            <b-alert variant="danger" show>{{ error }}</b-alert>
+            <b-button variant="outline-primary" :to="{ name: 'dashboards.index' }">
+              Go to Dashboard
+            </b-button>
+          </div>
+          <div v-else class="py-3">
+            <p class="text-muted">No invitation token provided.</p>
+            <b-button variant="primary" :to="{ name: 'auth.sign-in' }">Sign In</b-button>
+          </div>
+        </b-card>
+      </b-col>
+    </b-row>
   </AuthLayout>
 </template>
 

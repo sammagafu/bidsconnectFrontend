@@ -1,150 +1,347 @@
 <template>
-<VerticalLayout>
+  <VerticalLayout>
     <b-card>
-    <div>
-    <div class="card">
-      <Toolbar class="mb-6">
-        <template #start>
-          <Button label="New" icon="pi pi-plus" class="mr-2" @click="openNew" />
-          <Button label="Delete" icon="pi pi-trash" severity="danger" variant="outlined" @click="confirmDeleteSelected" :disabled="!selectedProducts || !selectedProducts.length" />
-        </template>
-        <template #end>
-          <Button label="Export" icon="pi pi-upload" severity="secondary" @click="exportCSV($event)" />
-        </template>
-      </Toolbar>
-      <div class="flex flex-wrap gap-4 mb-4">
-        <Select v-model="filterType" :options="typeOptions" optionLabel="text" optionValue="value" placeholder="Select Type" class="w-full md:w-48" />
-        <Select v-model="filterCategory" :options="categories" optionLabel="text" optionValue="value" placeholder="Select Category" class="w-full md:w-48" @change="onFilterCategoryChange" />
-        <Select v-model="filterSubcategory" :options="filterSubcategories" optionLabel="text" optionValue="value" placeholder="Select Subcategory" class="w-full md:w-48" />
-        <Select v-model="filterActive" :options="activeOptions" optionLabel="text" optionValue="value" placeholder="Select Status" class="w-full md:w-48" />
-        <InputNumber v-model="filterMinPrice" placeholder="Min Price" class="w-full md:w-48" />
-        <InputNumber v-model="filterMaxPrice" placeholder="Max Price" class="w-full md:w-48" />
-        <InputText v-model="filterCompanyLocation" placeholder="Company Location" class="w-full md:w-48" />
-      </div>
-      <DataTable
-        ref="dt"
-        v-model:selection="selectedProducts"
-        :value="products"
-        dataKey="id"
-        :paginator="true"
-        :lazy="true"
-        v-model:first="first"
-        :rows="rows"
-        :totalRecords="totalRecords"
-        :filters="filters"
-        paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-        :rowsPerPageOptions="[5, 10, 25]"
-        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products"
-        @page="loadData"
-        @sort="loadData"
-        @filter="loadData"
-      >
-        <template #header>
-          <div class="flex flex-wrap gap-2 items-center justify-between">
-            <h4 class="m-0">Manage Products/Services</h4>
-            <IconField>
-              <InputIcon>
-                <i class="pi pi-search" />
-              </InputIcon>
-              <InputText v-model="filters['global'].value" placeholder="Search..." />
-            </IconField>
+      <div>
+        <div class="card">
+          <Toolbar class="mb-6">
+            <template #start>
+              <Button label="New" icon="pi pi-plus" class="mr-2" @click="openNew" />
+              <Button
+                label="Delete"
+                icon="pi pi-trash"
+                severity="danger"
+                variant="outlined"
+                @click="confirmDeleteSelected"
+                :disabled="!selectedProducts || !selectedProducts.length"
+              />
+            </template>
+            <template #end>
+              <Button
+                label="Export"
+                icon="pi pi-upload"
+                severity="secondary"
+                @click="exportCSV($event)"
+              />
+            </template>
+          </Toolbar>
+          <div class="flex flex-wrap gap-4 mb-4">
+            <Select
+              v-model="filterType"
+              :options="typeOptions"
+              optionLabel="text"
+              optionValue="value"
+              placeholder="Select Type"
+              class="w-full md:w-48"
+            />
+            <Select
+              v-model="filterCategory"
+              :options="categories"
+              optionLabel="text"
+              optionValue="value"
+              placeholder="Select Category"
+              class="w-full md:w-48"
+              @change="onFilterCategoryChange"
+            />
+            <Select
+              v-model="filterSubcategory"
+              :options="filterSubcategories"
+              optionLabel="text"
+              optionValue="value"
+              placeholder="Select Subcategory"
+              class="w-full md:w-48"
+            />
+            <Select
+              v-model="filterActive"
+              :options="activeOptions"
+              optionLabel="text"
+              optionValue="value"
+              placeholder="Select Status"
+              class="w-full md:w-48"
+            />
+            <InputNumber v-model="filterMinPrice" placeholder="Min Price" class="w-full md:w-48" />
+            <InputNumber v-model="filterMaxPrice" placeholder="Max Price" class="w-full md:w-48" />
+            <InputText
+              v-model="filterCompanyLocation"
+              placeholder="Company Location"
+              class="w-full md:w-48"
+            />
           </div>
-        </template>
-        <Column selectionMode="multiple" style="width: 3rem" :exportable="false"></Column>
-        <Column field="name" header="Name" sortable style="min-width: 16rem">
-          <template #body="slotProps">
-            <router-link :to="{ name: 'admin.marketplace.products-details', params: { id: slotProps.data.id } }">{{ slotProps.data.name }}</router-link>
-            <!-- <a href="#" @click.prevent="goToDetails(slotProps.data.id)">{{ slotProps.data.name }}</a> -->
+          <DataTable
+            ref="dt"
+            v-model:selection="selectedProducts"
+            :value="products"
+            dataKey="id"
+            :paginator="true"
+            :lazy="true"
+            v-model:first="first"
+            :rows="rows"
+            :totalRecords="totalRecords"
+            :filters="filters"
+            paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+            :rowsPerPageOptions="[5, 10, 25]"
+            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products"
+            @page="loadData"
+            @sort="loadData"
+            @filter="loadData"
+          >
+            <template #header>
+              <div class="flex flex-wrap gap-2 items-center justify-between">
+                <h4 class="m-0">Manage Products/Services</h4>
+                <IconField>
+                  <InputIcon>
+                    <i class="pi pi-search" />
+                  </InputIcon>
+                  <InputText v-model="filters['global'].value" placeholder="Search..." />
+                </IconField>
+              </div>
+            </template>
+            <Column selectionMode="multiple" style="width: 3rem" :exportable="false"></Column>
+            <Column field="name" header="Name" sortable style="min-width: 16rem">
+              <template #body="slotProps">
+                <router-link
+                  :to="{
+                    name: 'admin.marketplace.products-details',
+                    params: { id: slotProps.data.id },
+                  }"
+                  >{{ slotProps.data.name }}</router-link
+                >
+                <!-- <a href="#" @click.prevent="goToDetails(slotProps.data.id)">{{ slotProps.data.name }}</a> -->
+              </template>
+            </Column>
+            <Column field="type" header="Type" sortable style="min-width: 10rem"></Column>
+            <Column header="Image">
+              <template #body="slotProps">
+                <img
+                  v-if="slotProps.data.featured_image"
+                  :src="slotProps.data.featured_image"
+                  :alt="slotProps.data.name"
+                  class="rounded"
+                  style="width: 64px"
+                />
+              </template>
+            </Column>
+            <Column
+              field="category.name"
+              header="Category"
+              sortable
+              style="min-width: 12rem"
+            ></Column>
+            <Column
+              field="subcategory.name"
+              header="Subcategory"
+              sortable
+              style="min-width: 12rem"
+            ></Column>
+            <Column
+              v-if="auth.isSuperAdmin || auth.isStaffUser"
+              field="company.name"
+              header="Company"
+              sortable
+              style="min-width: 14rem"
+            ></Column>
+            <Column field="is_active" header="Status" sortable style="min-width: 10rem">
+              <template #body="slotProps">
+                <Tag
+                  :value="slotProps.data.is_active ? 'Active' : 'Inactive'"
+                  :severity="slotProps.data.is_active ? 'success' : 'danger'"
+                />
+              </template>
+            </Column>
+            <Column :exportable="false" style="min-width: 12rem">
+              <template #body="slotProps">
+                <Button
+                  v-if="!slotProps.data.is_active"
+                  icon="pi pi-check"
+                  severity="success"
+                  variant="outlined"
+                  rounded
+                  class="mr-2"
+                  @click="approveProduct(slotProps.data)"
+                />
+                <Button
+                  icon="pi pi-pencil"
+                  variant="outlined"
+                  rounded
+                  class="mr-2"
+                  @click="editProduct(slotProps.data)"
+                />
+                <Button
+                  icon="pi pi-trash"
+                  variant="outlined"
+                  rounded
+                  severity="danger"
+                  @click="confirmDeleteProduct(slotProps.data)"
+                />
+              </template>
+            </Column>
+          </DataTable>
+        </div>
+        <Dialog
+          v-model:visible="productDialog"
+          :style="{ width: '450px' }"
+          header="Product/Service Details"
+          :modal="true"
+        >
+          <div class="flex flex-col gap-6">
+            <img
+              v-if="product.featured_image"
+              :src="product.featured_image"
+              :alt="product.name"
+              class="block m-auto pb-4"
+              style="width: 200px"
+            />
+            <div>
+              <label for="name" class="block font-bold mb-3">Name</label>
+              <InputText
+                id="name"
+                v-model.trim="product.name"
+                required="true"
+                autofocus
+                :invalid="submitted && !product.name"
+                fluid
+              />
+              <small v-if="submitted && !product.name" class="text-red-500"
+                >Name is required.</small
+              >
+            </div>
+            <div>
+              <label for="type" class="block font-bold mb-3">Type</label>
+              <Select
+                id="type"
+                v-model="product.type"
+                :options="typeOptions"
+                optionLabel="text"
+                optionValue="value"
+                placeholder="Select Type"
+                fluid
+              />
+            </div>
+            <div>
+              <label for="description" class="block font-bold mb-3">Description</label>
+              <Textarea
+                id="description"
+                v-model="product.description"
+                required="true"
+                rows="3"
+                cols="20"
+                fluid
+              />
+            </div>
+            <div v-if="auth.isSuperAdmin || auth.isStaffUser">
+              <label for="company" class="block font-bold mb-3">Company</label>
+              <Select
+                id="company"
+                v-model="product.company"
+                :options="companiesList"
+                optionLabel="text"
+                optionValue="value"
+                placeholder="Select Company"
+                fluid
+              />
+            </div>
+            <div>
+              <label for="category" class="block font-bold mb-3">Category</label>
+              <Select
+                id="category"
+                v-model="product.category_id"
+                :options="categories"
+                optionLabel="text"
+                optionValue="value"
+                placeholder="Select Category"
+                fluid
+                @update:modelValue="onCategoryChange"
+              />
+            </div>
+            <div>
+              <label for="subcategory" class="block font-bold mb-3">Subcategory</label>
+              <Select
+                id="subcategory"
+                v-model="product.subcategory_id"
+                :options="subcategories"
+                optionLabel="text"
+                optionValue="value"
+                placeholder="Select Subcategory"
+                fluid
+              />
+            </div>
+            <div>
+              <label for="featured_image" class="block font-bold mb-3">Featured Image</label>
+              <FileUpload
+                mode="basic"
+                accept="image/*"
+                :maxFileSize="10000000"
+                customUpload
+                @uploader="uploadFeaturedImage"
+                chooseLabel="Upload Image"
+                auto
+              />
+            </div>
+            <div class="flex items-center gap-2">
+              <Checkbox id="is_active" v-model="product.is_active" :binary="true" />
+              <label for="is_active">Active</label>
+            </div>
+          </div>
+          <template #footer>
+            <Button label="Cancel" icon="pi pi-times" text @click="hideDialog" />
+            <Button label="Save" icon="pi pi-check" @click="saveProduct" />
           </template>
-        </Column>
-        <Column field="type" header="Type" sortable style="min-width: 10rem"></Column>
-        <Column header="Image">
-          <template #body="slotProps">
-            <img v-if="slotProps.data.featured_image" :src="slotProps.data.featured_image" :alt="slotProps.data.name" class="rounded" style="width: 64px" />
+        </Dialog>
+        <Dialog
+          v-model:visible="deleteProductDialog"
+          :style="{ width: '450px' }"
+          header="Confirm"
+          :modal="true"
+        >
+          <div class="flex items-center gap-4">
+            <i class="pi pi-exclamation-triangle !text-3xl" />
+            <span v-if="product"
+              >Are you sure you want to delete <b>{{ product.name }}</b
+              >?</span
+            >
+          </div>
+          <template #footer>
+            <Button
+              label="No"
+              icon="pi pi-times"
+              text
+              @click="deleteProductDialog = false"
+              severity="secondary"
+              variant="text"
+            />
+            <Button label="Yes" icon="pi pi-check" @click="deleteProduct" severity="danger" />
           </template>
-        </Column>
-        <Column field="category.name" header="Category" sortable style="min-width: 12rem"></Column>
-        <Column field="subcategory.name" header="Subcategory" sortable style="min-width: 12rem"></Column>
-        <Column v-if="auth.isSuperAdmin || auth.isStaffUser" field="company.name" header="Company" sortable style="min-width: 14rem"></Column>
-        <Column field="is_active" header="Status" sortable style="min-width: 10rem">
-          <template #body="slotProps">
-            <Tag :value="slotProps.data.is_active ? 'Active' : 'Inactive'" :severity="slotProps.data.is_active ? 'success' : 'danger'" />
+        </Dialog>
+        <Dialog
+          v-model:visible="deleteProductsDialog"
+          :style="{ width: '450px' }"
+          header="Confirm"
+          :modal="true"
+        >
+          <div class="flex items-center gap-4">
+            <i class="pi pi-exclamation-triangle !text-3xl" />
+            <span>Are you sure you want to delete the selected items?</span>
+          </div>
+          <template #footer>
+            <Button
+              label="No"
+              icon="pi pi-times"
+              text
+              @click="deleteProductsDialog = false"
+              severity="secondary"
+              variant="text"
+            />
+            <Button
+              label="Yes"
+              icon="pi pi-check"
+              text
+              @click="deleteSelectedProducts"
+              severity="danger"
+            />
           </template>
-        </Column>
-        <Column :exportable="false" style="min-width: 12rem">
-          <template #body="slotProps">
-            <Button v-if="!slotProps.data.is_active" icon="pi pi-check" severity="success" variant="outlined" rounded class="mr-2" @click="approveProduct(slotProps.data)" />
-            <Button icon="pi pi-pencil" variant="outlined" rounded class="mr-2" @click="editProduct(slotProps.data)" />
-            <Button icon="pi pi-trash" variant="outlined" rounded severity="danger" @click="confirmDeleteProduct(slotProps.data)" />
-          </template>
-        </Column>
-      </DataTable>
-    </div>
-    <Dialog v-model:visible="productDialog" :style="{ width: '450px' }" header="Product/Service Details" :modal="true">
-      <div class="flex flex-col gap-6">
-        <img v-if="product.featured_image" :src="product.featured_image" :alt="product.name" class="block m-auto pb-4" style="width: 200px" />
-        <div>
-          <label for="name" class="block font-bold mb-3">Name</label>
-          <InputText id="name" v-model.trim="product.name" required="true" autofocus :invalid="submitted && !product.name" fluid />
-          <small v-if="submitted && !product.name" class="text-red-500">Name is required.</small>
-        </div>
-        <div>
-          <label for="type" class="block font-bold mb-3">Type</label>
-          <Select id="type" v-model="product.type" :options="typeOptions" optionLabel="text" optionValue="value" placeholder="Select Type" fluid />
-        </div>
-        <div>
-          <label for="description" class="block font-bold mb-3">Description</label>
-          <Textarea id="description" v-model="product.description" required="true" rows="3" cols="20" fluid />
-        </div>
-        <div v-if="auth.isSuperAdmin || auth.isStaffUser">
-          <label for="company" class="block font-bold mb-3">Company</label>
-          <Select id="company" v-model="product.company" :options="companiesList" optionLabel="text" optionValue="value" placeholder="Select Company" fluid />
-        </div>
-        <div>
-          <label for="category" class="block font-bold mb-3">Category</label>
-          <Select id="category" v-model="product.category_id" :options="categories" optionLabel="text" optionValue="value" placeholder="Select Category" fluid @update:modelValue="onCategoryChange" />
-        </div>
-        <div>
-          <label for="subcategory" class="block font-bold mb-3">Subcategory</label>
-          <Select id="subcategory" v-model="product.subcategory_id" :options="subcategories" optionLabel="text" optionValue="value" placeholder="Select Subcategory" fluid />
-        </div>
-        <div>
-          <label for="featured_image" class="block font-bold mb-3">Featured Image</label>
-          <FileUpload mode="basic" accept="image/*" :maxFileSize="10000000" customUpload @uploader="uploadFeaturedImage" chooseLabel="Upload Image" auto />
-        </div>
-        <div class="flex items-center gap-2">
-          <Checkbox id="is_active" v-model="product.is_active" :binary="true" />
-          <label for="is_active">Active</label>
-        </div>
+        </Dialog>
       </div>
-      <template #footer>
-        <Button label="Cancel" icon="pi pi-times" text @click="hideDialog" />
-        <Button label="Save" icon="pi pi-check" @click="saveProduct" />
-      </template>
-    </Dialog>
-    <Dialog v-model:visible="deleteProductDialog" :style="{ width: '450px' }" header="Confirm" :modal="true">
-      <div class="flex items-center gap-4">
-        <i class="pi pi-exclamation-triangle !text-3xl" />
-        <span v-if="product">Are you sure you want to delete <b>{{ product.name }}</b>?</span>
-      </div>
-      <template #footer>
-        <Button label="No" icon="pi pi-times" text @click="deleteProductDialog = false" severity="secondary" variant="text" />
-        <Button label="Yes" icon="pi pi-check" @click="deleteProduct" severity="danger" />
-      </template>
-    </Dialog>
-    <Dialog v-model:visible="deleteProductsDialog" :style="{ width: '450px' }" header="Confirm" :modal="true">
-      <div class="flex items-center gap-4">
-        <i class="pi pi-exclamation-triangle !text-3xl" />
-        <span>Are you sure you want to delete the selected items?</span>
-      </div>
-      <template #footer>
-        <Button label="No" icon="pi pi-times" text @click="deleteProductsDialog = false" severity="secondary" variant="text" />
-        <Button label="Yes" icon="pi pi-check" text @click="deleteSelectedProducts" severity="danger" />
-      </template>
-    </Dialog>
-  </div>
-  </b-card>
-</VerticalLayout>
+    </b-card>
+  </VerticalLayout>
 </template>
 <script setup>
 import { ref, onMounted, watch } from 'vue';
@@ -173,7 +370,7 @@ const subcategories = ref([]);
 const companiesList = ref([]);
 const typeOptions = [
   { value: 'Product', text: 'Product' },
-  { value: 'Service', text: 'Service' }
+  { value: 'Service', text: 'Service' },
 ];
 const first = ref(0);
 const rows = ref(10);
@@ -191,7 +388,7 @@ const filterSubcategories = ref([]);
 const activeOptions = [
   { value: null, text: 'All' },
   { value: true, text: 'Active' },
-  { value: false, text: 'Inactive' }
+  { value: false, text: 'Inactive' },
 ];
 
 onMounted(async () => {
@@ -204,12 +401,18 @@ onMounted(async () => {
 });
 
 const mapProduct = (p) => {
-  const subcatMap = new Map(categoriesWithSubs.value.flatMap(cat => cat.subcategories.map(sub => [sub.id, { id: sub.id, name: sub.name }])));
-  const companyMap = new Map(companiesList.value.map(c => [c.value, { id: c.value, name: c.text }]));
+  const subcatMap = new Map(
+    categoriesWithSubs.value.flatMap((cat) =>
+      cat.subcategories.map((sub) => [sub.id, { id: sub.id, name: sub.name }])
+    )
+  );
+  const companyMap = new Map(
+    companiesList.value.map((c) => [c.value, { id: c.value, name: c.text }])
+  );
   return {
     ...p,
     subcategory: subcatMap.get(p.subcategory) || { name: 'Unknown' },
-    company: companyMap.get(p.company) || { name: 'Unknown' }
+    company: companyMap.get(p.company) || { name: 'Unknown' },
   };
 };
 
@@ -217,7 +420,7 @@ async function fetchCategoriesWithSubcategories() {
   try {
     const res = await api.get('marketplaces/categories-with-subcategories/');
     categoriesWithSubs.value = res.data;
-    categories.value = res.data.map(c => ({ value: c.id, text: c.name }));
+    categories.value = res.data.map((c) => ({ value: c.id, text: c.name }));
   } catch {
     toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to load categories' });
   }
@@ -227,8 +430,8 @@ async function fetchCompanies() {
   if (auth.isSuperAdmin || auth.isStaffUser) {
     try {
       const list = await companiesService.list();
-      const arr = Array.isArray(list) ? list : list?.results ?? list ?? [];
-      companiesList.value = arr.map(c => ({ value: c.id, text: c.name }));
+      const arr = Array.isArray(list) ? list : (list?.results ?? list ?? []);
+      companiesList.value = arr.map((c) => ({ value: c.id, text: c.name }));
     } catch {
       toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to load companies' });
     }
@@ -245,7 +448,7 @@ async function loadData(event) {
   const page = Math.floor(first.value / rows.value) + 1;
   const params = {
     page,
-    page_size: rows.value
+    page_size: rows.value,
   };
   if (sortField.value) {
     params.ordering = (sortOrder.value === -1 ? '-' : '') + sortField.value;
@@ -299,10 +502,14 @@ async function saveProduct() {
     }
 
     if (product.value.id) {
-      await api.patch(`marketplaces/products/${product.value.id}/`, productData, { headers: { 'Content-Type': 'multipart/form-data' } });
+      await api.patch(`marketplaces/products/${product.value.id}/`, productData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
       toast.add({ severity: 'success', summary: 'Successful', detail: 'Updated' });
     } else {
-      await api.post('marketplaces/products/', productData, { headers: { 'Content-Type': 'multipart/form-data' } });
+      await api.post('marketplaces/products/', productData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
       toast.add({ severity: 'success', summary: 'Successful', detail: 'Created' });
     }
     productDialog.value = false;
@@ -314,11 +521,11 @@ async function saveProduct() {
 }
 
 const editProduct = (prod) => {
-  product.value = { 
-    ...prod, 
-    category_id: prod.category.id, 
-    subcategory_id: prod.subcategory ? prod.subcategory.id : null, 
-    company: prod.company ? prod.company.id : null 
+  product.value = {
+    ...prod,
+    category_id: prod.category.id,
+    subcategory_id: prod.subcategory ? prod.subcategory.id : null,
+    company: prod.company ? prod.company.id : null,
   };
   onCategoryChange(prod.category.id);
   productDialog.value = true;
@@ -379,22 +586,35 @@ const exportCSV = () => {
 
 function onCategoryChange(val) {
   const id = val || product.value.category_id;
-  const cat = categoriesWithSubs.value.find(c => c.id === id);
-  subcategories.value = cat ? cat.subcategories.map(sc => ({ value: sc.id, text: sc.name })) : [];
+  const cat = categoriesWithSubs.value.find((c) => c.id === id);
+  subcategories.value = cat ? cat.subcategories.map((sc) => ({ value: sc.id, text: sc.name })) : [];
 }
 
 function onFilterCategoryChange() {
-  const cat = categoriesWithSubs.value.find(c => c.id === filterCategory.value);
-  filterSubcategories.value = cat ? cat.subcategories.map(sc => ({ value: sc.id, text: sc.name })) : [];
+  const cat = categoriesWithSubs.value.find((c) => c.id === filterCategory.value);
+  filterSubcategories.value = cat
+    ? cat.subcategories.map((sc) => ({ value: sc.id, text: sc.name }))
+    : [];
   filterSubcategory.value = null;
 }
 
 watch(() => product.value.category_id, onCategoryChange);
 
-watch([filterCategory, filterSubcategory, filterType, filterActive, filterMinPrice, filterMaxPrice, filterCompanyLocation], () => {
-  first.value = 0;
-  loadData();
-});
+watch(
+  [
+    filterCategory,
+    filterSubcategory,
+    filterType,
+    filterActive,
+    filterMinPrice,
+    filterMaxPrice,
+    filterCompanyLocation,
+  ],
+  () => {
+    first.value = 0;
+    loadData();
+  }
+);
 
 function uploadFeaturedImage(event) {
   product.value.featured_image = event.files[0];

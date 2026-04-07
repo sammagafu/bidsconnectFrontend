@@ -1,5 +1,5 @@
 export function pascalCaseToKebabCase(str: string) {
-  return str.replace(/\B([A-Z])/g, '-$1').toLowerCase()
+  return str.replace(/\B([A-Z])/g, '-$1').toLowerCase();
 }
 
 export const snakeToTitleCase = (value: string) => {
@@ -7,17 +7,17 @@ export const snakeToTitleCase = (value: string) => {
     .split('_')
     .filter((x) => x.length > 0)
     .map((x) => x.charAt(0).toUpperCase() + x.slice(1))
-    .join(' ')
-}
+    .join(' ');
+};
 
 export const kebabToTitleCase = (value: string) => {
   return value
     .split('-')
     .filter((x) => x.length > 0)
     .map((x) => x.charAt(0).toUpperCase() + x.slice(1))
-    .join(' ')
-}
+    .join(' ');
+};
 
 export const toSentenceCase = (value: string) => {
-  return value.charAt(0).toUpperCase() + value.slice(1)
-}
+  return value.charAt(0).toUpperCase() + value.slice(1);
+};

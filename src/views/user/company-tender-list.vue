@@ -5,7 +5,12 @@
       <div class="filters mb-4 p-3 bg-body-tertiary rounded">
         <div class="row g-3 align-items-center">
           <div class="col-auto">
-            <input type="text" v-model="filters.keyword" class="form-control form-control-sm" placeholder="Search by keyword" />
+            <input
+              type="text"
+              v-model="filters.keyword"
+              class="form-control form-control-sm"
+              placeholder="Search by keyword"
+            />
           </div>
           <div class="col-auto">
             <select v-model="filters.category" class="form-select form-select-sm">
@@ -26,7 +31,11 @@
           <div class="col-auto">
             <select v-model="filters.tender_type_country" class="form-select form-select-sm">
               <option :value="null">All Country Types</option>
-              <option v-for="country in tenderTypeCountries" :key="country.value" :value="country.value">
+              <option
+                v-for="country in tenderTypeCountries"
+                :key="country.value"
+                :value="country.value"
+              >
                 {{ country.label }}
               </option>
             </select>
@@ -51,11 +60,15 @@
         <div v-for="tender in filteredTenders" :key="tender.id" class="border-bottom py-3">
           <div class="d-flex justify-content-between align-items-start">
             <div>
-              <router-link :to="{ name: 'company.tenders-detail', params: { slug: tender.slug } }" class="text-decoration-none">
+              <router-link
+                :to="{ name: 'company.tenders-detail', params: { slug: tender.slug } }"
+                class="text-decoration-none"
+              >
                 <h5 class="fw-bold text-dark mb-1">{{ tender.title }}</h5>
               </router-link>
               <p class="small text-muted mb-1">
-                {{ tender.agency?.name || 'Unknown Agency' }} | Ref: {{ tender.reference_number }} | Submission: {{ formatDate(tender.submission_deadline) }}
+                {{ tender.agency?.name || 'Unknown Agency' }} | Ref: {{ tender.reference_number }} |
+                Submission: {{ formatDate(tender.submission_deadline) }}
               </p>
               <div class="d-flex gap-2">
                 <span class="badge bg-success">{{ tender.tender_type_sector }}</span>
@@ -63,7 +76,10 @@
               </div>
             </div>
             <div>
-              <router-link :to="{ name: 'company.tenders-detail', params: { slug: tender.slug } }" class="btn btn-sm btn-outline-primary">
+              <router-link
+                :to="{ name: 'company.tenders-detail', params: { slug: tender.slug } }"
+                class="btn btn-sm btn-outline-primary"
+              >
                 <i class="bi bi-eye me-1"></i> View Details
               </router-link>
             </div>
@@ -110,7 +126,7 @@ onMounted(async () => {
 const fetchCategories = async () => {
   try {
     const data = await tendersService.getCategories();
-    categories.value = Array.isArray(data) ? data : data?.results ?? data ?? [];
+    categories.value = Array.isArray(data) ? data : (data?.results ?? data ?? []);
   } catch (error) {
     // Categories optional; tenders still load
   }
@@ -120,7 +136,7 @@ const fetchTenders = async () => {
   try {
     loading.value = true;
     const data = await tendersService.list({ status: 'published' });
-    tenders.value = Array.isArray(data) ? data : data?.results ?? data ?? [];
+    tenders.value = Array.isArray(data) ? data : (data?.results ?? data ?? []);
   } catch (error) {
     // Show via UI if needed: parseApiError(error)
   } finally {
@@ -129,7 +145,7 @@ const fetchTenders = async () => {
 };
 
 const filteredTenders = computed(() => {
-  return tenders.value.filter(tender => {
+  return tenders.value.filter((tender) => {
     const keywordMatch =
       !filters.value.keyword ||
       tender.title.toLowerCase().includes(filters.value.keyword.toLowerCase()) ||
@@ -137,7 +153,9 @@ const filteredTenders = computed(() => {
 
     const categoryMatch = !filters.value.category || tender.category?.id === filters.value.category;
     const statusMatch = !filters.value.status || tender.status === filters.value.status;
-    const countryMatch = !filters.value.tender_type_country || tender.tender_type_country === filters.value.tender_type_country;
+    const countryMatch =
+      !filters.value.tender_type_country ||
+      tender.tender_type_country === filters.value.tender_type_country;
 
     return keywordMatch && categoryMatch && statusMatch && countryMatch;
   });
@@ -156,11 +174,11 @@ const clearFilters = () => {
   };
 };
 
-const formatDate = dateStr => {
+const formatDate = (dateStr) => {
   return dateStr ? new Date(dateStr).toLocaleDateString() : 'N/A';
 };
 
-const getStatusClass = status => {
+const getStatusClass = (status) => {
   switch (status) {
     case 'published':
       return 'bg-success';

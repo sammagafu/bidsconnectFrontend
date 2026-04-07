@@ -4,7 +4,9 @@
       <div class="text-center">
         <img :src="avatar4" alt="shreyu" class="img-thumbnail avatar-lg rounded-circle mb-1" />
         <h4>Gilbert Chicoine</h4>
-        <b-button variant="primary" size="sm" class="mt-1"> <i class="bi bi-envelope me-1"></i>Send Email </b-button>
+        <b-button variant="primary" size="sm" class="mt-1">
+          <i class="bi bi-envelope me-1"></i>Send Email
+        </b-button>
         <p class="text-muted mt-2 fs-14">
           Last Interacted:
           <strong class="text-success">Online</strong>
@@ -70,10 +72,10 @@
 </template>
 
 <script setup lang="ts">
-import simplebar from 'simplebar-vue'
+import simplebar from 'simplebar-vue';
 
-import smallImg1 from '@/assets/images/small/img-1.jpg'
-import smallImg2 from '@/assets/images/small/img-2.jpg'
-import smallImg3 from '@/assets/images/small/img-3.jpg'
-import avatar4 from '@/assets/images/users/avatar-4.jpg'
+import smallImg1 from '@/assets/images/small/img-1.jpg';
+import smallImg2 from '@/assets/images/small/img-2.jpg';
+import smallImg3 from '@/assets/images/small/img-3.jpg';
+import avatar4 from '@/assets/images/users/avatar-4.jpg';
 </script>

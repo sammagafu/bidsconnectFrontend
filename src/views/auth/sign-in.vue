@@ -4,9 +4,16 @@
       <b-col xl="5">
         <b-card no-body class="auth-card">
           <b-card-body class="px-3 py-5">
-            <LogoBox customClass="mx-auto mb-4 text-center auth-logo" :smLogoHeight="30" :logoHeight="24" smLogoClass="me-1" />
+            <LogoBox
+              customClass="mx-auto mb-4 text-center auth-logo"
+              :smLogoHeight="30"
+              :logoHeight="24"
+              smLogoClass="me-1"
+            />
             <h2 class="fw-bold text-center fs-18">Sign In</h2>
-            <p class="text-muted text-center mt-1 mb-4">Enter your email address and password to access admin panel.</p>
+            <p class="text-muted text-center mt-1 mb-4">
+              Enter your email address and password to access admin panel.
+            </p>
 
             <div class="px-4">
               <b-form @submit.prevent="handleSignIn" class="authentication-form">
@@ -26,7 +33,10 @@
                   </div>
                 </b-form-group>
                 <div class="mb-3">
-                  <router-link :to="{ name: 'auth.reset-password' }" class="float-end text-muted text-underline-dashed ms-1">
+                  <router-link
+                    :to="{ name: 'auth.reset-password' }"
+                    class="float-end text-muted text-underline-dashed ms-1"
+                  >
                     Reset password
                   </router-link>
                   <label class="form-label" for="example-password">Password</label>
@@ -38,7 +48,11 @@
                       placeholder="Enter your password"
                       v-model="v.password.$model"
                     />
-                    <span class="position-absolute end-0 me-3" style="cursor: pointer;" @click="togglePassword">
+                    <span
+                      class="position-absolute end-0 me-3"
+                      style="cursor: pointer"
+                      @click="togglePassword"
+                    >
                       <i :class="showPassword ? 'pi pi-eye-slash' : 'pi pi-eye'" />
                     </span>
                   </div>
@@ -64,16 +78,25 @@
               <template v-if="enableSocialOAuth">
                 <p class="mt-3 fw-semibold no-span">OR sign with</p>
                 <div class="text-center">
-                  <a href="javascript:void(0);" class="btn btn-light shadow-none"><i class='bx bxl-google fs-20'></i></a>{{ ' ' }}
-                  <a href="javascript:void(0);" class="btn btn-light shadow-none"><i class='bx bxl-facebook fs-20'></i></a>{{ ' ' }}
-                  <a href="javascript:void(0);" class="btn btn-light shadow-none"><i class='bx bxl-github fs-20'></i></a>
+                  <a href="javascript:void(0);" class="btn btn-light shadow-none"
+                    ><i class="bx bxl-google fs-20"></i></a
+                  >{{ ' ' }}
+                  <a href="javascript:void(0);" class="btn btn-light shadow-none"
+                    ><i class="bx bxl-facebook fs-20"></i></a
+                  >{{ ' ' }}
+                  <a href="javascript:void(0);" class="btn btn-light shadow-none"
+                    ><i class="bx bxl-github fs-20"></i
+                  ></a>
                 </div>
               </template>
             </div>
           </b-card-body>
         </b-card>
         <p class="mb-0 text-center">
-          New here? <router-link :to="{ name: 'auth.sign-up' }" class="text-reset fw-bold ms-1">Sign Up</router-link>
+          New here?
+          <router-link :to="{ name: 'auth.sign-up' }" class="text-reset fw-bold ms-1"
+            >Sign Up</router-link
+          >
         </p>
       </b-col>
     </b-row>
@@ -147,7 +170,6 @@ const handleSignIn = async () => {
 
     const redirect = route.query.redirect || route.query.redirectedFrom;
     await router.push(redirect ? { path: redirect } : { path: '/' });
-
   } catch (err) {
     error.value = parseApiError(err) || 'Invalid credentials';
     toast.add({

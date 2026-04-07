@@ -4,7 +4,7 @@ import { useAuthStore } from '@/stores/auth';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
-  routes: allRoutes
+  routes: allRoutes,
 });
 
 router.beforeEach(async (to, from, next) => {
@@ -14,10 +14,10 @@ router.beforeEach(async (to, from, next) => {
   const authStore = useAuthStore();
   await authStore.initialize();
 
-  const authRequired = to.matched.some(route => route.meta.authRequired);
-  const requiresAdmin = to.matched.some(route => route.meta.requiresAdmin);
-  const requiresStaff = to.matched.some(route => route.meta.requiresStaff);
-  const requiresCompanyOwner = to.matched.some(route => route.meta.requiresCompanyOwner);
+  const authRequired = to.matched.some((route) => route.meta.authRequired);
+  const requiresAdmin = to.matched.some((route) => route.meta.requiresAdmin);
+  const requiresStaff = to.matched.some((route) => route.meta.requiresStaff);
+  const requiresCompanyOwner = to.matched.some((route) => route.meta.requiresCompanyOwner);
   const allowedRoles = to.meta.allowedRoles;
 
   // Authenticated user trying to access login → redirect to dashboard
@@ -34,7 +34,7 @@ router.beforeEach(async (to, from, next) => {
   if (!authStore.isAuthenticated) {
     return next({
       name: 'auth.sign-in',
-      query: { redirectedFrom: to.fullPath }
+      query: { redirectedFrom: to.fullPath },
     });
   }
 
@@ -53,14 +53,20 @@ router.beforeEach(async (to, from, next) => {
 
   // Check specific allowed roles if defined
   if (allowedRoles && allowedRoles.length > 0) {
-    const hasRole = allowedRoles.some(role => {
+    const hasRole = allowedRoles.some((role) => {
       switch (role) {
-        case 'superadmin': return authStore.isSuperAdmin;
-        case 'staff': return authStore.isStaffUser;
-        case 'company_owner': return authStore.isCompanyOwner;
-        case 'company_admin': return authStore.isCompanyAdmin;
-        case 'company_member': return authStore.isCompanyMember;
-        default: return false;
+        case 'superadmin':
+          return authStore.isSuperAdmin;
+        case 'staff':
+          return authStore.isStaffUser;
+        case 'company_owner':
+          return authStore.isCompanyOwner;
+        case 'company_admin':
+          return authStore.isCompanyAdmin;
+        case 'company_member':
+          return authStore.isCompanyMember;
+        default:
+          return false;
       }
     });
 

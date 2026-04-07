@@ -14,7 +14,9 @@
         <b-table-simple hover responsive class="mb-0 table-centered table-nowrap px-3">
           <b-thead>
             <b-tr>
-              <b-th v-for="(header, idx) in recentProjectsSummaryTableData.header" :key="idx">{{ header }}</b-th>
+              <b-th v-for="(header, idx) in recentProjectsSummaryTableData.header" :key="idx">{{
+                header
+              }}</b-th>
             </b-tr>
           </b-thead>
 
@@ -23,8 +25,17 @@
               <b-td>{{ item.project }}</b-td>
               <b-td>{{ item.client }}</b-td>
               <b-td class="avatar-group">
-                <a v-for="(member, idx) in item.team" :key="idx" href="javascript:void(0);" class="avatar-group-item">
-                  <img :src="member.avatar" alt="" class="img-fluid avatar-xs rounded-circle avatar-border" />
+                <a
+                  v-for="(member, idx) in item.team"
+                  :key="idx"
+                  href="javascript:void(0);"
+                  class="avatar-group-item"
+                >
+                  <img
+                    :src="member.avatar"
+                    alt=""
+                    class="img-fluid avatar-xs rounded-circle avatar-border"
+                  />
                 </a>
               </b-td>
               <b-td>{{ item.deadline }}</b-td>
@@ -42,6 +53,6 @@
 </template>
 
 <script setup lang="ts">
-import simplebar from 'simplebar-vue'
-import { recentProjectsSummaryTableData } from '@/views/widgets/components/data'
+import simplebar from 'simplebar-vue';
+import { recentProjectsSummaryTableData } from '@/views/widgets/components/data';
 </script>

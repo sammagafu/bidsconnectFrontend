@@ -19,10 +19,14 @@
           </thead>
           <tbody>
             <tr v-for="(item, idx) in topPages" :key="idx">
-              <td><a href="#" class="text-muted">{{ item.path }}</a></td>
+              <td>
+                <a href="#" class="text-muted">{{ item.path }}</a>
+              </td>
               <td>{{ item.views }}</td>
               <td>{{ item.avgTime }}</td>
-              <td><span :class="`badge badge-soft-${item.variant}`">{{ item.exitRate }}%</span></td>
+              <td>
+                <span :class="`badge badge-soft-${item.variant}`">{{ item.exitRate }}%</span>
+              </td>
             </tr>
           </tbody>
         </table>

@@ -21,7 +21,9 @@
           {{ truncate(data.item.outcome, 50) }}
         </template>
         <template #cell(amount_involved)="data">
-          {{ data.item.amount_involved ? `${data.item.amount_involved} ${data.item.currency}` : '—' }}
+          {{
+            data.item.amount_involved ? `${data.item.amount_involved} ${data.item.currency}` : '—'
+          }}
         </template>
         <template #cell(actions)="data">
           <b-button
@@ -48,7 +50,11 @@
     </b-card>
 
     <!-- Create/Edit Modal -->
-    <b-modal v-model="showDialog" :title="editing ? 'Edit Litigation' : 'New Litigation'" hide-footer>
+    <b-modal
+      v-model="showDialog"
+      :title="editing ? 'Edit Litigation' : 'New Litigation'"
+      hide-footer
+    >
       <b-form @submit.prevent="save">
         <div class="mb-3">
           <b-form-group
@@ -207,19 +213,19 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted, watch } from 'vue'
-import { useToast } from 'primevue/usetoast'
-import { useAuthStore } from '@/stores/auth'
-import { api } from '@/services/authService'
-import VerticalLayout from '@/layouts/VerticalLayout.vue'
+import { ref, reactive, onMounted, watch } from 'vue';
+import { useToast } from 'primevue/usetoast';
+import { useAuthStore } from '@/stores/auth';
+import { api } from '@/services/authService';
+import VerticalLayout from '@/layouts/VerticalLayout.vue';
 
-const toast = useToast()
-const authStore = useAuthStore()
-const companyId = ref(authStore.user?.companies?.[0]?.id || null)
+const toast = useToast();
+const authStore = useAuthStore();
+const companyId = ref(authStore.user?.companies?.[0]?.id || null);
 
-const items = ref([])
-const showDialog = ref(false)
-const editing = ref(false)
+const items = ref([]);
+const showDialog = ref(false);
+const editing = ref(false);
 
 // form model
 const form = reactive({
@@ -234,65 +240,75 @@ const form = reactive({
   currency: 'USD',
   proof: null,
   proof_url: null, // for display when editing
-})
+});
 
 // form errors
-const formErrors = reactive({})
+const formErrors = reactive({});
 
 // status dropdown options
 const statusOptions = [
   { value: 'pending', text: 'Pending' },
   { value: 'resolved', text: 'Resolved' },
   { value: 'dismissed', text: 'Dismissed' },
-]
+];
 
 const fields = [
   { key: 'index', label: 'No', thStyle: { width: '4em' } },
   { key: 'case_number', label: 'Case Number' },
   { key: 'description', label: 'Description' },
-  { key: 'status', label: 'Status', formatter: value => value ? value.charAt(0).toUpperCase() + value.slice(1) : '' },
+  {
+    key: 'status',
+    label: 'Status',
+    formatter: (value) => (value ? value.charAt(0).toUpperCase() + value.slice(1) : ''),
+  },
   { key: 'filed_date', label: 'Filed Date', formatter: 'formatDate' },
   { key: 'resolution_date', label: 'Resolution Date', formatter: 'formatDate' },
   { key: 'outcome', label: 'Outcome' },
   { key: 'amount_involved', label: 'Amount' },
   { key: 'uploaded_at', label: 'Uploaded At', formatter: 'formatDateTime' },
-  { key: 'actions', label: '', thStyle: { width: '8em' } }
-]
+  { key: 'actions', label: '', thStyle: { width: '8em' } },
+];
 
 function formatDate(value) {
-  if (!value) return '—'
-  const date = new Date(value)
-  return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })
+  if (!value) return '—';
+  const date = new Date(value);
+  return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
 }
 
 function formatDateTime(value) {
-  if (!value) return '—'
-  const date = new Date(value)
-  return date.toLocaleString('en-US', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })
+  if (!value) return '—';
+  const date = new Date(value);
+  return date.toLocaleString('en-US', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  });
 }
 
 function truncate(text, length) {
-  return text.length > length ? text.substring(0, length) + '...' : text
+  return text.length > length ? text.substring(0, length) + '...' : text;
 }
 
 async function fetchItems(id) {
-  if (!id) return
+  if (!id) return;
   try {
-    const { data } = await api.get(`accounts/companies/${id}/litigations/`)
-    items.value = data.map(item => ({
+    const { data } = await api.get(`accounts/companies/${id}/litigations/`);
+    items.value = data.map((item) => ({
       ...item,
-      proof_url: item.proof // assume serializer exposes proof url
-    }))
+      proof_url: item.proof, // assume serializer exposes proof url
+    }));
   } catch {
-    toast.add({ severity: 'error', summary: 'Error', detail: 'Could not load litigations.' })
+    toast.add({ severity: 'error', summary: 'Error', detail: 'Could not load litigations.' });
   }
 }
 
-onMounted(() => fetchItems(companyId.value))
-watch(companyId, fetchItems)
+onMounted(() => fetchItems(companyId.value));
+watch(companyId, fetchItems);
 
 function openNew() {
-  editing.value = false
+  editing.value = false;
   Object.assign(form, {
     id: null,
     case_number: '',
@@ -305,13 +321,13 @@ function openNew() {
     currency: 'USD',
     proof: null,
     proof_url: null,
-  })
-  Object.assign(formErrors, {})
-  showDialog.value = true
+  });
+  Object.assign(formErrors, {});
+  showDialog.value = true;
 }
 
 function onEdit(item) {
-  editing.value = true
+  editing.value = true;
   Object.assign(form, {
     id: item.id,
     case_number: item.case_number,
@@ -324,82 +340,86 @@ function onEdit(item) {
     currency: item.currency,
     proof: null, // reset file input
     proof_url: item.proof,
-  })
-  Object.assign(formErrors, {})
-  showDialog.value = true
+  });
+  Object.assign(formErrors, {});
+  showDialog.value = true;
 }
 
 async function save() {
-  formErrors.case_number = form.case_number ? undefined : 'Case number is required'
-  formErrors.description = form.description ? undefined : 'Description is required'
-  formErrors.filed_date = form.filed_date ? undefined : 'Filed date is required'
-  formErrors.status = form.status ? undefined : 'Status is required'
-  formErrors.resolution_date = undefined
-  formErrors.outcome = undefined
-  formErrors.amount_involved = undefined
-  formErrors.currency = undefined
+  formErrors.case_number = form.case_number ? undefined : 'Case number is required';
+  formErrors.description = form.description ? undefined : 'Description is required';
+  formErrors.filed_date = form.filed_date ? undefined : 'Filed date is required';
+  formErrors.status = form.status ? undefined : 'Status is required';
+  formErrors.resolution_date = undefined;
+  formErrors.outcome = undefined;
+  formErrors.amount_involved = undefined;
+  formErrors.currency = undefined;
 
   if (form.resolution_date && form.filed_date && form.resolution_date < form.filed_date) {
-    formErrors.resolution_date = 'Resolution date cannot be before filed date'
+    formErrors.resolution_date = 'Resolution date cannot be before filed date';
   }
   if (form.amount_involved !== null && form.amount_involved < 0) {
-    formErrors.amount_involved = 'Amount cannot be negative'
+    formErrors.amount_involved = 'Amount cannot be negative';
   }
   if (form.currency && form.currency.length > 10) {
-    formErrors.currency = 'Currency code too long'
+    formErrors.currency = 'Currency code too long';
   }
 
-  if (Object.values(formErrors).some(err => err)) {
-    toast.add({ severity: 'warn', summary: 'Validation Error', detail: 'Please fill all required fields correctly.' })
-    return
+  if (Object.values(formErrors).some((err) => err)) {
+    toast.add({
+      severity: 'warn',
+      summary: 'Validation Error',
+      detail: 'Please fill all required fields correctly.',
+    });
+    return;
   }
 
-  const base = `accounts/companies/${companyId.value}/litigations`
-  const formData = new FormData()
-  formData.append('case_number', form.case_number)
-  formData.append('description', form.description)
-  formData.append('status', form.status)
-  formData.append('filed_date', form.filed_date)
-  if (form.resolution_date) formData.append('resolution_date', form.resolution_date)
-  if (form.outcome) formData.append('outcome', form.outcome)
-  if (form.amount_involved !== null) formData.append('amount_involved', form.amount_involved)
-  formData.append('currency', form.currency)
-  if (form.proof instanceof File) formData.append('proof', form.proof)
+  const base = `accounts/companies/${companyId.value}/litigations`;
+  const formData = new FormData();
+  formData.append('case_number', form.case_number);
+  formData.append('description', form.description);
+  formData.append('status', form.status);
+  formData.append('filed_date', form.filed_date);
+  if (form.resolution_date) formData.append('resolution_date', form.resolution_date);
+  if (form.outcome) formData.append('outcome', form.outcome);
+  if (form.amount_involved !== null) formData.append('amount_involved', form.amount_involved);
+  formData.append('currency', form.currency);
+  if (form.proof instanceof File) formData.append('proof', form.proof);
 
   try {
-    let response
+    let response;
     if (editing.value) {
       response = await api.patch(`${base}/${form.id}/`, formData, {
-        headers: { 'Content-Type': 'multipart/form-data' }
-      })
-      toast.add({ severity: 'success', summary: 'Updated' })
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      toast.add({ severity: 'success', summary: 'Updated' });
     } else {
       response = await api.post(`${base}/`, formData, {
-        headers: { 'Content-Type': 'multipart/form-data' }
-      })
-      toast.add({ severity: 'success', summary: 'Created' })
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      toast.add({ severity: 'success', summary: 'Created' });
     }
-    showDialog.value = false
-    fetchItems(companyId.value)
+    showDialog.value = false;
+    fetchItems(companyId.value);
   } catch {
-    toast.add({ severity: 'error', summary: 'Error', detail: 'Save failed.' })
+    toast.add({ severity: 'error', summary: 'Error', detail: 'Save failed.' });
   }
 }
 
 async function onDelete(item) {
-  if (!confirm(`Delete litigation "${item.case_number}"?`)) return
-  const base = `accounts/companies/${companyId.value}/litigations`
+  if (!confirm(`Delete litigation "${item.case_number}"?`)) return;
+  const base = `accounts/companies/${companyId.value}/litigations`;
   try {
-    await api.delete(`${base}/${item.id}/`)
-    toast.add({ severity: 'success', summary: 'Deleted' })
-    fetchItems(companyId.value)
+    await api.delete(`${base}/${item.id}/`);
+    toast.add({ severity: 'success', summary: 'Deleted' });
+    fetchItems(companyId.value);
   } catch {
-    toast.add({ severity: 'error', summary: 'Error', detail: 'Delete failed.' })
+    toast.add({ severity: 'error', summary: 'Error', detail: 'Delete failed.' });
   }
 }
 
 function cancel() {
-  showDialog.value = false
+  showDialog.value = false;
 }
 </script>
 

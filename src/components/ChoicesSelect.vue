@@ -11,26 +11,26 @@
 </template>
 
 <script setup lang="ts">
-import Choices from 'choices.js'
+import Choices from 'choices.js';
 // import {type Options} from "choices.js/src/scripts/interfaces/options"
-import { onMounted } from 'vue'
+import { onMounted } from 'vue';
 
 type ChoicesSelectPropsType = {
-  id: string
-  label?: string
-  modelValue?: string
-  options?: { value: string | number; text: string }[]
-  choiceOptions?: object
-}
-const props = defineProps<ChoicesSelectPropsType>()
+  id: string;
+  label?: string;
+  modelValue?: string;
+  options?: { value: string | number; text: string }[];
+  choiceOptions?: object;
+};
+const props = defineProps<ChoicesSelectPropsType>();
 
-const emit = defineEmits(['update:modelValue'])
+const emit = defineEmits(['update:modelValue']);
 
 const updateValue = (e: Event) => {
-  emit('update:modelValue', (e.target as HTMLSelectElement).value)
-}
+  emit('update:modelValue', (e.target as HTMLSelectElement).value);
+};
 
 onMounted(() => {
-  const choices = new Choices(`#${props.id}`, { ...props.choiceOptions })
-})
+  const choices = new Choices(`#${props.id}`, { ...props.choiceOptions });
+});
 </script>

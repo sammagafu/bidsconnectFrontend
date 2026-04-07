@@ -3,8 +3,12 @@
     <b-row>
       <b-col cols="12">
         <UIComponentCard id="basic-wizard" title="Simple">
-          <form-wizard color="#1e84c4" back-button-text="Back To Previous" next-button-text="Next Step"
-            finish-button-text="Finish">
+          <form-wizard
+            color="#1e84c4"
+            back-button-text="Back To Previous"
+            next-button-text="Next Step"
+            finish-button-text="Finish"
+          >
             <tab-content title="Account">
               <h4 class="fs-16 fw-semibold mb-1">Account Information</h4>
               <p class="text-muted">Setup your account information</p>
@@ -24,13 +28,25 @@
 
                 <b-col lg="6">
                   <b-form-group class="mb-3" label="Password" label-for="basicPassworda">
-                    <b-form-input id="basicPassworda" type="password" placeholder="Enter Password" />
+                    <b-form-input
+                      id="basicPassworda"
+                      type="password"
+                      placeholder="Enter Password"
+                    />
                   </b-form-group>
                 </b-col>
 
                 <b-col lg="6">
-                  <b-form-group class="mb-3" label="Confirm Password" label-for="basicConfirmPassword">
-                    <b-form-input id="basicConfirmPassword" type="password" placeholder="Confirm a Password" />
+                  <b-form-group
+                    class="mb-3"
+                    label="Confirm Password"
+                    label-for="basicConfirmPassword"
+                  >
+                    <b-form-input
+                      id="basicConfirmPassword"
+                      type="password"
+                      placeholder="Confirm a Password"
+                    />
                   </b-form-group>
                 </b-col>
               </b-row>
@@ -44,16 +60,23 @@
                 <b-col cols="12">
                   <div class="avatar-lg mb-3">
                     <div
-                      class="avatar-title bg-body rounded-circle border border-3 border-dashed-light position-relative">
+                      class="avatar-title bg-body rounded-circle border border-3 border-dashed-light position-relative"
+                    >
                       <label for="imageInput" class="position-absolute end-0 bottom-0">
                         <div class="avatar-xs cursor-pointer">
-                          <span class="avatar-title bg-body-tertiary text-dark rounded-circle"><i
-                              class="bx bx-camera"></i></span>
+                          <span class="avatar-title bg-body-tertiary text-dark rounded-circle"
+                            ><i class="bx bx-camera"></i
+                          ></span>
                         </div>
                       </label>
                       <input class="hidden" type="file" id="imageInput" accept="image/*" />
 
-                      <img id="preview" :src="dummyAvatar" alt="Preview Img" class="rounded-circle img-fluid" />
+                      <img
+                        id="preview"
+                        :src="dummyAvatar"
+                        alt="Preview Img"
+                        class="rounded-circle img-fluid"
+                      />
                     </div>
                   </div>
 
@@ -78,7 +101,11 @@
 
                     <b-col md="6">
                       <b-form-group class="mb-3" label-for="basicCountry" label="Country">
-                        <b-form-select id="basicCountry" v-model="selectedCountry" :options="countryOptions" />
+                        <b-form-select
+                          id="basicCountry"
+                          v-model="selectedCountry"
+                          :options="countryOptions"
+                        />
                       </b-form-group>
                     </b-col>
                   </b-row>
@@ -105,7 +132,11 @@
 
                 <b-col lg="6">
                   <b-form-group class="mb-3" label-for="basicInstagramLink" label="GitHub">
-                    <b-form-input id="basicInstagramLink" type="text" placeholder="Instagram Link" />
+                    <b-form-input
+                      id="basicInstagramLink"
+                      type="text"
+                      placeholder="Instagram Link"
+                    />
                   </b-form-group>
                 </b-col>
 
@@ -122,7 +153,9 @@
                 <b-col cols="12">
                   <div class="text-center">
                     <div class="avatar-md mx-auto mb-3">
-                      <div class="avatar-title bg-primary bg-opacity-10 text-primary rounded-circle">
+                      <div
+                        class="avatar-title bg-primary bg-opacity-10 text-primary rounded-circle"
+                      >
                         <Icon icon="iconamoon:like-duotone" class="fs-36"></Icon>
                       </div>
                     </div>
@@ -143,8 +176,13 @@
         </UIComponentCard>
 
         <UIComponentCard id="custom-wizard" title="Custom Title">
-          <form-wizard shape="tab" color="#1e84c4" back-button-text="Back To Previous" next-button-text="Next Step"
-            finish-button-text="Finish">
+          <form-wizard
+            shape="tab"
+            color="#1e84c4"
+            back-button-text="Back To Previous"
+            next-button-text="Next Step"
+            finish-button-text="Finish"
+          >
             <tab-content custom-icon='<a class="nav-link fs-5"> Account </a>'>
               <h4 class="fs-16 fw-semibold mb-1">Account Information</h4>
               <p class="text-muted">Setup your account information</p>
@@ -164,13 +202,25 @@
 
                 <b-col lg="6">
                   <b-form-group class="mb-3" label="Password" label-for="basicPassworda">
-                    <b-form-input id="basicPassworda" type="password" placeholder="Enter Password" />
+                    <b-form-input
+                      id="basicPassworda"
+                      type="password"
+                      placeholder="Enter Password"
+                    />
                   </b-form-group>
                 </b-col>
 
                 <b-col lg="6">
-                  <b-form-group class="mb-3" label="Confirm Password" label-for="basicConfirmPassword">
-                    <b-form-input id="basicConfirmPassword" type="password" placeholder="Confirm a Password" />
+                  <b-form-group
+                    class="mb-3"
+                    label="Confirm Password"
+                    label-for="basicConfirmPassword"
+                  >
+                    <b-form-input
+                      id="basicConfirmPassword"
+                      type="password"
+                      placeholder="Confirm a Password"
+                    />
                   </b-form-group>
                 </b-col>
               </b-row>
@@ -184,7 +234,8 @@
                 <b-col cols="12">
                   <div class="avatar-lg mb-3">
                     <div
-                      class="avatar-title bg-body rounded-circle border border-3 border-dashed-light position-relative">
+                      class="avatar-title bg-body rounded-circle border border-3 border-dashed-light position-relative"
+                    >
                       <label for="imageInput" class="position-absolute end-0 bottom-0">
                         <div class="avatar-xs cursor-pointer">
                           <span class="avatar-title bg-body-tertiary text-dark rounded-circle">
@@ -194,7 +245,12 @@
                       </label>
                       <input class="hidden" type="file" id="imageInput" accept="image/*" />
 
-                      <img id="preview" :src="dummyAvatar" alt="Preview Img" class="rounded-circle img-fluid" />
+                      <img
+                        id="preview"
+                        :src="dummyAvatar"
+                        alt="Preview Img"
+                        class="rounded-circle img-fluid"
+                      />
                     </div>
                   </div>
 
@@ -219,7 +275,11 @@
 
                     <b-col md="6">
                       <b-form-group class="mb-3" label-for="basicCountry" label="Country">
-                        <b-form-select id="basicCountry" v-model="selectedCountry" :options="countryOptions" />
+                        <b-form-select
+                          id="basicCountry"
+                          v-model="selectedCountry"
+                          :options="countryOptions"
+                        />
                       </b-form-group>
                     </b-col>
                   </b-row>
@@ -246,7 +306,11 @@
 
                 <b-col lg="6">
                   <b-form-group class="mb-3" label-for="basicInstagramLink" label="GitHub">
-                    <b-form-input id="basicInstagramLink" type="text" placeholder="Instagram Link" />
+                    <b-form-input
+                      id="basicInstagramLink"
+                      type="text"
+                      placeholder="Instagram Link"
+                    />
                   </b-form-group>
                 </b-col>
 
@@ -263,7 +327,9 @@
                 <b-col cols="12">
                   <div class="text-center">
                     <div class="avatar-md mx-auto mb-3">
-                      <div class="avatar-title bg-primary bg-opacity-10 text-primary rounded-circle">
+                      <div
+                        class="avatar-title bg-primary bg-opacity-10 text-primary rounded-circle"
+                      >
                         <Icon icon="iconamoon:like-duotone" class="fs-36"></Icon>
                       </div>
                     </div>
@@ -288,8 +354,8 @@
 </template>
 
 <script setup lang="ts">
-import VerticalLayout from "@/layouts/VerticalLayout.vue";
-import UIComponentCard from "@/components/UIComponentCard.vue";
+import VerticalLayout from '@/layouts/VerticalLayout.vue';
+import UIComponentCard from '@/components/UIComponentCard.vue';
 
 import { ref } from 'vue';
 
@@ -297,7 +363,7 @@ import { FormWizard, TabContent } from 'vue3-form-wizard';
 import 'vue3-form-wizard/dist/style.css';
 
 import dummyAvatar from '@/assets/images/users/dummy-avatar.jpg';
-import { Icon } from "@iconify/vue";
+import { Icon } from '@iconify/vue';
 
 const selectedCountry = ref('United States');
 
@@ -315,6 +381,6 @@ const countryOptions = [
   { value: 'Brazil', text: 'Brazil' },
   { value: 'Belgium', text: 'Belgium' },
   { value: 'Colombia', text: 'Colombia' },
-  { value: 'Albania', text: 'Albania' }
+  { value: 'Albania', text: 'Albania' },
 ];
 </script>

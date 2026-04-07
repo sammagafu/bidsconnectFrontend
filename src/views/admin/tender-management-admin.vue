@@ -8,44 +8,27 @@
             <b-button size="sm" variant="outline-success" @click="exportCSV">
               <i class="bx bx-file"></i> CSV
             </b-button>
-            <b-button
-              size="sm"
-              variant="outline-primary"
-              @click="goToCreate"
-            >
+            <b-button size="sm" variant="outline-primary" @click="goToCreate">
               <i class="bx bx-plus"></i> New
             </b-button>
           </div>
         </b-card-header>
 
         <b-card-body class="p-0">
-          <b-table
-            :items="tenders"
-            :fields="fields"
-            responsive
-            striped
-            hover
-            small
-            class="mb-0"
-          >
+          <b-table :items="tenders" :fields="fields" responsive striped hover small class="mb-0">
             <template #cell(title)="row">
-              <router-link :to="{ name: 'admin.tenders-detail', params: { slug: row.item.slug } }" class="text-decoration-none text-primary">
+              <router-link
+                :to="{ name: 'admin.tenders-detail', params: { slug: row.item.slug } }"
+                class="text-decoration-none text-primary"
+              >
                 {{ row.item.title }}
               </router-link>
             </template>
 
             <template #cell(status)="row">
               <div class="d-flex align-items-center gap-2">
-                <b-form-select
-                  v-model="row.item.status"
-                  :options="statusOptions"
-                  size="sm"
-                />
-                <b-button
-                  size="sm"
-                  variant="secondary"
-                  @click="changeState(row.item)"
-                >
+                <b-form-select v-model="row.item.status" :options="statusOptions" size="sm" />
+                <b-button size="sm" variant="secondary" @click="changeState(row.item)">
                   Update
                 </b-button>
               </div>
@@ -94,117 +77,133 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
-import { tendersService, parseApiError } from '@/services'
-import VerticalLayout from '@/layouts/VerticalLayout.vue'
-import { useToast } from 'primevue/usetoast'
+import { ref, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
+import { tendersService, parseApiError } from '@/services';
+import VerticalLayout from '@/layouts/VerticalLayout.vue';
+import { useToast } from 'primevue/usetoast';
 
-const toast = useToast()
-const router = useRouter()
-const tenders = ref([])
+const toast = useToast();
+const router = useRouter();
+const tenders = ref([]);
 
 const statusOptions = [
-  { text: 'Draft',             value: 'draft' },
-  { text: 'Pending Approval',  value: 'pending' },
-  { text: 'Published',         value: 'published' },
-  { text: 'Under Evaluation',  value: 'evaluation' },
-  { text: 'Awarded',           value: 'awarded' },
-  { text: 'Closed',            value: 'closed' },
-  { text: 'Canceled',          value: 'canceled' },
-]
+  { text: 'Draft', value: 'draft' },
+  { text: 'Pending Approval', value: 'pending' },
+  { text: 'Published', value: 'published' },
+  { text: 'Under Evaluation', value: 'evaluation' },
+  { text: 'Awarded', value: 'awarded' },
+  { text: 'Closed', value: 'closed' },
+  { text: 'Canceled', value: 'canceled' },
+];
 
 const fields = [
-  { key: 'title',             label: 'Title',            sortable: true },
-  { key: 'reference_number',  label: 'Reference #',      sortable: true },
-  { key: 'status',            label: 'Status',           sortable: true },
-  { key: 'publication_date',  label: 'Publication Date', sortable: true },
-  { key: 'actions',           label: 'Actions',          thStyle: { width: '12rem' } },
-]
+  { key: 'title', label: 'Title', sortable: true },
+  { key: 'reference_number', label: 'Reference #', sortable: true },
+  { key: 'status', label: 'Status', sortable: true },
+  { key: 'publication_date', label: 'Publication Date', sortable: true },
+  { key: 'actions', label: 'Actions', thStyle: { width: '12rem' } },
+];
 
-onMounted(fetchTenders)
+onMounted(fetchTenders);
 
 async function fetchTenders() {
   try {
-    const data = await tendersService.list()
-    tenders.value = Array.isArray(data) ? data : data?.results ?? data ?? []
+    const data = await tendersService.list();
+    tenders.value = Array.isArray(data) ? data : (data?.results ?? data ?? []);
   } catch (e) {
-    toast.add({ severity:'error', summary:'Error', detail: parseApiError(e) || 'Could not load tenders.' })
+    toast.add({
+      severity: 'error',
+      summary: 'Error',
+      detail: parseApiError(e) || 'Could not load tenders.',
+    });
   }
 }
 
 function formatDate(d) {
-  return d ? new Date(d).toLocaleDateString() : '-'
+  return d ? new Date(d).toLocaleDateString() : '-';
 }
 
 async function changeState(t) {
-  const prev = t.status
+  const prev = t.status;
   try {
-    await tendersService.updateStatus(t.slug, t.status)
-    toast.add({ severity:'success', summary:'Updated', detail:`Status changed to ${t.status}` })
+    await tendersService.updateStatus(t.slug, t.status);
+    toast.add({ severity: 'success', summary: 'Updated', detail: `Status changed to ${t.status}` });
   } catch (e) {
-    t.status = prev
-    toast.add({ severity:'error', summary:'Error', detail: parseApiError(e) || 'Failed to change state.' })
+    t.status = prev;
+    toast.add({
+      severity: 'error',
+      summary: 'Error',
+      detail: parseApiError(e) || 'Failed to change state.',
+    });
   }
 }
 
 async function confirmDelete(t) {
-  if (!confirm(`Delete tender "${t.title}"?`)) return
+  if (!confirm(`Delete tender "${t.title}"?`)) return;
   try {
-    await tendersService.delete(t.slug)
-    toast.add({ severity:'success', summary:'Deleted', detail:'Tender removed.' })
-    await fetchTenders()
+    await tendersService.delete(t.slug);
+    toast.add({ severity: 'success', summary: 'Deleted', detail: 'Tender removed.' });
+    await fetchTenders();
   } catch (e) {
-    toast.add({ severity:'error', summary:'Error', detail: parseApiError(e) || 'Failed to delete tender.' })
+    toast.add({
+      severity: 'error',
+      summary: 'Error',
+      detail: parseApiError(e) || 'Failed to delete tender.',
+    });
   }
 }
 
 // ——— Navigation ————————————————————————————————————————————————————
 
 function goToCreate() {
-  router.push({ name: 'admin.tenders-create' })
+  router.push({ name: 'admin.tenders-create' });
 }
 
 function goToEdit(item) {
   router.push({
     name: 'admin.tenders-edit',
-    params: { slug: item.slug }
-  })
+    params: { slug: item.slug },
+  });
 }
 
 function goToDetail(item) {
   router.push({
     name: 'admin.tenders-detail',
-    params: { slug: item.slug }
-  })
+    params: { slug: item.slug },
+  });
 }
 
 // ——— CSV Export —————————————————————————————————————————————————————
 
 function exportCSV() {
   if (!tenders.value.length) {
-    toast.add({ severity:'warn', summary:'No data', detail:'Nothing to export.'})
-    return
+    toast.add({ severity: 'warn', summary: 'No data', detail: 'Nothing to export.' });
+    return;
   }
-  const header = ['Title','Reference #','Status','Publication Date']
-  const rows = tenders.value.map(t => [
-    `"${t.title.replace(/"/g,'""')}"`,
+  const header = ['Title', 'Reference #', 'Status', 'Publication Date'];
+  const rows = tenders.value.map((t) => [
+    `"${t.title.replace(/"/g, '""')}"`,
     `"${t.reference_number}"`,
     `"${t.status}"`,
-    `"${formatDate(t.publication_date)}"`
-  ])
-  const csv = [header.join(','), ...rows.map(r=>r.join(','))].join('\r\n')
-  const blob = new Blob([csv], { type:'text/csv;charset=utf-8;' })
-  const link = document.createElement('a')
-  link.href = URL.createObjectURL(blob)
-  link.setAttribute('download','tenders.csv')
-  document.body.appendChild(link)
-  link.click()
-  document.body.removeChild(link)
+    `"${formatDate(t.publication_date)}"`,
+  ]);
+  const csv = [header.join(','), ...rows.map((r) => r.join(','))].join('\r\n');
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.setAttribute('download', 'tenders.csv');
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
 }
 </script>
 
 <style scoped>
-.mb-4 { margin-bottom: 1.5rem; }
-.gap-2 { gap: .5rem; }
+.mb-4 {
+  margin-bottom: 1.5rem;
+}
+.gap-2 {
+  gap: 0.5rem;
+}
 </style>

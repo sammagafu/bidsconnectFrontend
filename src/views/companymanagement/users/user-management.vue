@@ -6,11 +6,11 @@
           <!-- Show invitation form if the user has a company -->
           <div v-if="hasCompany">
             <!-- Company Details -->
-             <div class="py-2">
-                <h2 class="display-2 fw-bolder">{{ company.name }}</h2>
-                <p class="fs-3">{{ company.description }}</p>
-             </div>
-             <hr>
+            <div class="py-2">
+              <h2 class="display-2 fw-bolder">{{ company.name }}</h2>
+              <p class="fs-3">{{ company.description }}</p>
+            </div>
+            <hr />
             <!-- Invite User Section -->
             <h3 class="mt-4">Invite User to {{ company.name }}</h3>
             <b-form @submit.prevent="sendInvitation" class="mb-4">
@@ -27,11 +27,7 @@
                 </b-col>
                 <b-col md="4">
                   <b-form-group label="Role">
-                    <b-form-select
-                      v-model="invitationForm.role"
-                      :options="roleOptions"
-                      required
-                    />
+                    <b-form-select v-model="invitationForm.role" :options="roleOptions" required />
                   </b-form-group>
                 </b-col>
                 <b-col md="2" class="d-flex align-items-end">
@@ -70,14 +66,12 @@
 
           <!-- Show house icon and "Add a Company" button if no company -->
           <div v-else class="text-center mt-5">
-            <i class="pi pi-home" style="font-size: 5rem; color: var(--bs-secondary-color);"></i>
+            <i class="pi pi-home" style="font-size: 5rem; color: var(--bs-secondary-color)"></i>
             <h3 class="mt-3">No Company Found</h3>
-            <p class="text-muted">You don’t have a company yet. Create one to start managing users.</p>
-            <b-button
-              variant="primary"
-              @click="goToCreateCompany"
-              class="mt-3"
-            >
+            <p class="text-muted">
+              You don’t have a company yet. Create one to start managing users.
+            </p>
+            <b-button variant="primary" @click="goToCreateCompany" class="mt-3">
               Add a Company
             </b-button>
           </div>
@@ -88,7 +82,7 @@
 </template>
 
 <script setup>
-import VerticalLayout from "@/layouts/VerticalLayout.vue";
+import VerticalLayout from '@/layouts/VerticalLayout.vue';
 import { ref, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { companiesService, parseApiError } from '@/services';
@@ -121,7 +115,11 @@ const roleOptions = [
 // Invitation table fields
 const invitationFields = [
   { key: 'invited_email', label: 'Email' },
-  { key: 'role', label: 'Role', formatter: value => value.charAt(0).toUpperCase() + value.slice(1) },
+  {
+    key: 'role',
+    label: 'Role',
+    formatter: (value) => value.charAt(0).toUpperCase() + value.slice(1),
+  },
   { key: 'expires_at', label: 'Expires At' },
   { key: 'actions', label: 'Actions' },
 ];
@@ -147,7 +145,7 @@ onMounted(async () => {
       return;
     }
 
-    const storedCompany = authStore.user.companies.find(c => c.id === companyId);
+    const storedCompany = authStore.user.companies.find((c) => c.id === companyId);
 
     if (storedCompany) {
       // Company found in storage
@@ -172,7 +170,7 @@ onMounted(async () => {
 // Fetch pending invitations for the company
 const fetchPendingInvitations = async (companyId) => {
   try {
-    pendingInvitations.value = await companiesService.listInvitations(companyId) || [];
+    pendingInvitations.value = (await companiesService.listInvitations(companyId)) || [];
   } catch (error) {
     toast.add({
       severity: 'error',

@@ -25,7 +25,7 @@ const initialTender = () => ({
   tender_security_percentage: null,
   tender_security_amount: null,
   tender_security_currency: 'TZS',
-  version: 1
+  version: 1,
 });
 
 export const useTenderStore = defineStore('tender', {
@@ -33,13 +33,21 @@ export const useTenderStore = defineStore('tender', {
     tender: initialTender(),
     step: 1,
     selectedAgencyName: '',
-    requiredDocuments: [{ selectedName: '', customName: '', description: '', document_type: 'other', is_required: true }],
+    requiredDocuments: [
+      {
+        selectedName: '',
+        customName: '',
+        description: '',
+        document_type: 'other',
+        is_required: true,
+      },
+    ],
     financialRequirements: [],
     turnoverRequirements: [],
     experienceRequirements: [],
     personnelRequirements: [],
     scheduleItems: [],
-    technicalSpecifications: []
+    technicalSpecifications: [],
   }),
 
   actions: {
@@ -53,7 +61,15 @@ export const useTenderStore = defineStore('tender', {
       this.tender = initialTender();
       this.step = 1;
       this.selectedAgencyName = '';
-      this.requiredDocuments = [{ selectedName: '', customName: '', description: '', document_type: 'other', is_required: true }];
+      this.requiredDocuments = [
+        {
+          selectedName: '',
+          customName: '',
+          description: '',
+          document_type: 'other',
+          is_required: true,
+        },
+      ];
       this.financialRequirements = [];
       this.turnoverRequirements = [];
       this.experienceRequirements = [];
@@ -62,7 +78,13 @@ export const useTenderStore = defineStore('tender', {
       this.technicalSpecifications = [];
     },
     addDocument() {
-      this.requiredDocuments.push({ selectedName: '', customName: '', description: '', document_type: 'other', is_required: true });
+      this.requiredDocuments.push({
+        selectedName: '',
+        customName: '',
+        description: '',
+        document_type: 'other',
+        is_required: true,
+      });
     },
     removeDocument(idx) {
       this.requiredDocuments.splice(idx, 1);
@@ -79,7 +101,7 @@ export const useTenderStore = defineStore('tender', {
         start_date: null,
         end_date: null,
         jv_compliance: 'combined',
-        jv_percentage: null
+        jv_percentage: null,
       });
     },
     removeFinancialRequirement(idx) {
@@ -93,7 +115,7 @@ export const useTenderStore = defineStore('tender', {
         start_date: null,
         end_date: null,
         jv_compliance: 'combined',
-        jv_percentage: null
+        jv_percentage: null,
       });
     },
     removeTurnoverRequirement(idx) {
@@ -111,7 +133,7 @@ export const useTenderStore = defineStore('tender', {
         jv_compliance: 'combined',
         jv_percentage: null,
         jv_aggregation_note: '',
-        reputation_notes: ''
+        reputation_notes: '',
       });
     },
     removeExperienceRequirement(idx) {
@@ -131,7 +153,7 @@ export const useTenderStore = defineStore('tender', {
         specialized_education: '',
         professional_certifications: '',
         jv_compliance: 'combined',
-        notes: ''
+        notes: '',
       });
     },
     removePersonnelRequirement(idx) {
@@ -143,7 +165,7 @@ export const useTenderStore = defineStore('tender', {
         code: '',
         unit: '',
         quantity: null,
-        specification: ''
+        specification: '',
       });
     },
     removeScheduleItem(idx) {
@@ -152,12 +174,12 @@ export const useTenderStore = defineStore('tender', {
     addTechnicalSpecification() {
       this.technicalSpecifications.push({
         category: 'service',
-        description: ''
+        description: '',
       });
     },
     removeTechnicalSpecification(idx) {
       this.technicalSpecifications.splice(idx, 1);
-    }
+    },
   },
 
   // Persist into localStorage under "tender-store"
@@ -177,9 +199,9 @@ export const useTenderStore = defineStore('tender', {
           'experienceRequirements',
           'personnelRequirements',
           'scheduleItems',
-          'technicalSpecifications'
-        ]
-      }
-    ]
-  }
+          'technicalSpecifications',
+        ],
+      },
+    ],
+  },
 });

@@ -72,23 +72,34 @@ async function fetchItem() {
 }
 
 function generatePDF() {
-  api.get(`automation/power-of-attorney/${route.params.id}/`, { responseType: 'blob' }).then(response => {
-    const blob = new Blob([response.data], { type: 'application/pdf' });
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.download = 'power_of_attorney.pdf';
-    link.click();
-    URL.revokeObjectURL(link.href);
-  }).catch(err => {
-    toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to generate PDF' });
-  });
+  api
+    .get(`automation/power-of-attorney/${route.params.id}/`, { responseType: 'blob' })
+    .then((response) => {
+      const blob = new Blob([response.data], { type: 'application/pdf' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = 'power_of_attorney.pdf';
+      link.click();
+      URL.revokeObjectURL(link.href);
+    })
+    .catch((err) => {
+      toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to generate PDF' });
+    });
 }
 
 onMounted(fetchItem);
 </script>
 
 <style scoped>
-.p-field { margin-bottom: 1.5rem; padding: 0.5rem; }
-.p-field label { display: block; margin-bottom: 0.5rem; }
-.p-field p { margin: 0; }
+.p-field {
+  margin-bottom: 1.5rem;
+  padding: 0.5rem;
+}
+.p-field label {
+  display: block;
+  margin-bottom: 0.5rem;
+}
+.p-field p {
+  margin: 0;
+}
 </style>

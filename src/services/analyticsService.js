@@ -13,6 +13,6 @@ export const analyticsService = {
    * period: e.g. '30d'
    */
   getDashboard(params = {}) {
-    return api.get('analytics/', { params }).then(r => r.data);
+    return api.get('analytics/', { params }).then((r) => r.data);
   },
 };

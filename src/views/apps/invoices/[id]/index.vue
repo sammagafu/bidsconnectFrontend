@@ -11,8 +11,8 @@
                   <img class="logo-light me-1" :src="logoLight" alt="logo-dark" height="24" />
                 </div>
                 <address class="mt-3">
-                  1729 Bangor St,<br>
-                  Houlton, ME, 04730 <br>
+                  1729 Bangor St,<br />
+                  Houlton, ME, 04730 <br />
                   <abbr title="Phone">P:</abbr> (207) 532-9109
                 </address>
               </div>
@@ -24,10 +24,10 @@
             <b-row class="mt-3">
               <b-col md="6">
                 <h6 class="fw-normal text-muted">Customer</h6>
-                <h6 class="fs-16"> Glenn H Smith</h6>
+                <h6 class="fs-16">Glenn H Smith</h6>
                 <address>
-                  135 White Cemetery Rd,<br>
-                  Perryville, KY, 40468<br>
+                  135 White Cemetery Rd,<br />
+                  Perryville, KY, 40468<br />
                   <abbr title="Phone">P:</abbr> (304) 584-4345
                 </address>
               </b-col>
@@ -82,20 +82,21 @@
                   <h6 class="text-muted">Notes:</h6>
 
                   <small class="text-muted">
-                    All accounts are to be paid within 7 days from receipt of
-                    invoice. To be paid by cheque or credit card or direct payment
-                    online. If account is not paid within 7 days the credits details
-                    supplied as confirmation of work undertaken will be charged the
-                    agreed quoted fee noted above.
+                    All accounts are to be paid within 7 days from receipt of invoice. To be paid by
+                    cheque or credit card or direct payment online. If account is not paid within 7
+                    days the credits details supplied as confirmation of work undertaken will be
+                    charged the agreed quoted fee noted above.
                   </small>
                 </div>
               </b-col>
               <b-col sm="5">
                 <div class="float-end">
-                  <p><span class="fw-medium">Sub-total :</span>
+                  <p>
+                    <span class="fw-medium">Sub-total :</span>
                     <span class="float-end">{{ currency }}2266.59</span>
                   </p>
-                  <p><span class="fw-medium">Discount (10%) :</span>
+                  <p>
+                    <span class="fw-medium">Discount (10%) :</span>
                     <span class="float-end"> &nbsp;&nbsp;&nbsp; {{ currency }}226.659</span>
                   </p>
                   <h3>{{ currency }}2039.931 USD</h3>
@@ -117,7 +118,7 @@
   </VerticalLayout>
 </template>
 <script setup lang="ts">
-import VerticalLayout from "@/layouts/VerticalLayout.vue";
+import VerticalLayout from '@/layouts/VerticalLayout.vue';
 import logoDark from '@/assets/images/logo-dark-full.png';
 import logoLight from '@/assets/images/logo-light-full.png';
 import { currency } from '@/helpers/constants';

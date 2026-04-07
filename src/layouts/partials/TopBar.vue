@@ -6,14 +6,24 @@
           <!-- Menu Toggle Button -->
           <div class="topbar-item">
             <button type="button" class="button-toggle-menu topbar-button">
-              <Icon icon="solar:hamburger-menu-broken" class="fs-24 align-middle" @click="toggleLeftSideBar" />
+              <Icon
+                icon="solar:hamburger-menu-broken"
+                class="fs-24 align-middle"
+                @click="toggleLeftSideBar"
+              />
             </button>
           </div>
 
           <!-- App Search-->
           <form class="app-search d-none d-md-block me-auto">
             <div class="position-relative">
-              <input type="search" class="form-control" placeholder="Search..." autocomplete="off" value="">
+              <input
+                type="search"
+                class="form-control"
+                placeholder="Search..."
+                autocomplete="off"
+                value=""
+              />
               <Icon icon="solar:magnifer-broken" class="search-widget-icon" />
             </div>
           </form>
@@ -30,41 +40,74 @@
 
           <!-- Category -->
           <div class="dropdown topbar-item d-none d-lg-flex">
-            <button type="button" class="topbar-button" data-toggle="fullscreen" @click="toggleFullScreen">
+            <button
+              type="button"
+              class="topbar-button"
+              data-toggle="fullscreen"
+              @click="toggleFullScreen"
+            >
               <Icon icon="solar:full-screen-broken" class="fs-24 align-middle fullscreen" />
-              <Icon icon="solar:quit-full-screen-broken" class="fs-24 align-middle quit-fullscreen" />
+              <Icon
+                icon="solar:quit-full-screen-broken"
+                class="fs-24 align-middle quit-fullscreen"
+              />
             </button>
           </div>
 
           <!-- Notification -->
           <DropDown class="topbar-item" :title="`${unreadCount} unread`">
-            <button type="button" class="topbar-button position-relative" id="page-header-notifications-dropdown"
-              data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" @click="fetchNotifications">
+            <button
+              type="button"
+              class="topbar-button position-relative"
+              id="page-header-notifications-dropdown"
+              data-bs-toggle="dropdown"
+              aria-haspopup="true"
+              aria-expanded="false"
+              @click="fetchNotifications"
+            >
               <Icon icon="solar:bell-bing-broken" class="fs-24 align-middle" />
-              <span v-if="unreadCount > 0" class="position-absolute topbar-badge fs-10 translate-middle badge bg-danger rounded-pill">{{ unreadCount }}<span class="visually-hidden">unread messages</span></span>
+              <span
+                v-if="unreadCount > 0"
+                class="position-absolute topbar-badge fs-10 translate-middle badge bg-danger rounded-pill"
+                >{{ unreadCount }}<span class="visually-hidden">unread messages</span></span
+              >
             </button>
-            <div class="dropdown-menu py-0 dropdown-lg dropdown-menu-end"
-              aria-labelledby="page-header-notifications-dropdown">
+            <div
+              class="dropdown-menu py-0 dropdown-lg dropdown-menu-end"
+              aria-labelledby="page-header-notifications-dropdown"
+            >
               <div class="p-3 border-top-0 border-start-0 border-end-0 border-dashed border">
                 <b-row class="align-items-center">
                   <div class="col">
-                    <h6 class="m-0 fs-16 fw-semibold"> Notifications</h6>
+                    <h6 class="m-0 fs-16 fw-semibold">Notifications</h6>
                   </div>
                   <div class="col-auto">
-                    <a v-if="unreadCount > 0" href="javascript:void(0);" class="text-body text-decoration-underline" @click.prevent="markAllAsRead">
+                    <a
+                      v-if="unreadCount > 0"
+                      href="javascript:void(0);"
+                      class="text-body text-decoration-underline"
+                      @click.prevent="markAllAsRead"
+                    >
                       <small>Clear All</small>
                     </a>
                   </div>
                 </b-row>
               </div>
-              <simplebar data-simplebar style="max-height: 280px;">
-                <a v-for="(item, idx) in notifications" :key="item.id || idx" href="javascript:void(0);"
-                  class="dropdown-item py-3 border-bottom text-wrap" :class="{ 'bg-light': !item.is_read }"
-                  @click="handleNotificationClick(item)">
+              <simplebar data-simplebar style="max-height: 280px">
+                <a
+                  v-for="(item, idx) in notifications"
+                  :key="item.id || idx"
+                  href="javascript:void(0);"
+                  class="dropdown-item py-3 border-bottom text-wrap"
+                  :class="{ 'bg-light': !item.is_read }"
+                  @click="handleNotificationClick(item)"
+                >
                   <div class="d-flex">
                     <div class="flex-shrink-0">
                       <div v-if="item.icon" class="avatar-sm me-2">
-                        <span class="avatar-title bg-soft-warning text-warning fs-20 rounded-circle">
+                        <span
+                          class="avatar-title bg-soft-warning text-warning fs-20 rounded-circle"
+                        >
                           <Icon :icon="item.icon" />
                         </span>
                       </div>
@@ -78,7 +121,9 @@
                       <p v-if="item.title" class="mb-0 fw-semibold text-wrap">{{ item.title }}</p>
                       <p v-if="item.content" class="mb-0 text-wrap">{{ item.content }}</p>
                       <p v-if="item.message" class="mb-0 text-wrap">{{ item.message }}</p>
-                      <small v-if="item.created_at" class="text-muted">{{ formatDate(item.created_at) }}</small>
+                      <small v-if="item.created_at" class="text-muted">{{
+                        formatDate(item.created_at)
+                      }}</small>
                     </div>
                   </div>
                 </a>
@@ -94,32 +139,48 @@
 
           <!-- Theme Setting -->
           <div class="topbar-item d-none d-md-flex">
-            <button type="button" class="topbar-button" id="theme-settings-btn" v-b-toggle="'theme-settings'">
+            <button
+              type="button"
+              class="topbar-button"
+              id="theme-settings-btn"
+              v-b-toggle="'theme-settings'"
+            >
               <Icon icon="solar:settings-broken" class="fs-24 align-middle" />
             </button>
           </div>
 
           <!-- User -->
           <DropDown class="topbar-item">
-            <a type="button" class="topbar-button" id="page-header-user-dropdown" data-bs-toggle="dropdown"
-              aria-haspopup="true" aria-expanded="false">
+            <a
+              type="button"
+              class="topbar-button"
+              id="page-header-user-dropdown"
+              data-bs-toggle="dropdown"
+              aria-haspopup="true"
+              aria-expanded="false"
+            >
               <span class="d-flex align-items-center">
-                <img class="rounded-circle" width="32" :src="avatar1" alt="avatar-1">
+                <img class="rounded-circle" width="32" :src="avatar1" alt="avatar-1" />
               </span>
             </a>
             <div class="dropdown-menu dropdown-menu-end">
               <h6 class="dropdown-header">Welcome {{ authStore.user?.email || 'User' }}!</h6>
 
-              <router-link class="dropdown-item" :to="{ name: item.route?.name }"
-                v-for="(item, idx) in profileMenuItems" :key="idx">
-                <i :class="`bx ${item.icon} text-muted fs-18 align-middle me-1`"></i><span class="align-middle">{{
-                  item.label }}</span>
+              <router-link
+                class="dropdown-item"
+                :to="{ name: item.route?.name }"
+                v-for="(item, idx) in profileMenuItems"
+                :key="idx"
+              >
+                <i :class="`bx ${item.icon} text-muted fs-18 align-middle me-1`"></i
+                ><span class="align-middle">{{ item.label }}</span>
               </router-link>
 
               <div class="dropdown-divider my-1"></div>
 
               <a class="dropdown-item text-danger" href="javascript:void(0);" @click="handleLogout">
-                <i class="bx bx-log-out fs-18 align-middle me-1"></i><span class="align-middle">Logout</span>
+                <i class="bx bx-log-out fs-18 align-middle me-1"></i
+                ><span class="align-middle">Logout</span>
               </a>
             </div>
           </DropDown>
@@ -131,21 +192,21 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue';
-import { Icon } from "@iconify/vue";
+import { Icon } from '@iconify/vue';
 import simplebar from 'simplebar-vue';
 import { useLayoutStore } from '@/stores/layout';
 import { useAuthStore } from '@/stores/auth';
 import { useRouter } from 'vue-router';
-import { toggleDocumentAttribute } from "@/helpers";
-import { profileMenuItems } from "@/layouts/partials/data";
+import { toggleDocumentAttribute } from '@/helpers';
+import { profileMenuItems } from '@/layouts/partials/data';
 import { notificationsService } from '@/services';
-import DropDown from "@/components/DropDown.vue";
-import avatar1 from "@/assets/images/users/avatar-1.jpg";
+import DropDown from '@/components/DropDown.vue';
+import avatar1 from '@/assets/images/users/avatar-1.jpg';
 
 const notifications = ref([]);
 const notificationsLoading = ref(false);
 
-const unreadCount = computed(() => notifications.value.filter(n => !n.is_read).length);
+const unreadCount = computed(() => notifications.value.filter((n) => !n.is_read).length);
 
 function formatDate(d) {
   if (!d) return '';
@@ -163,7 +224,7 @@ async function fetchNotifications() {
   notificationsLoading.value = true;
   try {
     const data = await notificationsService.list({ page_size: 20 });
-    notifications.value = Array.isArray(data) ? data : (data.results || []);
+    notifications.value = Array.isArray(data) ? data : data.results || [];
   } catch {
     notifications.value = [];
   } finally {
@@ -172,11 +233,11 @@ async function fetchNotifications() {
 }
 
 async function markAllAsRead() {
-  const toMark = notifications.value.filter(n => !n.is_read && n.id);
+  const toMark = notifications.value.filter((n) => !n.is_read && n.id);
   if (!toMark.length) return;
   try {
     await notificationsService.markAllAsRead(toMark);
-    notifications.value = notifications.value.map(n => ({ ...n, is_read: true }));
+    notifications.value = notifications.value.map((n) => ({ ...n, is_read: true }));
   } catch {
     // ignore
   }
@@ -184,9 +245,12 @@ async function markAllAsRead() {
 
 function handleNotificationClick(item) {
   if (item.id && !item.is_read) {
-    notificationsService.markAsRead(item.id, item.notification_type).then(() => {
-      item.is_read = true;
-    }).catch(() => {});
+    notificationsService
+      .markAsRead(item.id, item.notification_type)
+      .then(() => {
+        item.is_read = true;
+      })
+      .catch(() => {});
   }
 }
 
@@ -247,8 +311,7 @@ const handleLogout = async () => {
   try {
     await authStore.logout();
     await router.push({ name: 'auth.sign-in' });
-  } catch (error) {
-  }
+  } catch (error) {}
 };
 
 onMounted(() => {

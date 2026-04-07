@@ -1,5 +1,7 @@
 const setTitle = (title) => {
-  return title ? `${title} | Bidsconnect - Responsive Admin Dashboard Template` : 'Bidsconnect - Responsive Admin Dashboard Template';
+  return title
+    ? `${title} | Bidsconnect - Responsive Admin Dashboard Template`
+    : 'Bidsconnect - Responsive Admin Dashboard Template';
 };
 
 const authRoutes = [
@@ -7,43 +9,43 @@ const authRoutes = [
     path: '/auth/sign-in',
     name: 'auth.sign-in',
     meta: {
-      title: setTitle('Sign In')
+      title: setTitle('Sign In'),
     },
-    component: () => import('@/views/auth/sign-in.vue')
+    component: () => import('@/views/auth/sign-in.vue'),
   },
   {
     path: '/auth/sign-up',
     name: 'auth.sign-up',
     meta: {
-      title: setTitle('Sign Up')
+      title: setTitle('Sign Up'),
     },
-    component: () => import('@/views/auth/sign-up.vue')
+    component: () => import('@/views/auth/sign-up.vue'),
   },
   {
     path: '/auth/reset-password',
     name: 'auth.reset-password',
     meta: {
-      title: setTitle('Reset Password')
+      title: setTitle('Reset Password'),
     },
-    component: () => import('@/views/auth/reset-password.vue')
+    component: () => import('@/views/auth/reset-password.vue'),
   },
   {
     path: '/auth/lock-screen',
     name: 'auth.lock-screen',
     meta: {
-      title: setTitle('Lock Screen')
+      title: setTitle('Lock Screen'),
     },
-    component: () => import('@/views/auth/lock-screen.vue')
+    component: () => import('@/views/auth/lock-screen.vue'),
   },
   {
     path: '/invitations/accept/:token',
     name: 'auth.accept-invitation',
     meta: {
       title: setTitle('Accept Invitation'),
-      authRequired: true
+      authRequired: true,
     },
-    component: () => import('@/views/auth/accept-invitation.vue')
-  }
+    component: () => import('@/views/auth/accept-invitation.vue'),
+  },
 ];
 
 const errorRoutes = [
@@ -51,17 +53,17 @@ const errorRoutes = [
     path: '/404',
     name: 'error.404',
     meta: {
-      title: setTitle('Error 404')
+      title: setTitle('Error 404'),
     },
-    component: () => import('@/views/pages/error-404.vue')
+    component: () => import('@/views/pages/error-404.vue'),
   },
   {
     path: '/404-alt',
     name: 'error.404-alt',
     meta: {
-      title: setTitle('Error 404 Alt')
+      title: setTitle('Error 404 Alt'),
     },
-    component: () => import('@/views/pages/error-404-alt.vue')
+    component: () => import('@/views/pages/error-404-alt.vue'),
   },
 ];
 
@@ -71,10 +73,10 @@ const dashboardRoutes = [
     name: 'dashboards.index',
     meta: {
       title: setTitle('Dashboard'),
-      authRequired: true
+      authRequired: true,
     },
     component: () => import('@/views/dashboards/index.vue'),
-  }
+  },
 ];
 
 const pagesRoutes = [
@@ -83,7 +85,7 @@ const pagesRoutes = [
     name: 'pages.welcome',
     meta: {
       title: setTitle('Welcome'),
-      authRequired: true
+      authRequired: true,
     },
     component: () => import('@/views/pages/welcome.vue'),
   },
@@ -92,7 +94,7 @@ const pagesRoutes = [
     name: 'pages.faqs',
     meta: {
       title: setTitle('FAQs'),
-      authRequired: true
+      authRequired: true,
     },
     component: () => import('@/views/pages/faqs.vue'),
   },
@@ -101,7 +103,7 @@ const pagesRoutes = [
     name: 'pages.coming-soon',
     meta: {
       title: setTitle('Coming Soon'),
-      authRequired: true
+      authRequired: true,
     },
     component: () => import('@/views/pages/coming-soon.vue'),
   },
@@ -110,7 +112,7 @@ const pagesRoutes = [
     name: 'pages.timeline',
     meta: {
       title: setTitle('Timeline'),
-      authRequired: true
+      authRequired: true,
     },
     component: () => import('@/views/pages/timeline.vue'),
   },
@@ -119,18 +121,18 @@ const pagesRoutes = [
     name: 'pages.pricing',
     meta: {
       title: setTitle('Pricing'),
-      authRequired: true
+      authRequired: true,
     },
-    component: () => import('@/views/pages/pricing.vue')
+    component: () => import('@/views/pages/pricing.vue'),
   },
   {
     path: '/pages/maintenance',
     name: 'pages.maintenance',
     meta: {
       title: setTitle('Maintenance'),
-      authRequired: true
+      authRequired: true,
     },
-    component: () => import('@/views/pages/maintenance.vue')
+    component: () => import('@/views/pages/maintenance.vue'),
   },
 ];
 
@@ -140,52 +142,52 @@ const appsRoutes = [
     name: 'apps.chat',
     meta: {
       title: setTitle('Chat'),
-      authRequired: true
+      authRequired: true,
     },
-    component: () => import('@/views/apps/chat/index.vue')
+    component: () => import('@/views/apps/chat/index.vue'),
   },
   {
     path: '/apps/email',
     name: 'apps.email',
     meta: {
       title: setTitle('Email'),
-      authRequired: true
+      authRequired: true,
     },
-    component: () => import('@/views/apps/email/index.vue')
+    component: () => import('@/views/apps/email/index.vue'),
   },
   {
     path: '/apps/todo',
     name: 'apps.todo',
     meta: {
       title: setTitle('Todo'),
-      authRequired: true
+      authRequired: true,
     },
-    component: () => import('@/views/apps/todo/index.vue')
+    component: () => import('@/views/apps/todo/index.vue'),
   },
   {
     path: '/apps/calendar/schedule',
     name: 'apps.calendar.schedule',
     meta: {
       title: setTitle('Schedule'),
-      authRequired: true
+      authRequired: true,
     },
-    component: () => import('@/views/apps/calendar/schedule/index.vue')
+    component: () => import('@/views/apps/calendar/schedule/index.vue'),
   },
   {
     path: '/apps/calendar/integration',
     name: 'apps.calendar.integration',
     meta: {
       title: setTitle('Integration'),
-      authRequired: true
+      authRequired: true,
     },
-    component: () => import('@/views/apps/calendar/integration/index.vue')
+    component: () => import('@/views/apps/calendar/integration/index.vue'),
   },
   {
     path: '/apps/invoice',
     name: 'apps.invoice.list',
     meta: {
       title: setTitle('Invoice List'),
-      authRequired: true
+      authRequired: true,
     },
     component: () => import('@/views/apps/invoices/index.vue'),
   },
@@ -195,7 +197,7 @@ const appsRoutes = [
     params: { id: '1001' },
     meta: {
       title: setTitle('Invoice Details'),
-      authRequired: true
+      authRequired: true,
     },
     component: () => import('@/views/apps/invoices/[id]/index.vue'),
   },
@@ -204,7 +206,7 @@ const appsRoutes = [
     name: 'widgets',
     meta: {
       title: setTitle('Widgets'),
-      authRequired: true
+      authRequired: true,
     },
     component: () => import('@/views/widgets/index.vue'),
   },
@@ -216,199 +218,199 @@ const uiRoutes = [
     name: 'ui.accordions',
     meta: {
       title: setTitle('Accordions'),
-      authRequired: true
+      authRequired: true,
     },
-    component: () => import('@/views/ui/accordions.vue')
+    component: () => import('@/views/ui/accordions.vue'),
   },
   {
     path: '/ui/alerts',
     name: 'ui.alerts',
     meta: {
       title: setTitle('Alerts'),
-      authRequired: true
+      authRequired: true,
     },
-    component: () => import('@/views/ui/alerts.vue')
+    component: () => import('@/views/ui/alerts.vue'),
   },
   {
     path: '/ui/avatars',
     name: 'ui.avatars',
     meta: {
       title: setTitle('Avatars'),
-      authRequired: true
+      authRequired: true,
     },
-    component: () => import('@/views/ui/avatars.vue')
+    component: () => import('@/views/ui/avatars.vue'),
   },
   {
     path: '/ui/badges',
     name: 'ui.badges',
     meta: {
       title: setTitle('Badges'),
-      authRequired: true
+      authRequired: true,
     },
-    component: () => import('@/views/ui/badges.vue')
+    component: () => import('@/views/ui/badges.vue'),
   },
   {
     path: '/ui/breadcrumb',
     name: 'ui.breadcrumb',
     meta: {
       title: setTitle('Breadcrumb'),
-      authRequired: true
+      authRequired: true,
     },
-    component: () => import('@/views/ui/breadcrumb.vue')
+    component: () => import('@/views/ui/breadcrumb.vue'),
   },
   {
     path: '/ui/buttons',
     name: 'ui.buttons',
     meta: {
       title: setTitle('Buttons'),
-      authRequired: true
+      authRequired: true,
     },
-    component: () => import('@/views/ui/buttons.vue')
+    component: () => import('@/views/ui/buttons.vue'),
   },
   {
     path: '/ui/cards',
     name: 'ui.cards',
     meta: {
       title: setTitle('Cards'),
-      authRequired: true
+      authRequired: true,
     },
-    component: () => import('@/views/ui/cards.vue')
+    component: () => import('@/views/ui/cards.vue'),
   },
   {
     path: '/ui/carousel',
     name: 'ui.carousel',
     meta: {
       title: setTitle('Carousel'),
-      authRequired: true
+      authRequired: true,
     },
-    component: () => import('@/views/ui/carousel.vue')
+    component: () => import('@/views/ui/carousel.vue'),
   },
   {
     path: '/ui/collapse',
     name: 'ui.collapse',
     meta: {
       title: setTitle('Collapse'),
-      authRequired: true
+      authRequired: true,
     },
-    component: () => import('@/views/ui/collapse.vue')
+    component: () => import('@/views/ui/collapse.vue'),
   },
   {
     path: '/ui/dropdowns',
     name: 'ui.dropdowns',
     meta: {
       title: setTitle('Dropdowns'),
-      authRequired: true
+      authRequired: true,
     },
-    component: () => import('@/views/ui/dropdowns.vue')
+    component: () => import('@/views/ui/dropdowns.vue'),
   },
   {
     path: '/ui/list-group',
     name: 'ui.list-group',
     meta: {
       title: setTitle('ListGroup'),
-      authRequired: true
+      authRequired: true,
     },
-    component: () => import('@/views/ui/listGroup.vue')
+    component: () => import('@/views/ui/listGroup.vue'),
   },
   {
     path: '/ui/modals',
     name: 'ui.modals',
     meta: {
       title: setTitle('Modals'),
-      authRequired: true
+      authRequired: true,
     },
-    component: () => import('@/views/ui/modals.vue')
+    component: () => import('@/views/ui/modals.vue'),
   },
   {
     path: '/ui/offcanvas',
     name: 'ui.offcanvas',
     meta: {
       title: setTitle('Offcanvas'),
-      authRequired: true
+      authRequired: true,
     },
-    component: () => import('@/views/ui/offcanvas.vue')
+    component: () => import('@/views/ui/offcanvas.vue'),
   },
   {
     path: '/ui/pagination',
     name: 'ui.pagination',
     meta: {
       title: setTitle('Pagination'),
-      authRequired: true
+      authRequired: true,
     },
-    component: () => import('@/views/ui/pagination.vue')
+    component: () => import('@/views/ui/pagination.vue'),
   },
   {
     path: '/ui/placeholders',
     name: 'ui.placeholders',
     meta: {
       title: setTitle('Placeholders'),
-      authRequired: true
+      authRequired: true,
     },
-    component: () => import('@/views/ui/placeholders.vue')
+    component: () => import('@/views/ui/placeholders.vue'),
   },
   {
     path: '/ui/popovers',
     name: 'ui.popovers',
     meta: {
       title: setTitle('Popovers'),
-      authRequired: true
+      authRequired: true,
     },
-    component: () => import('@/views/ui/popovers.vue')
+    component: () => import('@/views/ui/popovers.vue'),
   },
   {
     path: '/ui/progress',
     name: 'ui.progress',
     meta: {
       title: setTitle('Progress'),
-      authRequired: true
+      authRequired: true,
     },
-    component: () => import('@/views/ui/progress.vue')
+    component: () => import('@/views/ui/progress.vue'),
   },
   {
     path: '/ui/scrollspy',
     name: 'ui.scrollspy',
     meta: {
       title: setTitle('Scrollspy'),
-      authRequired: true
+      authRequired: true,
     },
-    component: () => import('@/views/ui/scrollspy.vue')
+    component: () => import('@/views/ui/scrollspy.vue'),
   },
   {
     path: '/ui/spinners',
     name: 'ui.spinners',
     meta: {
       title: setTitle('Spinners'),
-      authRequired: true
+      authRequired: true,
     },
-    component: () => import('@/views/ui/spinners.vue')
+    component: () => import('@/views/ui/spinners.vue'),
   },
   {
     path: '/ui/tabs',
     name: 'ui.tabs',
     meta: {
       title: setTitle('Tabs'),
-      authRequired: true
+      authRequired: true,
     },
-    component: () => import('@/views/ui/tabs.vue')
+    component: () => import('@/views/ui/tabs.vue'),
   },
   {
     path: '/ui/toasts',
     name: 'ui.toasts',
     meta: {
       title: setTitle('Toasts'),
-      authRequired: true
+      authRequired: true,
     },
-    component: () => import('@/views/ui/toasts.vue')
+    component: () => import('@/views/ui/toasts.vue'),
   },
   {
     path: '/ui/tooltips',
     name: 'ui.tooltips',
     meta: {
       title: setTitle('Tooltips'),
-      authRequired: true
+      authRequired: true,
     },
-    component: () => import('@/views/ui/tooltips.vue')
-  }
+    component: () => import('@/views/ui/tooltips.vue'),
+  },
 ];
 
 const advancedUIRoutes = [
@@ -417,46 +419,46 @@ const advancedUIRoutes = [
     name: 'advanced.ratings',
     meta: {
       title: setTitle('Ratings'),
-      authRequired: true
+      authRequired: true,
     },
-    component: () => import('@/views/advanced/ratings/index.vue')
+    component: () => import('@/views/advanced/ratings/index.vue'),
   },
   {
     path: '/advanced/alert',
     name: 'advanced.alert',
     meta: {
       title: setTitle('Sweet Alert'),
-      authRequired: true
+      authRequired: true,
     },
-    component: () => import('@/views/advanced/alert/index.vue')
+    component: () => import('@/views/advanced/alert/index.vue'),
   },
   {
     path: '/advanced/swiper',
     name: 'advanced.swiper',
     meta: {
       title: setTitle('Swiper'),
-      authRequired: true
+      authRequired: true,
     },
-    component: () => import('@/views/advanced/swiper/index.vue')
+    component: () => import('@/views/advanced/swiper/index.vue'),
   },
   {
     path: '/advanced/scrollbar',
     name: 'advanced.scrollbar',
     meta: {
       title: setTitle('Scrollbar'),
-      authRequired: true
+      authRequired: true,
     },
-    component: () => import('@/views/advanced/scrollbar/index.vue')
+    component: () => import('@/views/advanced/scrollbar/index.vue'),
   },
   {
     path: '/advanced/toastify',
     name: 'advanced.toastify',
     meta: {
       title: setTitle('Toastify'),
-      authRequired: true
+      authRequired: true,
     },
-    component: () => import('@/views/advanced/toastify/index.vue')
-  }
+    component: () => import('@/views/advanced/toastify/index.vue'),
+  },
 ];
 
 const chartsRoutes = [
@@ -465,145 +467,145 @@ const chartsRoutes = [
     name: 'charts.area',
     meta: {
       title: setTitle('Apex Area Chart'),
-      authRequired: true
+      authRequired: true,
     },
-    component: () => import('@/views/charts/area/index.vue')
+    component: () => import('@/views/charts/area/index.vue'),
   },
   {
     path: '/charts/bar',
     name: 'charts.bar',
     meta: {
       title: setTitle('Apex Bar Chart'),
-      authRequired: true
+      authRequired: true,
     },
-    component: () => import('@/views/charts/bar/index.vue')
+    component: () => import('@/views/charts/bar/index.vue'),
   },
   {
     path: '/charts/boxplot',
     name: 'charts.boxplot',
     meta: {
       title: setTitle('Apex Boxplot Chart'),
-      authRequired: true
+      authRequired: true,
     },
-    component: () => import('@/views/charts/boxplot/index.vue')
+    component: () => import('@/views/charts/boxplot/index.vue'),
   },
   {
     path: '/charts/bubble',
     name: 'charts.bubble',
     meta: {
       title: setTitle('Apex Bubble Chart'),
-      authRequired: true
+      authRequired: true,
     },
-    component: () => import('@/views/charts/bubble/index.vue')
+    component: () => import('@/views/charts/bubble/index.vue'),
   },
   {
     path: '/charts/candlestick',
     name: 'charts.candlestick',
     meta: {
       title: setTitle('Apex Candlestick Chart'),
-      authRequired: true
+      authRequired: true,
     },
-    component: () => import('@/views/charts/candlestick/index.vue')
+    component: () => import('@/views/charts/candlestick/index.vue'),
   },
   {
     path: '/charts/column',
     name: 'charts.column',
     meta: {
       title: setTitle('Apex Column Chart'),
-      authRequired: true
+      authRequired: true,
     },
-    component: () => import('@/views/charts/column/index.vue')
+    component: () => import('@/views/charts/column/index.vue'),
   },
   {
     path: '/charts/heatmap',
     name: 'charts.heatmap',
     meta: {
       title: setTitle('Apex Heatmap Chart'),
-      authRequired: true
+      authRequired: true,
     },
-    component: () => import('@/views/charts/heatmap/index.vue')
+    component: () => import('@/views/charts/heatmap/index.vue'),
   },
   {
     path: '/charts/line',
     name: 'charts.line',
     meta: {
       title: setTitle('Apex Line Chart'),
-      authRequired: true
+      authRequired: true,
     },
-    component: () => import('@/views/charts/line/index.vue')
+    component: () => import('@/views/charts/line/index.vue'),
   },
   {
     path: '/charts/mixed',
     name: 'charts.mixed',
     meta: {
       title: setTitle('Apex Mixed Chart'),
-      authRequired: true
+      authRequired: true,
     },
-    component: () => import('@/views/charts/mixed/index.vue')
+    component: () => import('@/views/charts/mixed/index.vue'),
   },
   {
     path: '/charts/pie',
     name: 'charts.pie',
     meta: {
       title: setTitle('Apex Pie Chart'),
-      authRequired: true
+      authRequired: true,
     },
-    component: () => import('@/views/charts/pie/index.vue')
+    component: () => import('@/views/charts/pie/index.vue'),
   },
   {
     path: '/charts/polar',
     name: 'charts.polar',
     meta: {
       title: setTitle('Apex Polar Chart'),
-      authRequired: true
+      authRequired: true,
     },
-    component: () => import('@/views/charts/polar/index.vue')
+    component: () => import('@/views/charts/polar/index.vue'),
   },
   {
     path: '/charts/radar',
     name: 'charts.radar',
     meta: {
       title: setTitle('Apex Radar Chart'),
-      authRequired: true
+      authRequired: true,
     },
-    component: () => import('@/views/charts/radar/index.vue')
+    component: () => import('@/views/charts/radar/index.vue'),
   },
   {
     path: '/charts/radial-bar',
     name: 'charts.radial-bar',
     meta: {
       title: setTitle('Apex Radial Bar Chart'),
-      authRequired: true
+      authRequired: true,
     },
-    component: () => import('@/views/charts/radial-bar/index.vue')
+    component: () => import('@/views/charts/radial-bar/index.vue'),
   },
   {
     path: '/charts/scatter',
     name: 'charts.scatter',
     meta: {
       title: setTitle('Apex Scatter Chart'),
-      authRequired: true
+      authRequired: true,
     },
-    component: () => import('@/views/charts/scatter/index.vue')
+    component: () => import('@/views/charts/scatter/index.vue'),
   },
   {
     path: '/charts/timeline',
     name: 'charts.timeline',
     meta: {
       title: setTitle('Apex Timeline Chart'),
-      authRequired: true
+      authRequired: true,
     },
-    component: () => import('@/views/charts/timeline/index.vue')
+    component: () => import('@/views/charts/timeline/index.vue'),
   },
   {
     path: '/charts/treemap',
     name: 'charts.treemap',
     meta: {
       title: setTitle('Apex Treemap Chart'),
-      authRequired: true
+      authRequired: true,
     },
-    component: () => import('@/views/charts/treemap/index.vue')
-  }
+    component: () => import('@/views/charts/treemap/index.vue'),
+  },
 ];
 
 const formRoutes = [
@@ -612,100 +614,100 @@ const formRoutes = [
     name: 'forms.basic',
     meta: {
       title: setTitle('Form Basic'),
-      authRequired: true
+      authRequired: true,
     },
-    component: () => import('@/views/forms/basic.vue')
+    component: () => import('@/views/forms/basic.vue'),
   },
   {
     path: '/forms/checkbox',
     name: 'forms.checkbox',
     meta: {
       title: setTitle('Form Checkbox'),
-      authRequired: true
+      authRequired: true,
     },
-    component: () => import('@/views/forms/checkbox.vue')
+    component: () => import('@/views/forms/checkbox.vue'),
   },
   {
     path: '/forms/select',
     name: 'forms.select',
     meta: {
       title: setTitle('Choice Select'),
-      authRequired: true
+      authRequired: true,
     },
-    component: () => import('@/views/forms/select.vue')
+    component: () => import('@/views/forms/select.vue'),
   },
   {
     path: '/forms/clipboard',
     name: 'forms.clipboard',
     meta: {
       title: setTitle('Clipboard'),
-      authRequired: true
+      authRequired: true,
     },
-    component: () => import('@/views/forms/clipboard.vue')
+    component: () => import('@/views/forms/clipboard.vue'),
   },
   {
     path: '/forms/flat-picker',
     name: 'forms.flat-picker',
     meta: {
       title: setTitle('Flat Picker'),
-      authRequired: true
+      authRequired: true,
     },
-    component: () => import('@/views/forms/flat-picker.vue')
+    component: () => import('@/views/forms/flat-picker.vue'),
   },
   {
     path: '/forms/validation',
     name: 'forms.validation',
     meta: {
       title: setTitle('Validation'),
-      authRequired: true
+      authRequired: true,
     },
-    component: () => import('@/views/forms/validation/index.vue')
+    component: () => import('@/views/forms/validation/index.vue'),
   },
   {
     path: '/forms/wizard',
     name: 'forms.wizard',
     meta: {
       title: setTitle('Wizard'),
-      authRequired: true
+      authRequired: true,
     },
-    component: () => import('@/views/forms/wizard.vue')
+    component: () => import('@/views/forms/wizard.vue'),
   },
   {
     path: '/forms/file-uploads',
     name: 'forms.file-uploads',
     meta: {
       title: setTitle('File Uploads'),
-      authRequired: true
+      authRequired: true,
     },
-    component: () => import('@/views/forms/file-uploads.vue')
+    component: () => import('@/views/forms/file-uploads.vue'),
   },
   {
     path: '/forms/editors',
     name: 'forms.editors',
     meta: {
       title: setTitle('Editors'),
-      authRequired: true
+      authRequired: true,
     },
-    component: () => import('@/views/forms/editors.vue')
+    component: () => import('@/views/forms/editors.vue'),
   },
   {
     path: '/forms/input-mask',
     name: 'forms.input-mask',
     meta: {
       title: setTitle('Input Mask'),
-      authRequired: true
+      authRequired: true,
     },
-    component: () => import('@/views/forms/input-mask.vue')
+    component: () => import('@/views/forms/input-mask.vue'),
   },
   {
     path: '/forms/slider',
     name: 'forms.slider',
     meta: {
       title: setTitle('Slider'),
-      authRequired: true
+      authRequired: true,
     },
-    component: () => import('@/views/forms/slider.vue')
-  }
+    component: () => import('@/views/forms/slider.vue'),
+  },
 ];
 
 const tablesRoutes = [
@@ -714,19 +716,19 @@ const tablesRoutes = [
     name: 'tables.basic',
     meta: {
       title: setTitle('Tables Basic'),
-      authRequired: true
+      authRequired: true,
     },
-    component: () => import('@/views/tables/basic.vue')
+    component: () => import('@/views/tables/basic.vue'),
   },
   {
     path: '/tables/gridjs',
     name: 'tables.gridjs',
     meta: {
       title: setTitle('Tables Grid Js'),
-      authRequired: true
+      authRequired: true,
     },
-    component: () => import('@/views/tables/gridjs/index.vue')
-  }
+    component: () => import('@/views/tables/gridjs/index.vue'),
+  },
 ];
 
 const iconsRoutes = [
@@ -735,19 +737,19 @@ const iconsRoutes = [
     name: 'icons.boxicons',
     meta: {
       title: setTitle('Boxicons Icons'),
-      authRequired: true
+      authRequired: true,
     },
-    component: () => import('@/views/icons/boxicons.vue')
+    component: () => import('@/views/icons/boxicons.vue'),
   },
   {
     path: '/icons/solar',
     name: 'icons.solar',
     meta: {
       title: setTitle('Solar Icons'),
-      authRequired: true
+      authRequired: true,
     },
-    component: () => import('@/views/icons/solar.vue')
-  }
+    component: () => import('@/views/icons/solar.vue'),
+  },
 ];
 
 const mapsRoutes = [
@@ -756,19 +758,19 @@ const mapsRoutes = [
     name: 'maps.google',
     meta: {
       title: setTitle('Google Map'),
-      authRequired: true
+      authRequired: true,
     },
-    component: () => import('@/views/maps/google.vue')
+    component: () => import('@/views/maps/google.vue'),
   },
   {
     path: '/maps/vector',
     name: 'maps.vector',
     meta: {
       title: setTitle('Vector Map'),
-      authRequired: true
+      authRequired: true,
     },
-    component: () => import('@/views/maps/vector.vue')
-  }
+    component: () => import('@/views/maps/vector.vue'),
+  },
 ];
 
 // Admin routes (for superusers)
@@ -779,9 +781,9 @@ const adminRoutes = [
     meta: {
       title: setTitle('Companies Management'),
       authRequired: true,
-      requiresAdmin: true
+      requiresAdmin: true,
     },
-    component: () => import('@/views/admin/companies-management.vue')
+    component: () => import('@/views/admin/companies-management.vue'),
   },
   {
     path: '/admin/companies/:id',
@@ -789,9 +791,9 @@ const adminRoutes = [
     meta: {
       title: setTitle('Companies Management'),
       authRequired: true,
-      requiresAdmin: true
+      requiresAdmin: true,
     },
-    component: () => import('@/views/admin/companies-management.vue')
+    component: () => import('@/views/admin/companies-management.vue'),
   },
   {
     path: '/admin/users',
@@ -799,9 +801,9 @@ const adminRoutes = [
     meta: {
       title: setTitle('User Management'),
       authRequired: true,
-      requiresAdmin: true
+      requiresAdmin: true,
     },
-    component: () => import('@/views/admin/users.vue')
+    component: () => import('@/views/admin/users.vue'),
   },
   {
     path: '/admin/settings',
@@ -809,9 +811,9 @@ const adminRoutes = [
     meta: {
       title: setTitle('System Settings'),
       authRequired: true,
-      requiresAdmin: true
+      requiresAdmin: true,
     },
-    component: () => import('@/views/admin/settings.vue')
+    component: () => import('@/views/admin/settings.vue'),
   },
   {
     path: '/admin/tenders/create',
@@ -819,9 +821,9 @@ const adminRoutes = [
     meta: {
       title: setTitle('Tenders Create'),
       authRequired: true,
-      requiresAdmin: true
+      requiresAdmin: true,
     },
-    component: () => import('@/views/admin/create-tenders-admin.vue')  
+    component: () => import('@/views/admin/create-tenders-admin.vue'),
   },
   {
     path: '/admin/tenders/:slug/edit',
@@ -829,9 +831,9 @@ const adminRoutes = [
     meta: {
       title: setTitle('Tenders Edit'),
       authRequired: true,
-      requiresAdmin: true
+      requiresAdmin: true,
     },
-    component: () => import('@/views/admin/edit-tenders-admin.vue')  
+    component: () => import('@/views/admin/edit-tenders-admin.vue'),
   },
   {
     path: '/admin/bids/:id',
@@ -839,9 +841,9 @@ const adminRoutes = [
     meta: {
       title: setTitle('BIDS Details'),
       authRequired: true,
-      requiresAdmin: true
+      requiresAdmin: true,
     },
-    component: () => import('@/views/admin/bids-admin-detail.vue')  
+    component: () => import('@/views/admin/bids-admin-detail.vue'),
   },
   {
     path: '/admin/tenders/:slug',
@@ -849,9 +851,9 @@ const adminRoutes = [
     meta: {
       title: setTitle('Tenders Management Details'),
       authRequired: true,
-      requiresAdmin: true
+      requiresAdmin: true,
     },
-    component: () => import('@/views/admin/tender-management-admin-details.vue')  
+    component: () => import('@/views/admin/tender-management-admin-details.vue'),
   },
   {
     path: '/admin/tenders',
@@ -859,9 +861,9 @@ const adminRoutes = [
     meta: {
       title: setTitle('Tenders Management'),
       authRequired: true,
-      requiresAdmin: true
+      requiresAdmin: true,
     },
-    component: () => import('@/views/admin/tender-management-admin.vue')  
+    component: () => import('@/views/admin/tender-management-admin.vue'),
   },
   {
     path: '/admin/tenders/categories/create',
@@ -869,9 +871,9 @@ const adminRoutes = [
     meta: {
       title: setTitle('Tenders Categories Management'),
       authRequired: true,
-      requiresAdmin: true
+      requiresAdmin: true,
     },
-    component: () => import('@/views/admin/CategorySubcategoryCreate.vue')  
+    component: () => import('@/views/admin/CategorySubcategoryCreate.vue'),
   },
   {
     path: '/admin/tenders/procurement-process/create',
@@ -879,9 +881,9 @@ const adminRoutes = [
     meta: {
       title: setTitle('Tenders Procurement Process Management'),
       authRequired: true,
-      requiresAdmin: true
+      requiresAdmin: true,
     },
-    component: () => import('@/views/admin/ProcurementProcessCreate.vue')  
+    component: () => import('@/views/admin/ProcurementProcessCreate.vue'),
   },
   {
     path: '/admin/marketplace',
@@ -889,9 +891,9 @@ const adminRoutes = [
     meta: {
       title: setTitle('Marketplace'),
       authRequired: true,
-      requiresAdmin: true
+      requiresAdmin: true,
     },
-    component: () => import('@/views/marketplace/admin/admin-market-place.vue')
+    component: () => import('@/views/marketplace/admin/admin-market-place.vue'),
   },
   {
     path: '/admin/marketplace/categories-management',
@@ -899,28 +901,28 @@ const adminRoutes = [
     meta: {
       title: setTitle('Marketplace Categories Management'),
       authRequired: true,
-      requiresAdmin: true
+      requiresAdmin: true,
     },
-    component: () => import('@/views/marketplace/admin/admin-marketplace-categories.vue')
+    component: () => import('@/views/marketplace/admin/admin-marketplace-categories.vue'),
   },
   {
     path: '/admin/marketplace/products-management',
     name: 'admin.marketplace.products-management',
     meta: {
       title: setTitle('Marketplace Products Management'),
-      authRequired: true
+      authRequired: true,
     },
-    component: () => import('@/views/marketplace/admin/admin-marketplace-products.vue')
+    component: () => import('@/views/marketplace/admin/admin-marketplace-products.vue'),
   },
   {
     path: '/admin/marketplace/products-management/:id',
     name: 'admin.marketplace.products-details',
     meta: {
       title: setTitle('Marketplace Products Details'),
-      authRequired: true
+      authRequired: true,
     },
-    component: () => import('@/views/marketplace/admin/admin-marketplace-products.vue')
-  }
+    component: () => import('@/views/marketplace/admin/admin-marketplace-products.vue'),
+  },
 ];
 
 // Staff routes
@@ -930,10 +932,10 @@ const staffRoutes = [
     name: 'staff.tasks',
     meta: {
       title: setTitle('Tasks'),
-      authRequired: true
+      authRequired: true,
     },
-    component: () => import('@/views/staff/tasks.vue')
-  }
+    component: () => import('@/views/staff/tasks.vue'),
+  },
 ];
 
 // User routes
@@ -943,9 +945,9 @@ const userRoutes = [
     name: 'user.create-company',
     meta: {
       title: setTitle('Create Company'),
-      authRequired: true
+      authRequired: true,
     },
-    component: () => import('@/views/companymanagement/company/create-companyandlocation.vue')
+    component: () => import('@/views/companymanagement/company/create-companyandlocation.vue'),
   },
 
   {
@@ -953,29 +955,29 @@ const userRoutes = [
     name: 'company.edit',
     meta: {
       title: setTitle('Create Company'),
-      authRequired: true
+      authRequired: true,
     },
-    component: () => import('@/views/companymanagement/company/create-companyandlocation.vue')
+    component: () => import('@/views/companymanagement/company/create-companyandlocation.vue'),
   },
-  
+
   {
     path: '/company/user-management',
     name: 'user.user-management',
     meta: {
       title: setTitle('User Management'),
-      authRequired: true
+      authRequired: true,
     },
-    component: () => import('@/views/companymanagement/users/user-management.vue')
+    component: () => import('@/views/companymanagement/users/user-management.vue'),
   },
 
-   {
+  {
     path: '/company/document',
     name: 'user.company-management',
     meta: {
       title: setTitle('Company Documents'),
-      authRequired: true
+      authRequired: true,
     },
-    component: () => import('@/views/companymanagement/documents/managecompanydocument.vue')
+    component: () => import('@/views/companymanagement/documents/managecompanydocument.vue'),
   },
 
   {
@@ -983,9 +985,9 @@ const userRoutes = [
     name: 'user.company',
     meta: {
       title: setTitle('Company Details'),
-      authRequired: true
+      authRequired: true,
     },
-    component: () => import('@/views/companymanagement/company/company-Details.vue')
+    component: () => import('@/views/companymanagement/company/company-Details.vue'),
   },
 
   {
@@ -994,7 +996,7 @@ const userRoutes = [
     component: () => import('@/views/user/company-detail.vue'),
     meta: {
       title: setTitle('Company Detail'),
-      authRequired: true
+      authRequired: true,
     },
   },
   {
@@ -1003,147 +1005,149 @@ const userRoutes = [
     component: () => import('@/views/user/company-documents-management.vue'),
     meta: {
       title: setTitle('Company Documents'),
-      authRequired: true
+      authRequired: true,
     },
   },
   {
     path: '/tenders',
-    name: 'company.tenders-list', 
+    name: 'company.tenders-list',
     component: () => import('@/views/user/company-tender-list.vue'),
     meta: {
       title: setTitle('Tenders'),
-      authRequired: true
+      authRequired: true,
     },
   },
   {
     path: '/tenders/:slug',
-    name: 'company.tenders-detail', 
+    name: 'company.tenders-detail',
     component: () => import('@/views/tenders/users/tenders-detail.vue'),
     meta: {
       title: setTitle('Tenders'),
-      authRequired: true
+      authRequired: true,
     },
   },
   {
     path: '/marketplace/add-product/',
-    name: 'user.marketplace-list.add-product', 
+    name: 'user.marketplace-list.add-product',
     component: () => import('@/views/marketplace/user/user-marketplace-add.vue'),
     meta: {
       title: setTitle('Marketplace'),
-      authRequired: true
+      authRequired: true,
     },
   },
   {
     path: '/marketplace/',
-    name: 'user.marketplace-list', 
+    name: 'user.marketplace-list',
     component: () => import('@/views/marketplace/user/user-marketplace-productlist.vue'),
     meta: {
       title: setTitle('Marketplace'),
-      authRequired: true
+      authRequired: true,
     },
   },
-   {
+  {
     path: '/marketplace/request-for-quote/',
-    name: 'user.marketplace.request-for-quote', 
+    name: 'user.marketplace.request-for-quote',
     component: () => import('@/views/marketplace/user/request-for-quote.vue'),
     meta: {
       title: setTitle('Marketplace'),
-      authRequired: true
+      authRequired: true,
     },
   },
 
-   {
+  {
     path: '/marketplace/request-for-quote',
-    name: 'user.quote-request.list', 
+    name: 'user.quote-request.list',
     component: () => import('@/views/marketplace/user/invoices-ask.vue'),
     meta: {
       title: setTitle('Request For Quote'),
-      authRequired: true
+      authRequired: true,
     },
   },
   {
     path: '/bids',
-    name: 'company.bids-list', 
+    name: 'company.bids-list',
     component: () => import('@/views/bids/users/users-bids-list.vue'),
     meta: {
       title: setTitle('Tenders'),
-      authRequired: true
+      authRequired: true,
     },
   },
-   {
+  {
     path: '/bids/:id',
-    name: 'company.bids-detail', 
+    name: 'company.bids-detail',
     component: () => import('@/views/bids/users/users-bid-detail.vue'),
     meta: {
       title: setTitle('Tenders'),
-      authRequired: true
+      authRequired: true,
     },
   },
 
-{
+  {
     path: '/bids/awarded',
-    name: 'company.bids-awarded-list', 
+    name: 'company.bids-awarded-list',
     component: () => import('@/views/bids/users/bid-tender-awarded.vue'),
     meta: {
       title: setTitle('Tenders Awarded'),
-      authRequired: true
+      authRequired: true,
     },
   },
 
   {
     path: '/bids/unsucessful',
-    name: 'company.bids-unsucessful-list', 
+    name: 'company.bids-unsucessful-list',
     component: () => import('@/views/bids/users/bids-tender-unsuccessful.vue'),
     meta: {
       title: setTitle('Tenders Awarded'),
-      authRequired: true
+      authRequired: true,
     },
   },
 
-    {
+  {
     path: '/tenders/:slug/bid',
-    name: 'company.bids-create', 
+    name: 'company.bids-create',
     component: () => import('@/views/bids/users/bid-for-tender.vue'),
     meta: {
       title: setTitle('Tenders'),
-      authRequired: true
+      authRequired: true,
     },
   },
   {
     path: '/profile/financial',
     name: 'profile.financial',
     meta: { title: setTitle('Financial Information'), authRequired: true },
-    component: () => import('@/views/companymanagement/qualification/financial/list-create.vue')
+    component: () => import('@/views/companymanagement/qualification/financial/list-create.vue'),
   },
   {
     path: '/profile/litigation',
     name: 'profile.litigation',
     meta: { title: setTitle('Litigation'), authRequired: true },
-    component: () => import('@/views/companymanagement/qualification/litigation/list-create.vue')
+    component: () => import('@/views/companymanagement/qualification/litigation/list-create.vue'),
   },
   {
     path: '/profile/officelocation',
     name: 'profile.officelocation',
     meta: { title: setTitle('Office Location'), authRequired: true },
-    component: () => import('@/views/companymanagement/qualification/officelocation/list-create.vue')
+    component: () =>
+      import('@/views/companymanagement/qualification/officelocation/list-create.vue'),
   },
   {
     path: '/profile/personalinformation',
     name: 'profile.personalinformation',
     meta: { title: setTitle('Personal Information'), authRequired: true },
-    component: () => import('@/views/companymanagement/qualification/personalinformation/list-create.vue')
+    component: () =>
+      import('@/views/companymanagement/qualification/personalinformation/list-create.vue'),
   },
   {
     path: '/profile/source-of-funds',
     name: 'profile.source-of-funds',
     meta: { title: setTitle('Source of Funds'), authRequired: true },
-    component: () => import('@/views/companymanagement/qualification/sourcefunds/list-create.vue')
+    component: () => import('@/views/companymanagement/qualification/sourcefunds/list-create.vue'),
   },
   {
     path: '/profile/turnover',
     name: 'profile.turnover',
     meta: { title: setTitle('Turnover'), authRequired: true },
-    component: () => import('@/views/companymanagement/qualification/turnover/list-create.vue')
+    component: () => import('@/views/companymanagement/qualification/turnover/list-create.vue'),
   },
 ];
 
@@ -1154,73 +1158,73 @@ const automationRoutes = [
     name: 'automation.power-of-attorney',
     meta: {
       title: setTitle('Power Of Attorney'),
-      authRequired: true
+      authRequired: true,
     },
-    component: () => import('@/views/automation/PowerOfAttorney.vue')
+    component: () => import('@/views/automation/PowerOfAttorney.vue'),
   },
   {
     path: '/automation/power-of-attorney/:id',
     name: 'automation.power-of-attorney.detail',
     meta: {
       title: setTitle('Power Of Attorney Detail'),
-      authRequired: true
+      authRequired: true,
     },
-    component: () => import('@/views/automation/PowerOfAttorneyDetail.vue')
+    component: () => import('@/views/automation/PowerOfAttorneyDetail.vue'),
   },
   {
     path: '/automation/tender-securing-declaration',
     name: 'automation.tender-securing-declaration',
     meta: {
       title: setTitle('Tender Securing Declaration'),
-      authRequired: true
+      authRequired: true,
     },
-    component: () => import('@/views/automation/TenderSecuringDeclaration.vue')
+    component: () => import('@/views/automation/TenderSecuringDeclaration.vue'),
   },
   {
     path: '/automation/tender-securing-declaration/:id',
     name: 'automation.tender-securing-declaration.detail',
     meta: {
       title: setTitle('Tender Securing Declaration Detail'),
-      authRequired: true
+      authRequired: true,
     },
-    component: () => import('@/views/automation/TenderSecuringDeclarationDetail.vue')
+    component: () => import('@/views/automation/TenderSecuringDeclarationDetail.vue'),
   },
   {
     path: '/automation/litigation-history',
     name: 'automation.litigation-history',
     meta: {
       title: setTitle('Litigation History'),
-      authRequired: true
+      authRequired: true,
     },
-    component: () => import('@/views/automation/LitigationHistory.vue')
+    component: () => import('@/views/automation/LitigationHistory.vue'),
   },
   {
     path: '/automation/litigation-history/:id',
     name: 'automation.litigation-history.detail',
     meta: {
       title: setTitle('Litigation History Detail'),
-      authRequired: true
+      authRequired: true,
     },
-    component: () => import('@/views/automation/LitigationHistoryDetail.vue')
+    component: () => import('@/views/automation/LitigationHistoryDetail.vue'),
   },
   {
     path: '/automation/cover-letter',
     name: 'automation.cover-letter',
     meta: {
       title: setTitle('Cover Letter'),
-      authRequired: true
+      authRequired: true,
     },
-    component: () => import('@/views/automation/CoverLetter.vue')
+    component: () => import('@/views/automation/CoverLetter.vue'),
   },
   {
     path: '/automation/cover-letter/:id',
     name: 'automation.cover-letter.detail',
     meta: {
       title: setTitle('Cover Letter Detail'),
-      authRequired: true
+      authRequired: true,
     },
-    component: () => import('@/views/automation/CoverLetterDetail.vue')
-  }
+    component: () => import('@/views/automation/CoverLetterDetail.vue'),
+  },
 ];
 
 export const allRoutes = [
@@ -1240,5 +1244,5 @@ export const allRoutes = [
   ...automationRoutes,
   ...authRoutes,
   ...errorRoutes,
-  { path: '/:pathMatch(.*)*', redirect: '/404' } // LAST
+  { path: '/:pathMatch(.*)*', redirect: '/404' }, // LAST
 ];

@@ -13,7 +13,7 @@ export const notificationsService = {
    * Query: ?type=, ?is_read=, ?page=, ?page_size=
    */
   list(params = {}) {
-    return api.get('notifications/', { params }).then(r => r.data);
+    return api.get('notifications/', { params }).then((r) => r.data);
   },
 
   /**
@@ -25,7 +25,7 @@ export const notificationsService = {
     if (notificationType === 'tender') {
       return tenderNotificationsService.markAsRead(id);
     }
-    return api.patch(`notifications/${id}/`, { is_read: true }).then(r => r.data);
+    return api.patch(`notifications/${id}/`, { is_read: true }).then((r) => r.data);
   },
 
   /** Mark all as read (client-side: call markAsRead for each). Pass items with id and optional notification_type. */
@@ -33,7 +33,9 @@ export const notificationsService = {
     const list = Array.isArray(items) ? items : items.map((id) => ({ id }));
     await Promise.all(
       list.map((item) =>
-        typeof item === 'object' ? this.markAsRead(item.id, item.notification_type) : this.markAsRead(item)
+        typeof item === 'object'
+          ? this.markAsRead(item.id, item.notification_type)
+          : this.markAsRead(item)
       )
     );
   },

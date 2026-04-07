@@ -1,4 +1,4 @@
-import type { ApexChartType } from '@/types'
+import type { ApexChartType } from '@/types';
 
 export const basicPolarAreaChart: ApexChartType = {
   height: 380,
@@ -7,17 +7,17 @@ export const basicPolarAreaChart: ApexChartType = {
   options: {
     chart: {
       height: 380,
-      type: 'polarArea'
+      type: 'polarArea',
     },
     stroke: {
-      colors: ['#fff']
+      colors: ['#fff'],
     },
     fill: {
-      opacity: 0.8
+      opacity: 0.8,
     },
     labels: ['Vote A', 'Vote B', 'Vote C', 'Vote D', 'Vote E', 'Vote F'],
     legend: {
-      position: 'bottom'
+      position: 'bottom',
     },
     colors: ['#1e84c4', '#53389f', '#7f56da', '#ff86c8', '#ed5565', '#23c6c8'],
     responsive: [
@@ -25,16 +25,16 @@ export const basicPolarAreaChart: ApexChartType = {
         breakpoint: 480,
         options: {
           chart: {
-            width: 200
+            width: 200,
           },
           legend: {
-            position: 'bottom'
-          }
-        }
-      }
-    ]
-  }
-}
+            position: 'bottom',
+          },
+        },
+      },
+    ],
+  },
+};
 
 export const monochromePolarAreaChart: ApexChartType = {
   height: 380,
@@ -43,38 +43,38 @@ export const monochromePolarAreaChart: ApexChartType = {
   options: {
     chart: {
       height: 380,
-      type: 'polarArea'
+      type: 'polarArea',
     },
     labels: ['Rose A', 'Rose B', 'Rose C', 'Rose D', 'Rose E'],
     fill: {
-      opacity: 1
+      opacity: 1,
     },
     stroke: {
-      width: 1
+      width: 1,
     },
     yaxis: {
-      show: false
+      show: false,
     },
     legend: {
-      position: 'bottom'
+      position: 'bottom',
     },
     plotOptions: {
       polarArea: {
         rings: {
-          strokeWidth: 0
+          strokeWidth: 0,
         },
         spokes: {
-          strokeWidth: 0
-        }
-      }
+          strokeWidth: 0,
+        },
+      },
     },
     theme: {
       monochrome: {
         enabled: true,
         shadeTo: 'light',
         color: '#727cf5',
-        shadeIntensity: 0.6
-      }
-    }
-  }
-}
+        shadeIntensity: 0.6,
+      },
+    },
+  },
+};

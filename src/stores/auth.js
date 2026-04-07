@@ -12,11 +12,11 @@ export const useAuthStore = defineStore('auth', {
 
     const isSuperAdmin = user?.is_superuser === true;
     const isStaffUser = user?.is_staff === true;
-    const isCompanyOwner = (companies || []).some(c =>
-      (c.company_users || []).some(cu => (cu.user?.id === user?.id) && cu.role === 'owner')
+    const isCompanyOwner = (companies || []).some((c) =>
+      (c.company_users || []).some((cu) => cu.user?.id === user?.id && cu.role === 'owner')
     );
-    const isCompanyAdmin = (companies || []).some(c =>
-      (c.company_users || []).some(cu => (cu.user?.id === user?.id) && cu.role === 'admin')
+    const isCompanyAdmin = (companies || []).some((c) =>
+      (c.company_users || []).some((cu) => cu.user?.id === user?.id && cu.role === 'admin')
     );
     const isCompanyMember = (companies || []).length > 0;
     const isNormalUser = isCompanyMember && !isCompanyOwner && !isCompanyAdmin;
@@ -84,7 +84,7 @@ export const useAuthStore = defineStore('auth', {
           clearInterval(this.refreshIntervalId);
           this.refreshIntervalId = null;
         }
-        
+
         await authService.logout();
         this.user = null;
         this.token = null;
@@ -152,11 +152,11 @@ export const useAuthStore = defineStore('auth', {
     updateRoles() {
       this.isSuperAdmin = this.user?.is_superuser === true;
       this.isStaffUser = this.user?.is_staff === true;
-      this.isCompanyOwner = (this.companies ?? []).some(c =>
-        (c.company_users ?? []).some(cu => cu.user?.id === this.user?.id && cu.role === 'owner')
+      this.isCompanyOwner = (this.companies ?? []).some((c) =>
+        (c.company_users ?? []).some((cu) => cu.user?.id === this.user?.id && cu.role === 'owner')
       );
-      this.isCompanyAdmin = (this.companies ?? []).some(c =>
-        (c.company_users ?? []).some(cu => cu.user?.id === this.user?.id && cu.role === 'admin')
+      this.isCompanyAdmin = (this.companies ?? []).some((c) =>
+        (c.company_users ?? []).some((cu) => cu.user?.id === this.user?.id && cu.role === 'admin')
       );
       this.isCompanyMember = (this.companies ?? []).length > 0;
       this.isNormalUser = this.isCompanyMember && !this.isCompanyOwner && !this.isCompanyAdmin;
@@ -172,9 +172,7 @@ export const useAuthStore = defineStore('auth', {
         !this.isCompanyOwner
       ) {
         const firstCompany = this.companies[0];
-        const companyUser = firstCompany.company_users?.find(
-          cu => cu.user?.id === this.user?.id
-        );
+        const companyUser = firstCompany.company_users?.find((cu) => cu.user?.id === this.user?.id);
         if (companyUser) {
           companyUser.role = 'owner';
           this.isCompanyOwner = true;
@@ -210,7 +208,7 @@ export const useAuthStore = defineStore('auth', {
       if (this.refreshIntervalId) {
         clearInterval(this.refreshIntervalId);
       }
-      
+
       this.refreshIntervalId = setInterval(async () => {
         if (this.isAuthenticated) {
           try {

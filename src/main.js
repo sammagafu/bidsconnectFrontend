@@ -61,8 +61,6 @@ import 'apexcharts/dist/apexcharts.css';
 import 'nouislider/dist/nouislider.css';
 import 'gridjs/dist/theme/mermaid.min.css';
 import 'choices.js/src/styles/choices.scss';
-import '@vueup/vue-quill/dist/vue-quill.snow.css';
-import '@vueup/vue-quill/dist/vue-quill.bubble.css';
 import 'bootstrap-vue-next/dist/bootstrap-vue-next.css';
 import '@/assets/scss/app.scss';
 import '@/assets/scss/icons.scss';
@@ -121,17 +119,17 @@ app.config.errorHandler = (err, instance, info) => {
     console.error('Global error:', err);
     console.error('Error info:', info);
   }
-  
+
   // Send to error tracking service in production
   // e.g., Sentry, LogRocket, etc.
-  
+
   // Show user-friendly error message
   if (instance?.$toast) {
     instance.$toast.add({
       severity: 'error',
       summary: 'Application Error',
       detail: 'An unexpected error occurred. Please try again.',
-      life: 5000
+      life: 5000,
     });
   }
 };

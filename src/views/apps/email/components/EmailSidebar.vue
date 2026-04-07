@@ -7,24 +7,51 @@
 
       <div class="nav flex-column mt-3" id="email-tab" role="tablist" aria-orientation="vertical">
         <template v-for="(item, idx) in navLinkData" :key="idx">
-          <a class="nav-link px-0 py-1" :class="showTab === item.link && 'active'" :id="`${item.link}-tab`" href="#" @click="props.filterMails(item.category, item.link)" v-if="!item.isLabel && !item.isTitle">
+          <a
+            class="nav-link px-0 py-1"
+            :class="showTab === item.link && 'active'"
+            :id="`${item.link}-tab`"
+            href="#"
+            @click="props.filterMails(item.category, item.link)"
+            v-if="!item.isLabel && !item.isTitle"
+          >
             <template v-if="!idx">
               <span class="text-danger fw-bold">
                 <i class="bx bxs-inbox fs-16 me-2 align-middle"></i>{{ item.title }}
-                <b-badge :variant="null" class="float-end ms-2" :class="`badge-soft-${item.badgeVariant}`" v-if="item.badge">
+                <b-badge
+                  :variant="null"
+                  class="float-end ms-2"
+                  :class="`badge-soft-${item.badgeVariant}`"
+                  v-if="item.badge"
+                >
                   {{ item.badge }}
                 </b-badge>
               </span>
             </template>
             <template v-else>
               <i class="bx fs-16 align-middle me-2" :class="item.icon"></i>{{ item.title }}
-              <b-badge :variant="null" class="float-end ms-2" :class="`badge-soft-${item.badgeVariant}`" v-if="item.badge">
+              <b-badge
+                :variant="null"
+                class="float-end ms-2"
+                :class="`badge-soft-${item.badgeVariant}`"
+                v-if="item.badge"
+              >
                 {{ item.badge }}
               </b-badge>
             </template>
           </a>
           <h6 class="text-uppercase mt-4" v-if="item.isTitle">{{ item.title }}</h6>
-          <a class="nav-link px-0 py-1" :class="showTab === item.link && 'active'" :id="`${item.link}-tab`" href="#" @click="props.filterMails(item.category, item.link)" v-if="item.isLabel"> <i class="bx bxs-circle font-13 me-2" :class="`text-${item.variant}`"></i>{{ item.title }} </a>
+          <a
+            class="nav-link px-0 py-1"
+            :class="showTab === item.link && 'active'"
+            :id="`${item.link}-tab`"
+            href="#"
+            @click="props.filterMails(item.category, item.link)"
+            v-if="item.isLabel"
+          >
+            <i class="bx bxs-circle font-13 me-2" :class="`text-${item.variant}`"></i
+            >{{ item.title }}
+          </a>
         </template>
       </div>
 
@@ -37,7 +64,17 @@
     </b-card-body>
   </simplebar>
 
-  <b-modal v-model="modal" modal-class="compose-mail" size="lg" title="New Message" header-class="overflow-hidden bg-primary p-2" dialog-class="modal-lg" title-class="text-white" body-class="p-4" hide-footer>
+  <b-modal
+    v-model="modal"
+    modal-class="compose-mail"
+    size="lg"
+    title="New Message"
+    header-class="overflow-hidden bg-primary p-2"
+    dialog-class="modal-lg"
+    title-class="text-white"
+    body-class="p-4"
+    hide-footer
+  >
     <div class="overflow-hidden">
       <div class="mb-2">
         <input type="email" class="form-control" id="toEmail" placeholder="To: " />
@@ -47,12 +84,17 @@
       </div>
 
       <div class="my-2">
-        <QuillEditor theme="snow" :toolbar="toolbar" style="height: 200px" content="" content-type="html" />
+        <textarea class="form-control" rows="8" v-model="message"></textarea>
       </div>
 
       <div class="d-flex float-end">
         <DropDown custom-class="dropdown me-1">
-          <a href="javascript:void(0);" class="dropdown-toggle arrow-none btn btn-light" data-bs-toggle="dropdown" aria-expanded="false">
+          <a
+            href="javascript:void(0);"
+            class="dropdown-toggle arrow-none btn btn-light"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
             <i class="bx bx-dots-vertical-rounded fs-18"></i>
           </a>
           <div class="dropdown-menu dropdown-menu-up">
@@ -64,7 +106,9 @@
             <a href="javascript:void(0);" class="dropdown-item">Smart Compose Feedback</a>
           </div>
         </DropDown>
-        <a href="javascript: void(0);" class="btn btn-light compose-close"><i class="bx bxs-trash fs-18"></i></a>
+        <a href="javascript: void(0);" class="btn btn-light compose-close"
+          ><i class="bx bxs-trash fs-18"></i
+        ></a>
       </div>
       <div>
         <a href="javascript: void(0);" class="btn btn-primary">Send</a>
@@ -73,19 +117,17 @@
   </b-modal>
 </template>
 <script setup lang="ts">
-import { ref } from 'vue'
-import simplebar from 'simplebar-vue'
-import { QuillEditor } from '@vueup/vue-quill'
-import { navLinkData } from '@/views/apps/email/components/data'
-import DropDown from '@/components/DropDown.vue'
+import { ref } from 'vue';
+import simplebar from 'simplebar-vue';
+import { navLinkData } from '@/views/apps/email/components/data';
+import DropDown from '@/components/DropDown.vue';
 
-const toolbar = [[{ font: [] }, { size: [] }], ['bold', 'italic', 'underline', 'strike'], [{ color: [] }, { background: [] }], [{ script: 'super' }, { script: 'sub' }], [{ header: [false, 1, 2, 3, 4, 5, 6] }, 'blockquote', 'code-block'], [{ list: 'ordered' }, { list: 'bullet' }, { indent: '-1' }, { indent: '+1' }], ['direction', { align: [] }], ['link', 'image', 'video'], ['clean']]
-
-const modal = ref(false)
+const modal = ref(false);
+const message = ref('');
 
 const toggleModal = () => {
-  modal.value = !modal.value
-}
+  modal.value = !modal.value;
+};
 
-const props = defineProps(['filterMails', 'showTab'])
+const props = defineProps(['filterMails', 'showTab']);
 </script>

@@ -4,7 +4,8 @@
       <b-col xl="9">
         <b-card no-body>
           <b-card-body>
-            <b-card-title tag="h5" class="mb-1 anchor" id="basic-example"> Basic Example 
+            <b-card-title tag="h5" class="mb-1 anchor" id="basic-example">
+              Basic Example
               <a class="anchor-link" href="#basic-example">#</a>
             </b-card-title>
 
@@ -45,7 +46,8 @@
 
         <b-card no-body>
           <b-card-body>
-            <b-card-title tag="h5" class="mb-1 anchor" id="rounded-circle"> Rounded Circle 
+            <b-card-title tag="h5" class="mb-1 anchor" id="rounded-circle">
+              Rounded Circle
               <a class="anchor-link" href="#rounded-circle">#</a>
             </b-card-title>
 
@@ -76,7 +78,8 @@
 
         <b-card no-body>
           <b-card-body>
-            <b-card-title tag="h5" class="mb-1 anchor" id="images-shapes"> Images Shapes
+            <b-card-title tag="h5" class="mb-1 anchor" id="images-shapes">
+              Images Shapes
               <a class="anchor-link" href="#">#</a>
             </b-card-title>
             <p class="text-muted font-14 mb-3">Avatars with different sizes and shapes.</p>
@@ -111,7 +114,12 @@
               </div>
 
               <div>
-                <img :src="avatar8" alt="img" class="img-fluid rounded-circle img-thumbnail" width="120" />
+                <img
+                  :src="avatar8"
+                  alt="img"
+                  class="img-fluid rounded-circle img-thumbnail"
+                  width="120"
+                />
                 <p class="mb-0">
                   <code>.rounded-circle .img-thumbnail</code>
                 </p>
@@ -129,7 +137,7 @@
 </template>
 
 <script lang="ts" setup>
-import VerticalLayout from "@/layouts/VerticalLayout.vue";
+import VerticalLayout from '@/layouts/VerticalLayout.vue';
 
 import AnchorNavigation from '@/components/AnchorNavigation.vue';
 
@@ -148,15 +156,15 @@ import smallImg3 from '@/assets/images/small/img-3.jpg';
 const anchorNavigation = [
   {
     id: 'basic-example',
-    title: 'Basic Example'
+    title: 'Basic Example',
   },
   {
     id: 'rounded-circle',
-    title: 'Rounded Circle'
+    title: 'Rounded Circle',
   },
   {
     id: 'images-shapes',
-    title: 'Images Shapes'
-  }
+    title: 'Images Shapes',
+  },
 ];
 </script>

@@ -15,12 +15,20 @@
               <b-row class="g-2 align-items-end">
                 <b-col md="3">
                   <b-form-group label="Status">
-                    <b-form-select v-model="filters.status" :options="statusOptions" @change="fetchTasks" />
+                    <b-form-select
+                      v-model="filters.status"
+                      :options="statusOptions"
+                      @change="fetchTasks"
+                    />
                   </b-form-group>
                 </b-col>
                 <b-col md="3">
                   <b-form-group label="Assignee">
-                    <b-form-select v-model="filters.assignee" :options="assigneeOptions" @change="fetchTasks" />
+                    <b-form-select
+                      v-model="filters.assignee"
+                      :options="assigneeOptions"
+                      @change="fetchTasks"
+                    />
                   </b-form-group>
                 </b-col>
                 <b-col md="2">
@@ -45,11 +53,20 @@
                         <b-badge :variant="statusVariant(task.status)">{{ task.status }}</b-badge>
                         <strong>{{ task.title }}</strong>
                       </div>
-                      <p v-if="task.description" class="mb-1 text-muted small">{{ task.description }}</p>
+                      <p v-if="task.description" class="mb-1 text-muted small">
+                        {{ task.description }}
+                      </p>
                       <small class="text-muted">
                         Assignee: {{ task.assignee?.email || 'Unassigned' }}
                         <span v-if="task.due_date"> · Due: {{ formatDate(task.due_date) }}</span>
-                        <span v-if="task.tender"> · Tender: {{ typeof task.tender === 'object' ? (task.tender?.title ?? task.tender?.reference_number ?? '—') : task.tender }}</span>
+                        <span v-if="task.tender">
+                          · Tender:
+                          {{
+                            typeof task.tender === 'object'
+                              ? (task.tender?.title ?? task.tender?.reference_number ?? '—')
+                              : task.tender
+                          }}</span
+                        >
                       </small>
                     </div>
                     <div class="d-flex gap-1">
@@ -61,7 +78,10 @@
                       </b-button>
                     </div>
                   </b-list-group-item>
-                  <b-list-group-item v-if="!tasks.length && !loading" class="text-center text-muted">
+                  <b-list-group-item
+                    v-if="!tasks.length && !loading"
+                    class="text-center text-muted"
+                  >
                     No tasks. Create one to get started.
                   </b-list-group-item>
                 </b-list-group>
@@ -81,13 +101,23 @@
       </b-modal>
 
       <!-- Create/Edit Modal -->
-      <b-modal v-model="showModal" :title="editing ? 'Edit Task' : 'New Task'" @hide="resetForm" hide-footer>
+      <b-modal
+        v-model="showModal"
+        :title="editing ? 'Edit Task' : 'New Task'"
+        @hide="resetForm"
+        hide-footer
+      >
         <b-form @submit.prevent="submitTask">
           <b-form-group label="Title" label-for="task-title">
             <b-form-input id="task-title" v-model="form.title" required placeholder="Task title" />
           </b-form-group>
           <b-form-group label="Description" label-for="task-desc">
-            <b-form-textarea id="task-desc" v-model="form.description" rows="3" placeholder="Optional description" />
+            <b-form-textarea
+              id="task-desc"
+              v-model="form.description"
+              rows="3"
+              placeholder="Optional description"
+            />
           </b-form-group>
           <b-form-group label="Assignee" label-for="task-assignee">
             <b-form-select id="task-assignee" v-model="form.assignee" :options="assigneeOptions" />
@@ -101,7 +131,7 @@
           <div class="d-flex justify-content-end gap-2 mt-3">
             <b-button variant="secondary" @click="showModal = false">Cancel</b-button>
             <b-button variant="primary" type="submit" :disabled="saving">
-              {{ saving ? 'Saving...' : (editing ? 'Update' : 'Create') }}
+              {{ saving ? 'Saving...' : editing ? 'Update' : 'Create' }}
             </b-button>
           </div>
         </b-form>
@@ -152,9 +182,13 @@ const statusOptions = [
 const companyMembers = ref([]);
 const assigneeOptions = computed(() => {
   const opts = [{ value: null, text: 'Unassigned' }];
-  (companyMembers.value || []).forEach(m => {
+  (companyMembers.value || []).forEach((m) => {
     const u = m.user;
-    if (u) opts.push({ value: u.id, text: u.email || `${u.first_name || ''} ${u.last_name || ''}`.trim() || 'User' });
+    if (u)
+      opts.push({
+        value: u.id,
+        text: u.email || `${u.first_name || ''} ${u.last_name || ''}`.trim() || 'User',
+      });
   });
   return opts;
 });
@@ -186,9 +220,13 @@ async function fetchTasks() {
     if (filters.value.status) params.status = filters.value.status;
     if (filters.value.assignee) params.assignee = filters.value.assignee;
     const data = await tasksService.list(companyId.value, params);
-    tasks.value = Array.isArray(data) ? data : (data.results || []);
+    tasks.value = Array.isArray(data) ? data : data.results || [];
   } catch (e) {
-    toast.add({ severity: 'error', summary: 'Error', detail: parseApiError(e) || 'Could not load tasks.' });
+    toast.add({
+      severity: 'error',
+      summary: 'Error',
+      detail: parseApiError(e) || 'Could not load tasks.',
+    });
     tasks.value = [];
   } finally {
     loading.value = false;
@@ -240,7 +278,11 @@ async function submitTask() {
     showModal.value = false;
     fetchTasks();
   } catch (e) {
-    toast.add({ severity: 'error', summary: 'Error', detail: parseApiError(e) || 'Operation failed.' });
+    toast.add({
+      severity: 'error',
+      summary: 'Error',
+      detail: parseApiError(e) || 'Operation failed.',
+    });
   } finally {
     saving.value = false;
   }
@@ -261,7 +303,11 @@ async function doDelete() {
     taskToDelete.value = null;
     fetchTasks();
   } catch (e) {
-    toast.add({ severity: 'error', summary: 'Error', detail: parseApiError(e) || 'Delete failed.' });
+    toast.add({
+      severity: 'error',
+      summary: 'Error',
+      detail: parseApiError(e) || 'Delete failed.',
+    });
   } finally {
     deleting.value = false;
   }

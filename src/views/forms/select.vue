@@ -6,8 +6,12 @@
           <b-row>
             <b-col lg="6">
               <b-form-group>
-                <ChoicesSelect id="choices-single-default" v-model="basicSelected" :options="options1"
-                  class="form-control" />
+                <ChoicesSelect
+                  id="choices-single-default"
+                  v-model="basicSelected"
+                  :options="options1"
+                  class="form-control"
+                />
               </b-form-group>
             </b-col>
           </b-row>
@@ -17,8 +21,12 @@
           <b-row>
             <b-col lg="6">
               <b-form-group>
-                <ChoicesSelect id="choices-single-groups" label="Option Groups" class="form-control"
-                  v-model="optionGrpSelected">
+                <ChoicesSelect
+                  id="choices-single-groups"
+                  label="Option Groups"
+                  class="form-control"
+                  v-model="optionGrpSelected"
+                >
                   <option value="">Choose a city</option>
                   <optgroup label="UK">
                     <option value="London">London</option>
@@ -60,19 +68,32 @@
           <b-row>
             <b-col lg="6">
               <b-form-group>
-                <ChoicesSelect id="choices-single-no-search" v-model="noSearchSelected" :options="options2"
-                  :choice-options="{ searchEnabled: false }" class="form-control" />
+                <ChoicesSelect
+                  id="choices-single-no-search"
+                  v-model="noSearchSelected"
+                  :options="options2"
+                  :choice-options="{ searchEnabled: false }"
+                  class="form-control"
+                />
               </b-form-group>
             </b-col>
           </b-row>
         </UIComponentCard>
 
-        <UIComponentCard title="Options added via config with no sorting" id="options-add-no-sorting">
+        <UIComponentCard
+          title="Options added via config with no sorting"
+          id="options-add-no-sorting"
+        >
           <b-row>
             <b-col lg="6">
               <b-form-group>
-                <ChoicesSelect id="choices-single-no-sorting" v-model="noSortingSelected" :options="options3"
-                  :choice-options="{ shouldSort: false, shouldSortItems: false }" class="form-control" />
+                <ChoicesSelect
+                  id="choices-single-no-sorting"
+                  v-model="noSortingSelected"
+                  :options="options3"
+                  :choice-options="{ shouldSort: false, shouldSortItems: false }"
+                  class="form-control"
+                />
               </b-form-group>
             </b-col>
           </b-row>
@@ -82,8 +103,13 @@
           <b-row>
             <b-col lg="6">
               <b-form-group>
-                <ChoicesSelect id="choices-multiple-default" v-model="multipleSelected" :options="options4"
-                  class="form-control" multiple />
+                <ChoicesSelect
+                  id="choices-multiple-default"
+                  v-model="multipleSelected"
+                  :options="options4"
+                  class="form-control"
+                  multiple
+                />
               </b-form-group>
             </b-col>
           </b-row>
@@ -93,8 +119,14 @@
           <b-row>
             <b-col lg="6">
               <b-form-group>
-                <ChoicesSelect id="choices-multiple-remove-button" v-model="multipleWithRemoveSelected"
-                  :options="options4" :choice-options="{ removeItemButton: true }" class="form-control" multiple />
+                <ChoicesSelect
+                  id="choices-multiple-remove-button"
+                  v-model="multipleWithRemoveSelected"
+                  :options="options4"
+                  :choice-options="{ removeItemButton: true }"
+                  class="form-control"
+                  multiple
+                />
               </b-form-group>
             </b-col>
           </b-row>
@@ -104,8 +136,12 @@
           <b-row>
             <b-col lg="6">
               <b-form-group>
-                <ChoicesSelect id="choices-multiple-groups" v-model="multipleWithOptionGrpSelected" class="form-control"
-                  multiple>
+                <ChoicesSelect
+                  id="choices-multiple-groups"
+                  v-model="multipleWithOptionGrpSelected"
+                  class="form-control"
+                  multiple
+                >
                   <optgroup label="UK">
                     <option value="London">London</option>
                     <option value="Manchester">Manchester</option>
@@ -146,8 +182,12 @@
           <b-row>
             <b-col lg="6">
               <b-form-group>
-                <ChoicesInput id="choices-text-remove-button" label="Set limit values with remove button"
-                  class="form-control" :choice-options="{ removeItemButton: true, maxItemCount: 3 }" />
+                <ChoicesInput
+                  id="choices-text-remove-button"
+                  label="Set limit values with remove button"
+                  class="form-control"
+                  :choice-options="{ removeItemButton: true, maxItemCount: 3 }"
+                />
               </b-form-group>
             </b-col>
           </b-row>
@@ -157,14 +197,17 @@
           <b-row>
             <b-col lg="6">
               <b-form-group>
-                <ChoicesInput id="choices-text-unique-values" label="Unique values only, no pasting"
-                  class="form-control" value="Project-A, Project-B"
-                  :choice-options="{ duplicateItemsAllowed: false, paste: false }" />
+                <ChoicesInput
+                  id="choices-text-unique-values"
+                  label="Unique values only, no pasting"
+                  class="form-control"
+                  value="Project-A, Project-B"
+                  :choice-options="{ duplicateItemsAllowed: false, paste: false }"
+                />
               </b-form-group>
             </b-col>
           </b-row>
         </UIComponentCard>
-
       </b-col>
 
       <b-col xl="3">
@@ -179,46 +222,46 @@ import AnchorNavigation from '@/components/AnchorNavigation.vue';
 import ChoicesInput from '@/components/ChoicesInput.vue';
 import ChoicesSelect from '@/components/ChoicesSelect.vue';
 import { ref } from 'vue';
-import VerticalLayout from "@/layouts/VerticalLayout.vue";
-import UIComponentCard from "@/components/UIComponentCard.vue";
+import VerticalLayout from '@/layouts/VerticalLayout.vue';
+import UIComponentCard from '@/components/UIComponentCard.vue';
 
 const anchorNavigation = [
   {
     id: 'basic',
-    title: 'Basic Example'
+    title: 'Basic Example',
   },
   {
     id: 'options-group',
-    title: 'Option Groups Example'
+    title: 'Option Groups Example',
   },
   {
     id: 'options-add-no-search',
-    title: 'Options added via config with no search'
+    title: 'Options added via config with no search',
   },
   {
     id: 'options-add-no-sorting',
-    title: 'Options added via config with no sorting'
+    title: 'Options added via config with no sorting',
   },
   {
     id: 'multiple-select',
-    title: 'Multiple select input'
+    title: 'Multiple select input',
   },
   {
     id: 'multiple-select-remove',
-    title: 'Multiple select With remove button input '
+    title: 'Multiple select With remove button input ',
   },
   {
     id: 'multiple-groups',
-    title: 'Multiple select With Option groups '
+    title: 'Multiple select With Option groups ',
   },
   {
     id: 'text-input',
-    title: 'Text inputs'
+    title: 'Text inputs',
   },
   {
     id: 'unique-values',
-    title: 'Text inputs in Unique values only, no pasting'
-  }
+    title: 'Text inputs in Unique values only, no pasting',
+  },
 ];
 
 const basicSelected = ref('');
@@ -234,7 +277,7 @@ const options1 = [
   { value: 'choice-1', text: 'Choice 1' },
   { value: 'choice-2', text: 'Choice 2' },
   { value: 'choice-3', text: 'Choice 3' },
-  { value: 'choice-4', text: 'Choice 4' }
+  { value: 'choice-4', text: 'Choice 4' },
 ];
 
 const options2 = [
@@ -244,7 +287,7 @@ const options2 = [
   { value: 'Three', text: 'Three' },
   { value: 'Four', text: 'Four' },
   { value: 'Five', text: 'Five' },
-  { value: 'Six', text: 'Six' }
+  { value: 'Six', text: 'Six' },
 ];
 
 const options3 = [
@@ -266,13 +309,13 @@ const options3 = [
   { value: 'Berlin', text: 'Berlin' },
   { value: 'Montreal', text: 'Montreal' },
   { value: 'New York', text: 'New York' },
-  { value: 'Michigan', text: 'Michigan' }
+  { value: 'Michigan', text: 'Michigan' },
 ];
 
 const options4 = [
   { value: 'choice-1', text: 'Choice 1' },
   { value: 'choice-2', text: 'Choice 2' },
   { value: 'choice-3', text: 'Choice 3' },
-  { value: 'choice-4', text: 'Choice 4' }
+  { value: 'choice-4', text: 'Choice 4' },
 ];
 </script>

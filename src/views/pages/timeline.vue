@@ -12,8 +12,12 @@
               </div>
             </article>
 
-            <article class="timeline-item" v-for="(event, idx) in item.events" :key="idx"
-              :class="event.side === 'left' && 'timeline-item-left'">
+            <article
+              class="timeline-item"
+              v-for="(event, idx) in item.events"
+              :key="idx"
+              :class="event.side === 'left' && 'timeline-item-left'"
+            >
               <div class="timeline-desk">
                 <div class="timeline-box clearfix">
                   <span class="timeline-icon"></span>
@@ -22,8 +26,12 @@
                       <b-card-body>
                         <h5 class="mt-0 fs-16">
                           {{ event.title }}
-                          <b-badge variant="secondary" class="ms-1 align-items-center" v-if="event.badge">{{ event.badge
-                            }}</b-badge>
+                          <b-badge
+                            variant="secondary"
+                            class="ms-1 align-items-center"
+                            v-if="event.badge"
+                            >{{ event.badge }}</b-badge
+                          >
                         </h5>
                         <p class="text-muted mb-0">
                           {{ event.description }}

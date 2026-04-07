@@ -1,5 +1,8 @@
 <template>
-  <router-link :class="`${currentRouteName === item.route?.name && 'active'} ${className}`" :to="{ name: item.route?.name, params: item.route?.params }">
+  <router-link
+    :class="`${currentRouteName === item.route?.name && 'active'} ${className}`"
+    :to="{ name: item.route?.name, params: item.route?.params }"
+  >
     <span v-if="item.icon" class="nav-icon">
       <Icon :icon="item.icon" />
     </span>
@@ -11,11 +14,11 @@
 </template>
 
 <script setup lang="ts">
-import type { SubMenus } from '@/types/menu'
-import { Icon } from '@iconify/vue'
-import router from '@/router'
+import type { SubMenus } from '@/types/menu';
+import { Icon } from '@iconify/vue';
+import router from '@/router';
 
-defineProps<SubMenus>()
+defineProps<SubMenus>();
 
-const currentRouteName = router.currentRoute.value.name
+const currentRouteName = router.currentRoute.value.name;
 </script>

@@ -12,10 +12,18 @@
               </b-col>
               <b-col lg="6">
                 <div class="p-4">
-                  <LogoBox customClass="mx-auto mb-4 text-center auth-logo" :smLogoHeight="30" :logoHeight="24" smLogoClass="me-1" />
-                  <h2 class="fw-bold text-center lh-base">We are currently performing maintenance</h2>
-                  <p class="text-muted text-center mt-1 mb-4">We're making the system more awesome. We'll be back
-                    shortly.</p>
+                  <LogoBox
+                    customClass="mx-auto mb-4 text-center auth-logo"
+                    :smLogoHeight="30"
+                    :logoHeight="24"
+                    smLogoClass="me-1"
+                  />
+                  <h2 class="fw-bold text-center lh-base">
+                    We are currently performing maintenance
+                  </h2>
+                  <p class="text-muted text-center mt-1 mb-4">
+                    We're making the system more awesome. We'll be back shortly.
+                  </p>
 
                   <div class="text-center">
                     <a href="#" class="btn btn-success">Contact Us</a>

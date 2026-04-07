@@ -135,11 +135,7 @@
             </b-form-group>
           </b-col>
           <b-col cols="12" class="mb-3">
-            <b-form-checkbox
-              id="is_headquarters"
-              v-model="form.is_headquarters"
-              switch
-            >
+            <b-form-checkbox id="is_headquarters" v-model="form.is_headquarters" switch>
               Is Headquarters
             </b-form-checkbox>
           </b-col>
@@ -155,19 +151,19 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted, watch } from 'vue'
-import { useToast } from 'primevue/usetoast'
-import { useAuthStore } from '@/stores/auth'
-import { api } from '@/services/authService'
-import VerticalLayout from '@/layouts/VerticalLayout.vue'
+import { ref, reactive, onMounted, watch } from 'vue';
+import { useToast } from 'primevue/usetoast';
+import { useAuthStore } from '@/stores/auth';
+import { api } from '@/services/authService';
+import VerticalLayout from '@/layouts/VerticalLayout.vue';
 
-const toast = useToast()
-const authStore = useAuthStore()
-const companyId = ref(authStore.user?.companies?.[0]?.id || null)
+const toast = useToast();
+const authStore = useAuthStore();
+const companyId = ref(authStore.user?.companies?.[0]?.id || null);
 
-const items = ref([])
-const showDialog = ref(false)
-const editing = ref(false)
+const items = ref([]);
+const showDialog = ref(false);
+const editing = ref(false);
 
 // form model
 const form = reactive({
@@ -178,11 +174,11 @@ const form = reactive({
   country: '',
   postal_code: '',
   phone_number: '',
-  is_headquarters: false
-})
+  is_headquarters: false,
+});
 
 // form errors
-const formErrors = reactive({})
+const formErrors = reactive({});
 
 const fields = [
   { key: 'index', label: 'No', thStyle: { width: '4em' } },
@@ -193,30 +189,36 @@ const fields = [
   { key: 'is_headquarters', label: 'Headquarters' },
   { key: 'created_at', label: 'Created At', formatter: 'formatDateTime' },
   { key: 'updated_at', label: 'Updated At', formatter: 'formatDateTime' },
-  { key: 'actions', label: '', thStyle: { width: '8em' } }
-]
+  { key: 'actions', label: '', thStyle: { width: '8em' } },
+];
 
 function formatDateTime(value) {
-  if (!value) return '—'
-  const date = new Date(value)
-  return date.toLocaleString('en-US', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })
+  if (!value) return '—';
+  const date = new Date(value);
+  return date.toLocaleString('en-US', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  });
 }
 
 async function fetchItems(id) {
-  if (!id) return
+  if (!id) return;
   try {
-    const { data } = await api.get(`accounts/companies/${id}/offices/`)
-    items.value = data
+    const { data } = await api.get(`accounts/companies/${id}/offices/`);
+    items.value = data;
   } catch {
-    toast.add({ severity: 'error', summary: 'Error', detail: 'Could not load offices.' })
+    toast.add({ severity: 'error', summary: 'Error', detail: 'Could not load offices.' });
   }
 }
 
-onMounted(() => fetchItems(companyId.value))
-watch(companyId, fetchItems)
+onMounted(() => fetchItems(companyId.value));
+watch(companyId, fetchItems);
 
 function openNew() {
-  editing.value = false
+  editing.value = false;
   Object.assign(form, {
     id: null,
     name: '',
@@ -225,62 +227,66 @@ function openNew() {
     country: '',
     postal_code: '',
     phone_number: '',
-    is_headquarters: false
-  })
-  Object.assign(formErrors, {})
-  showDialog.value = true
+    is_headquarters: false,
+  });
+  Object.assign(formErrors, {});
+  showDialog.value = true;
 }
 
 function onEdit(item) {
-  editing.value = true
-  Object.assign(form, item)
-  Object.assign(formErrors, {})
-  showDialog.value = true
+  editing.value = true;
+  Object.assign(form, item);
+  Object.assign(formErrors, {});
+  showDialog.value = true;
 }
 
 async function save() {
-  formErrors.name = form.name ? undefined : 'Name is required'
-  formErrors.address = form.address ? undefined : 'Address is required'
-  formErrors.city = form.city ? undefined : 'City is required'
-  formErrors.country = form.country ? undefined : 'Country is required'
-  formErrors.postal_code = undefined
-  formErrors.phone_number = undefined
+  formErrors.name = form.name ? undefined : 'Name is required';
+  formErrors.address = form.address ? undefined : 'Address is required';
+  formErrors.city = form.city ? undefined : 'City is required';
+  formErrors.country = form.country ? undefined : 'Country is required';
+  formErrors.postal_code = undefined;
+  formErrors.phone_number = undefined;
 
-  if (Object.values(formErrors).some(err => err)) {
-    toast.add({ severity: 'warn', summary: 'Validation Error', detail: 'Please fill all required fields correctly.' })
-    return
+  if (Object.values(formErrors).some((err) => err)) {
+    toast.add({
+      severity: 'warn',
+      summary: 'Validation Error',
+      detail: 'Please fill all required fields correctly.',
+    });
+    return;
   }
 
-  const base = `accounts/companies/${companyId.value}/offices`
+  const base = `accounts/companies/${companyId.value}/offices`;
   try {
     if (editing.value) {
-      await api.patch(`${base}/${form.id}/`, form)
-      toast.add({ severity: 'success', summary: 'Updated' })
+      await api.patch(`${base}/${form.id}/`, form);
+      toast.add({ severity: 'success', summary: 'Updated' });
     } else {
-      await api.post(`${base}/`, form)
-      toast.add({ severity: 'success', summary: 'Created' })
+      await api.post(`${base}/`, form);
+      toast.add({ severity: 'success', summary: 'Created' });
     }
-    showDialog.value = false
-    fetchItems(companyId.value)
+    showDialog.value = false;
+    fetchItems(companyId.value);
   } catch {
-    toast.add({ severity: 'error', summary: 'Error', detail: 'Save failed.' })
+    toast.add({ severity: 'error', summary: 'Error', detail: 'Save failed.' });
   }
 }
 
 async function onDelete(item) {
-  if (!confirm(`Delete office "${item.name}"?`)) return
-  const base = `accounts/companies/${companyId.value}/offices`
+  if (!confirm(`Delete office "${item.name}"?`)) return;
+  const base = `accounts/companies/${companyId.value}/offices`;
   try {
-    await api.delete(`${base}/${item.id}/`)
-    toast.add({ severity: 'success', summary: 'Deleted' })
-    fetchItems(companyId.value)
+    await api.delete(`${base}/${item.id}/`);
+    toast.add({ severity: 'success', summary: 'Deleted' });
+    fetchItems(companyId.value);
   } catch {
-    toast.add({ severity: 'error', summary: 'Error', detail: 'Delete failed.' })
+    toast.add({ severity: 'error', summary: 'Error', detail: 'Delete failed.' });
   }
 }
 
 function cancel() {
-  showDialog.value = false
+  showDialog.value = false;
 }
 </script>
 

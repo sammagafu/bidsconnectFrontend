@@ -1,19 +1,19 @@
-import { html } from 'gridjs'
+import { html } from 'gridjs';
 
 export const basicTableOptions = {
   columns: [
     {
       name: 'ID',
       formatter: function (cell: string) {
-        return html(`<span class="fw-semibold">${cell}</span>`)
-      }
+        return html(`<span class="fw-semibold">${cell}</span>`);
+      },
     },
     'Name',
     {
       name: 'Email',
       formatter: function (cell: string) {
-        return html(`<a href="">${cell}</a>`)
-      }
+        return html(`<a href="">${cell}</a>`);
+      },
     },
     'Position',
     'Company',
@@ -22,12 +22,12 @@ export const basicTableOptions = {
       name: 'Actions',
       width: '120px',
       formatter: function () {
-        return html("<a href='#' class='text-reset text-decoration-underline'>Details</a>")
-      }
-    }
+        return html("<a href='#' class='text-reset text-decoration-underline'>Details</a>");
+      },
+    },
   ],
   pagination: {
-    limit: 5
+    limit: 5,
   },
   sort: true,
   search: true,
@@ -41,9 +41,9 @@ export const basicTableOptions = {
     ['17', 'Grace', 'grace@example.com', 'Financial Analyst', 'XYZ Inc', 'Japan'],
     ['18', 'Hannah', 'hannah@example.com', 'Sales Representative', '123 Corp', 'Brazil'],
     ['19', 'Ian', 'ian@example.com', 'Software Developer', '456 Ltd', 'India'],
-    ['20', 'Jane', 'jane@example.com', 'Operations Manager', '789 Enterprises', 'China']
-  ]
-}
+    ['20', 'Jane', 'jane@example.com', 'Operations Manager', '789 Enterprises', 'China'],
+  ],
+};
 
 export const paginationTableOptions = {
   columns: [
@@ -51,8 +51,8 @@ export const paginationTableOptions = {
       name: 'ID',
       width: '120px',
       formatter: function (cell: string) {
-        return html(`<a href="" class="fw-medium">${cell}</a>`)
-      }
+        return html(`<a href="" class="fw-medium">${cell}</a>`);
+      },
     },
     'Name',
     'Date',
@@ -61,12 +61,12 @@ export const paginationTableOptions = {
       name: 'Actions',
       width: '100px',
       formatter: function () {
-        return html("<button type='button' class='btn btn-sm btn-light'> Details </button>")
-      }
-    }
+        return html("<button type='button' class='btn btn-sm btn-light'> Details </button>");
+      },
+    },
   ],
   pagination: {
-    limit: 5
+    limit: 5,
   },
 
   data: [
@@ -79,14 +79,14 @@ export const paginationTableOptions = {
     ['#RB7456', 'Grace', '04 Oct, 2024', '$26.15'],
     ['#RB3002', 'Hannah', '04 Oct, 2024', '$21.25'],
     ['#RB9857', 'Ian', '03 Oct, 2024', '$22.61'],
-    ['#RB2589', 'Jane', '03 Oct, 2024', '$25.03']
-  ]
-}
+    ['#RB2589', 'Jane', '03 Oct, 2024', '$25.03'],
+  ],
+};
 
 export const searchTableOptions = {
   columns: ['Name', 'Email', 'Position', 'Company', 'Country'],
   pagination: {
-    limit: 5
+    limit: 5,
   },
   search: true,
   data: [
@@ -99,14 +99,14 @@ export const searchTableOptions = {
     ['Grace', 'grace@example.com', 'Financial Analyst', 'XYZ Inc', 'Japan'],
     ['Hannah', 'hannah@example.com', 'Sales Representative', '123 Corp', 'Brazil'],
     ['Ian', 'ian@example.com', 'Software Developer', '456 Ltd', 'India'],
-    ['Jane', 'jane@example.com', 'Operations Manager', '789 Enterprises', 'China']
-  ]
-}
+    ['Jane', 'jane@example.com', 'Operations Manager', '789 Enterprises', 'China'],
+  ],
+};
 
 export const sortingTableOptions = {
   columns: ['Name', 'Email', 'Position', 'Company', 'Country'],
   pagination: {
-    limit: 5
+    limit: 5,
   },
   sort: true,
   data: [
@@ -119,14 +119,14 @@ export const sortingTableOptions = {
     ['Grace', 'grace@example.com', 'Financial Analyst', 'XYZ Inc', 'Japan'],
     ['Hannah', 'hannah@example.com', 'Sales Representative', '123 Corp', 'Brazil'],
     ['Ian', 'ian@example.com', 'Software Developer', '456 Ltd', 'India'],
-    ['Jane', 'jane@example.com', 'Operations Manager', '789 Enterprises', 'China']
-  ]
-}
+    ['Jane', 'jane@example.com', 'Operations Manager', '789 Enterprises', 'China'],
+  ],
+};
 
 export const loadingStateTableOptions = {
   columns: ['Name', 'Email', 'Position', 'Company', 'Country'],
   pagination: {
-    limit: 5
+    limit: 5,
   },
   sort: true,
   data: function () {
@@ -142,12 +142,12 @@ export const loadingStateTableOptions = {
           ['Grace', 'grace@example.com', 'Financial Analyst', 'XYZ Inc', 'Japan'],
           ['Hannah', 'hannah@example.com', 'Sales Representative', '123 Corp', 'Brazil'],
           ['Ian', 'ian@example.com', 'Software Developer', '456 Ltd', 'India'],
-          ['Jane', 'jane@example.com', 'Operations Manager', '789 Enterprises', 'China']
-        ])
-      }, 2000)
-    })
-  }
-}
+          ['Jane', 'jane@example.com', 'Operations Manager', '789 Enterprises', 'China'],
+        ]);
+      }, 2000);
+    });
+  },
+};
 
 export const fixedHeaderTableOptions = {
   columns: ['Name', 'Email', 'Position', 'Company', 'Country'],
@@ -165,9 +165,9 @@ export const fixedHeaderTableOptions = {
     ['Grace', 'grace@example.com', 'Financial Analyst', 'XYZ Inc', 'Japan'],
     ['Hannah', 'hannah@example.com', 'Sales Representative', '123 Corp', 'Brazil'],
     ['Ian', 'ian@example.com', 'Software Developer', '456 Ltd', 'India'],
-    ['Jane', 'jane@example.com', 'Operations Manager', '789 Enterprises', 'China']
-  ]
-}
+    ['Jane', 'jane@example.com', 'Operations Manager', '789 Enterprises', 'China'],
+  ],
+};
 
 export const hiddenColumnsTableOptions = {
   columns: [
@@ -177,11 +177,11 @@ export const hiddenColumnsTableOptions = {
     'Company',
     {
       name: 'Country',
-      hidden: true
-    }
+      hidden: true,
+    },
   ],
   pagination: {
-    limit: 5
+    limit: 5,
   },
   sort: true,
   data: [
@@ -194,6 +194,6 @@ export const hiddenColumnsTableOptions = {
     ['Grace', 'grace@example.com', 'Financial Analyst', 'XYZ Inc', 'Japan'],
     ['Hannah', 'hannah@example.com', 'Sales Representative', '123 Corp', 'Brazil'],
     ['Ian', 'ian@example.com', 'Software Developer', '456 Ltd', 'India'],
-    ['Jane', 'jane@example.com', 'Operations Manager', '789 Enterprises', 'China']
-  ]
-}
+    ['Jane', 'jane@example.com', 'Operations Manager', '789 Enterprises', 'China'],
+  ],
+};

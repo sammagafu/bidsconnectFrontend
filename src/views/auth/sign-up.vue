@@ -4,7 +4,12 @@
       <b-col xl="5">
         <b-card no-body class="auth-card">
           <b-card-body class="px-3 py-5">
-            <LogoBox customClass="mx-auto mb-4 text-center auth-logo" :smLogoHeight="30" :logoHeight="24" smLogoClass="me-1" />
+            <LogoBox
+              customClass="mx-auto mb-4 text-center auth-logo"
+              :smLogoHeight="30"
+              :logoHeight="24"
+              smLogoClass="me-1"
+            />
             <h2 class="fw-bold text-center fs-18">Sign Up</h2>
             <p class="text-muted text-center mt-1 mb-4">Create an account</p>
 
@@ -52,11 +57,17 @@
                       placeholder="Enter your password (must pass validators)"
                       required
                     />
-                    <span class="position-absolute end-0 me-3" style="cursor: pointer;" @click="togglePassword">
+                    <span
+                      class="position-absolute end-0 me-3"
+                      style="cursor: pointer"
+                      @click="togglePassword"
+                    >
                       <i :class="showPassword ? 'pi pi-eye-slash' : 'pi pi-eye'" />
                     </span>
                   </div>
-                  <small class="text-muted">Min length, no common passwords (Django validators apply).</small>
+                  <small class="text-muted"
+                    >Min length, no common passwords (Django validators apply).</small
+                  >
                 </b-form-group>
                 <b-form-group label="Confirm Password" class="mb-3">
                   <div class="position-relative d-flex align-items-center">
@@ -67,7 +78,9 @@
                       placeholder="Confirm your password"
                     />
                   </div>
-                  <div v-if="passwordMismatch" class="text-danger small">Passwords do not match.</div>
+                  <div v-if="passwordMismatch" class="text-danger small">
+                    Passwords do not match.
+                  </div>
                 </b-form-group>
                 <div class="mb-1 text-center d-grid">
                   <b-button type="submit" variant="primary" :disabled="loading || passwordMismatch">
@@ -77,7 +90,10 @@
               </b-form>
 
               <p class="mt-3 text-center">
-                Already have an account? <router-link :to="{ name: 'auth.sign-in' }" class="text-reset fw-bold ms-1">Sign In</router-link>
+                Already have an account?
+                <router-link :to="{ name: 'auth.sign-in' }" class="text-reset fw-bold ms-1"
+                  >Sign In</router-link
+                >
               </p>
             </div>
           </b-card-body>
@@ -116,8 +132,9 @@ const error = ref('');
 const loading = ref(false);
 const showPassword = ref(false);
 
-const passwordMismatch = computed(() =>
-  form.value.password_confirm.length > 0 && form.value.password !== form.value.password_confirm
+const passwordMismatch = computed(
+  () =>
+    form.value.password_confirm.length > 0 && form.value.password !== form.value.password_confirm
 );
 
 // Check for invitation token on mount

@@ -1,44 +1,55 @@
-import type { ApexChartType } from '@/types'
-import small4 from '@/assets/images/small/img-4.jpg'
+import type { ApexChartType } from '@/types';
+import small4 from '@/assets/images/small/img-4.jpg';
 
 export const basicBarChart: ApexChartType = {
   height: 380,
   type: 'bar',
   series: [
     {
-      data: [455, 435, 410, 480, 530, 575, 685, 1345, 1165, 1075]
-    }
+      data: [455, 435, 410, 480, 530, 575, 685, 1345, 1165, 1075],
+    },
   ],
   options: {
     chart: {
       height: 380,
       type: 'bar',
       toolbar: {
-        show: false
-      }
+        show: false,
+      },
     },
     plotOptions: {
       bar: {
-        horizontal: true
-      }
+        horizontal: true,
+      },
     },
     dataLabels: {
-      enabled: false
+      enabled: false,
     },
     states: {
       hover: {
-        filter: { type: 'none' }
-      }
+        filter: { type: 'none' },
+      },
     },
     colors: ['#1e84c4'],
     xaxis: {
-      categories: ['South Korea', 'Canada', 'United Kingdom', 'Netherlands', 'Italy', 'France', 'Japan', 'United States', 'China', 'Germany']
+      categories: [
+        'South Korea',
+        'Canada',
+        'United Kingdom',
+        'Netherlands',
+        'Italy',
+        'France',
+        'Japan',
+        'United States',
+        'China',
+        'Germany',
+      ],
     },
     grid: {
-      borderColor: '#f1f3fa'
-    }
-  }
-}
+      borderColor: '#f1f3fa',
+    },
+  },
+};
 
 export const groupedBarChart: ApexChartType = {
   height: 380,
@@ -46,62 +57,62 @@ export const groupedBarChart: ApexChartType = {
   series: [
     {
       name: 'Series 1',
-      data: [51, 30, 31, 50, 11, 42, 30]
+      data: [51, 30, 31, 50, 11, 42, 30],
     },
     {
       name: 'Series 2',
-      data: [46, 57, 43, 66, 24, 45, 23]
-    }
+      data: [46, 57, 43, 66, 24, 45, 23],
+    },
   ],
   options: {
     chart: {
       height: 380,
       type: 'bar',
       toolbar: {
-        show: false
-      }
+        show: false,
+      },
     },
     plotOptions: {
       bar: {
         horizontal: true,
         dataLabels: {
-          position: 'top'
-        }
-      }
+          position: 'top',
+        },
+      },
     },
     dataLabels: {
       enabled: true,
       offsetX: -6,
       style: {
         fontSize: '12px',
-        colors: ['#fff']
-      }
+        colors: ['#fff'],
+      },
     },
-    colors: ["#1e84c4", "#1bb394"],
+    colors: ['#1e84c4', '#1bb394'],
     stroke: {
       show: true,
       width: 1,
-      colors: ['#fff']
+      colors: ['#fff'],
     },
     xaxis: {
-      categories: [2016, 2017, 2018, 2019, 2021, 2022, 2023]
+      categories: [2016, 2017, 2018, 2019, 2021, 2022, 2023],
     },
     legend: {
-      offsetY: 5
+      offsetY: 5,
     },
     states: {
       hover: {
-        filter: { type: 'none' }
-      }
+        filter: { type: 'none' },
+      },
     },
     grid: {
       borderColor: '#f1f3fa',
       padding: {
-        bottom: 5
-      }
-    }
-  }
-}
+        bottom: 5,
+      },
+    },
+  },
+};
 
 export const stackedChart: ApexChartType = {
   height: 380,
@@ -109,24 +120,24 @@ export const stackedChart: ApexChartType = {
   series: [
     {
       name: 'Marine Sprite',
-      data: [30, 17, 24, 37, 30, 29, 15]
+      data: [30, 17, 24, 37, 30, 29, 15],
     },
     {
       name: 'Striking Calf',
-      data: [11, 9, 7, 10, 8, 11, 6]
+      data: [11, 9, 7, 10, 8, 11, 6],
     },
     {
       name: 'Tank Picture',
-      data: [14, 19, 13, 11, 17, 13, 22]
+      data: [14, 19, 13, 11, 17, 13, 22],
     },
     {
       name: 'Bucket Slope',
-      data: [55, 34, 35, 54, 15, 45, 34]
+      data: [55, 34, 35, 54, 15, 45, 34],
     },
     {
       name: 'Reborn Kid',
-      data: [46, 57, 43, 39, 24, 45, 23]
-    }
+      data: [46, 57, 43, 39, 24, 45, 23],
+    },
   ],
   options: {
     chart: {
@@ -134,57 +145,57 @@ export const stackedChart: ApexChartType = {
       type: 'bar',
       stacked: true,
       toolbar: {
-        show: false
-      }
+        show: false,
+      },
     },
     plotOptions: {
       bar: {
-        horizontal: true
-      }
+        horizontal: true,
+      },
     },
     stroke: {
-      show: false
+      show: false,
     },
     xaxis: {
       categories: [2016, 2017, 2018, 2019, 2021, 2022, 2023],
       labels: {
         formatter: function (val) {
-          return val + 'K'
-        }
-      }
+          return val + 'K';
+        },
+      },
     },
     yaxis: {
       title: {
         text: undefined,
-        style: { color: '#fff' }
-      }
+        style: { color: '#fff' },
+      },
     },
-    colors: ["#1e84c4", "#1bb394", "#23c6c8", "#f9b931", "#ed5565"],
+    colors: ['#1e84c4', '#1bb394', '#23c6c8', '#f9b931', '#ed5565'],
     tooltip: {
       y: {
         formatter: function (val) {
-          return val + 'K'
-        }
-      }
+          return val + 'K';
+        },
+      },
     },
     fill: {
-      opacity: 1
+      opacity: 1,
     },
     states: {
       hover: {
-        filter: { type: 'none' }
-      }
+        filter: { type: 'none' },
+      },
     },
     legend: {
       position: 'top',
       horizontalAlign: 'center',
-      offsetY: 10
+      offsetY: 10,
     },
     grid: {
-      borderColor: '#f1f3fa'
-    }
-  }
-}
+      borderColor: '#f1f3fa',
+    },
+  },
+};
 
 export const fullStackedChart: ApexChartType = {
   height: 380,
@@ -192,24 +203,24 @@ export const fullStackedChart: ApexChartType = {
   series: [
     {
       name: 'Marine Sprite',
-      data: [30, 17, 24, 37, 30, 29, 15]
+      data: [30, 17, 24, 37, 30, 29, 15],
     },
     {
       name: 'Striking Calf',
-      data: [11, 9, 7, 10, 8, 11, 6]
+      data: [11, 9, 7, 10, 8, 11, 6],
     },
     {
       name: 'Tank Picture',
-      data: [14, 19, 13, 11, 17, 13, 22]
+      data: [14, 19, 13, 11, 17, 13, 22],
     },
     {
       name: 'Bucket Slope',
-      data: [55, 34, 35, 54, 15, 45, 34]
+      data: [55, 34, 35, 54, 15, 45, 34],
     },
     {
       name: 'Reborn Kid',
-      data: [46, 57, 43, 39, 24, 45, 23]
-    }
+      data: [46, 57, 43, 39, 24, 45, 23],
+    },
   ],
   options: {
     chart: {
@@ -218,50 +229,50 @@ export const fullStackedChart: ApexChartType = {
       stacked: true,
       stackType: '100%',
       toolbar: {
-        show: false
-      }
+        show: false,
+      },
     },
     plotOptions: {
       bar: {
-        horizontal: true
-      }
+        horizontal: true,
+      },
     },
     stroke: {
       width: 1,
-      colors: ['#fff']
+      colors: ['#fff'],
     },
     xaxis: {
-      categories: [2008, 2009, 2010, 2011, 2012, 2013, 2014]
+      categories: [2008, 2009, 2010, 2011, 2012, 2013, 2014],
     },
-    colors: ["#1e84c4", "#1bb394", "#23c6c8", "#f9b931", "#ed5565"],
+    colors: ['#1e84c4', '#1bb394', '#23c6c8', '#f9b931', '#ed5565'],
     tooltip: {
       y: {
         formatter: function (val) {
-          return val + 'K'
-        }
-      }
+          return val + 'K';
+        },
+      },
     },
     fill: {
-      opacity: 1
+      opacity: 1,
     },
     states: {
       hover: {
-        filter: { type: 'none' }
-      }
+        filter: { type: 'none' },
+      },
     },
     legend: {
       position: 'top',
       horizontalAlign: 'center',
-      offsetY: 10
+      offsetY: 10,
     },
     grid: {
       borderColor: '#f1f3fa',
       padding: {
-        top: 0
-      }
-    }
-  }
-}
+        top: 0,
+      },
+    },
+  },
+};
 
 export const negativeValueChart: ApexChartType = {
   height: 380,
@@ -269,12 +280,18 @@ export const negativeValueChart: ApexChartType = {
   series: [
     {
       name: 'Males',
-      data: [0.75, 0.85, 0.96, 1.08, 1.7, 2.3, 3.1, 4.0, 4.1, 4.4, 4.2, 4.5, 4.3, 4.4, 4.7, 4.1, 3.7, 3.2]
+      data: [
+        0.75, 0.85, 0.96, 1.08, 1.7, 2.3, 3.1, 4.0, 4.1, 4.4, 4.2, 4.5, 4.3, 4.4, 4.7, 4.1, 3.7,
+        3.2,
+      ],
     },
     {
       name: 'Females',
-      data: [-0.75, -0.85, -0.86, -0.98, -1.2, -2.0, -2.65, -3.5, -3.76, -4.02, -4.1, -4.2, -3.9, -3.8, -3.9, -3.2, -2.9, -2.6]
-    }
+      data: [
+        -0.75, -0.85, -0.86, -0.98, -1.2, -2.0, -2.65, -3.5, -3.76, -4.02, -4.1, -4.2, -3.9, -3.8,
+        -3.9, -3.2, -2.9, -2.6,
+      ],
+    },
   ],
   options: {
     chart: {
@@ -282,75 +299,94 @@ export const negativeValueChart: ApexChartType = {
       type: 'bar',
       stacked: true,
       toolbar: {
-        show: false
-      }
+        show: false,
+      },
     },
-    colors: ["#1e84c4", "#1bb394"],
+    colors: ['#1e84c4', '#1bb394'],
     plotOptions: {
       bar: {
         horizontal: true,
-        barHeight: '80%'
-      }
+        barHeight: '80%',
+      },
     },
     dataLabels: {
-      enabled: false
+      enabled: false,
     },
     stroke: {
       width: 1,
-      colors: ['#fff']
+      colors: ['#fff'],
     },
     yaxis: {
       min: -5,
       max: 5,
       title: {
         // text: 'Age',
-      }
+      },
     },
     tooltip: {
       shared: false,
       x: {
         formatter: function (val: any) {
-          return val
-        }
+          return val;
+        },
       },
       y: {
         formatter: function (val) {
-          return Math.abs(val) + '%'
-        }
-      }
+          return Math.abs(val) + '%';
+        },
+      },
     },
     xaxis: {
-      categories: ['90+', '85-89', '80-84', '75-79', '70-74', '65-69', '60-64', '55-59', '50-54', '45-49', '40-44', '35-39', '30-34', '25-29', '20-24', '15-19', '10-14', '0-9'],
+      categories: [
+        '90+',
+        '85-89',
+        '80-84',
+        '75-79',
+        '70-74',
+        '65-69',
+        '60-64',
+        '55-59',
+        '50-54',
+        '45-49',
+        '40-44',
+        '35-39',
+        '30-34',
+        '25-29',
+        '20-24',
+        '15-19',
+        '10-14',
+        '0-9',
+      ],
       title: {
-        text: 'Percent'
+        text: 'Percent',
       },
       labels: {
         formatter: function (val: any) {
-          return Math.abs(Math.round(val)) + '%'
-        }
-      }
+          return Math.abs(Math.round(val)) + '%';
+        },
+      },
     },
     legend: {
-      offsetY: 7
-    }
-  }
-}
+      offsetY: 7,
+    },
+  },
+};
 
 export const reversedChart: ApexChartType = {
   height: 380,
   type: 'bar',
   series: [
     {
-      data: [380, 400, 418, 440, 500, 530, 580]
-    }
+      data: [380, 400, 418, 440, 500, 530, 580],
+    },
   ],
   options: {
     chart: {
       type: 'bar',
       height: 380,
       toolbar: {
-        show: false
-      }
+        show: false,
+      },
     },
     annotations: {
       xaxis: [
@@ -361,49 +397,49 @@ export const reversedChart: ApexChartType = {
             borderColor: '#f9b931',
             style: {
               color: '#fff',
-              background: '#f9b931'
+              background: '#f9b931',
             },
-            text: 'X annotation'
-          }
-        }
+            text: 'X annotation',
+          },
+        },
       ],
       yaxis: [
         {
           y: 'July',
           y2: 'September',
           label: {
-            text: 'Y annotation'
-          }
-        }
-      ]
+            text: 'Y annotation',
+          },
+        },
+      ],
     },
     plotOptions: {
       bar: {
-        horizontal: true
-      }
+        horizontal: true,
+      },
     },
     dataLabels: {
-      enabled: true
+      enabled: true,
     },
     xaxis: {
-      categories: ['Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec', 'Jan']
+      categories: ['Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec', 'Jan'],
     },
     colors: ['#f9b931'],
     grid: {
       xaxis: {
         lines: {
-          show: true
-        }
-      }
+          show: true,
+        },
+      },
     },
     yaxis: {
       reversed: true,
       axisTicks: {
-        show: true
-      }
-    }
-  }
-}
+        show: true,
+      },
+    },
+  },
+};
 
 export const imageChart: ApexChartType = {
   height: 450,
@@ -411,50 +447,53 @@ export const imageChart: ApexChartType = {
   series: [
     {
       name: 'coins',
-      data: [2, 4, 3, 4, 3, 5, 5, 6.5, 6, 5, 4, 5, 8, 7, 7, 8, 8, 10, 9, 9, 12, 12, 11, 12, 13, 14, 16, 14, 15, 17, 19, 21]
-    }
+      data: [
+        2, 4, 3, 4, 3, 5, 5, 6.5, 6, 5, 4, 5, 8, 7, 7, 8, 8, 10, 9, 9, 12, 12, 11, 12, 13, 14, 16,
+        14, 15, 17, 19, 21,
+      ],
+    },
   ],
   options: {
     chart: {
       height: 450,
       type: 'bar',
       toolbar: {
-        show: false
+        show: false,
       },
       animations: {
-        enabled: false
-      }
+        enabled: false,
+      },
     },
     plotOptions: {
       bar: {
         horizontal: true,
-        barHeight: '100%'
-      }
+        barHeight: '100%',
+      },
     },
     dataLabels: {
-      enabled: false
+      enabled: false,
     },
     stroke: {
       colors: ['#fff'],
-      width: 0.2
+      width: 0.2,
     },
     yaxis: {
       axisBorder: {
-        show: false
+        show: false,
       },
       axisTicks: {
-        show: false
+        show: false,
       },
       labels: {
-        show: false
+        show: false,
       },
       title: {
-        text: 'Weight'
-      }
+        text: 'Weight',
+      },
     },
     grid: {
       position: 'back',
-      borderColor: '#f1f3fa'
+      borderColor: '#f1f3fa',
     },
     fill: {
       type: 'image',
@@ -462,27 +501,27 @@ export const imageChart: ApexChartType = {
       image: {
         src: [small4],
         width: 466,
-        height: 406
-      }
-    }
-  }
-}
+        height: 406,
+      },
+    },
+  },
+};
 
 export const customDataLabelsChart: ApexChartType = {
   height: 450,
   type: 'bar',
   series: [
     {
-      data: [400, 430, 448, 470, 540, 580, 690, 1100, 1200, 1380]
-    }
+      data: [400, 430, 448, 470, 540, 580, 690, 1100, 1200, 1380],
+    },
   ],
   options: {
     chart: {
       height: 450,
       type: 'bar',
       toolbar: {
-        show: false
-      }
+        show: false,
+      },
     },
     plotOptions: {
       bar: {
@@ -490,56 +529,78 @@ export const customDataLabelsChart: ApexChartType = {
         distributed: true,
         horizontal: true,
         dataLabels: {
-          position: 'bottom'
-        }
-      }
+          position: 'bottom',
+        },
+      },
     },
-    colors: ["#1e84c4", "#53389f", "#7f56da", "#ff86c8", "#ed5565", "#5d7186", "#f9b931", "#1bb394", "#040505", "#23c6c8"],
+    colors: [
+      '#1e84c4',
+      '#53389f',
+      '#7f56da',
+      '#ff86c8',
+      '#ed5565',
+      '#5d7186',
+      '#f9b931',
+      '#1bb394',
+      '#040505',
+      '#23c6c8',
+    ],
     dataLabels: {
       enabled: true,
       textAnchor: 'start',
       style: {
-        colors: ['#fff']
+        colors: ['#fff'],
       },
       formatter: function (val, opt) {
-        return opt.w.globals.labels[opt.dataPointIndex] + ':  ' + val
+        return opt.w.globals.labels[opt.dataPointIndex] + ':  ' + val;
       },
       offsetX: 0,
       dropShadow: {
-        enabled: false
-      }
+        enabled: false,
+      },
     },
     stroke: {
       width: 0,
-      colors: ['#fff']
+      colors: ['#fff'],
     },
     xaxis: {
-      categories: ['South Korea', 'Canada', 'United Kingdom', 'Netherlands', 'Italy', 'France', 'Japan', 'United States', 'China', 'India']
+      categories: [
+        'South Korea',
+        'Canada',
+        'United Kingdom',
+        'Netherlands',
+        'Italy',
+        'France',
+        'Japan',
+        'United States',
+        'China',
+        'India',
+      ],
     },
     yaxis: {
       labels: {
-        show: false
-      }
+        show: false,
+      },
     },
     grid: {
-      borderColor: '#f1f3fa'
+      borderColor: '#f1f3fa',
     },
 
     tooltip: {
       theme: 'dark',
       x: {
-        show: false
+        show: false,
       },
       y: {
         title: {
           formatter: function () {
-            return ''
-          }
-        }
-      }
-    }
-  }
-}
+            return '';
+          },
+        },
+      },
+    },
+  },
+};
 
 export const patternChart: ApexChartType = {
   height: 380,
@@ -547,20 +608,20 @@ export const patternChart: ApexChartType = {
   series: [
     {
       name: 'Marine Sprite',
-      data: [44, 55, 41, 37, 22, 43, 21]
+      data: [44, 55, 41, 37, 22, 43, 21],
     },
     {
       name: 'Striking Calf',
-      data: [53, 32, 33, 52, 13, 43, 32]
+      data: [53, 32, 33, 52, 13, 43, 32],
     },
     {
       name: 'Tank Picture',
-      data: [12, 17, 11, 9, 15, 11, 20]
+      data: [12, 17, 11, 9, 15, 11, 20],
     },
     {
       name: 'Bucket Slope',
-      data: [9, 7, 5, 8, 6, 9, 4]
-    }
+      data: [9, 7, 5, 8, 6, 9, 4],
+    },
   ],
   options: {
     chart: {
@@ -568,68 +629,68 @@ export const patternChart: ApexChartType = {
       type: 'bar',
       stacked: true,
       toolbar: {
-        show: false
-      }
+        show: false,
+      },
     },
     plotOptions: {
       bar: {
         horizontal: true,
-        barHeight: '60%'
-      }
+        barHeight: '60%',
+      },
     },
     dataLabels: {
-      enabled: false
+      enabled: false,
     },
     stroke: {
-      width: 0
+      width: 0,
     },
     xaxis: {
-      categories: [2008, 2009, 2010, 2011, 2012, 2013, 2014]
+      categories: [2008, 2009, 2010, 2011, 2012, 2013, 2014],
     },
     yaxis: {
       title: {
-        text: undefined
-      }
+        text: undefined,
+      },
     },
     tooltip: {
       shared: false,
       y: {
         formatter: function (val) {
-          return val + 'K'
-        }
-      }
+          return val + 'K';
+        },
+      },
     },
-    colors: ["#1e84c4", "#1bb394", "#040505", "#23c6c8"],
+    colors: ['#1e84c4', '#1bb394', '#040505', '#23c6c8'],
     fill: {
       type: 'pattern',
       opacity: 1,
       pattern: {
-        style: ['circles', 'slantedLines', 'verticalLines', 'horizontalLines'] // string or array of strings
-      }
+        style: ['circles', 'slantedLines', 'verticalLines', 'horizontalLines'], // string or array of strings
+      },
     },
     states: {
       hover: {
-        filter: { type: 'none' }
-      }
+        filter: { type: 'none' },
+      },
     },
     legend: {
-      position: 'right'
+      position: 'right',
     },
     grid: {
-      borderColor: '#f1f3fa'
+      borderColor: '#f1f3fa',
     },
     responsive: [
       {
         breakpoint: 600,
         options: {
           legend: {
-            show: false
-          }
-        }
-      }
-    ]
-  }
-}
+            show: false,
+          },
+        },
+      },
+    ],
+  },
+};
 
 export const chartWithMarker: ApexChartType = {
   height: 380,
@@ -647,9 +708,9 @@ export const chartWithMarker: ApexChartType = {
               value: 14,
               strokeWidth: 2,
               strokeDashArray: 2,
-              strokeColor: '#22c55e'
-            }
-          ]
+              strokeColor: '#22c55e',
+            },
+          ],
         },
         {
           x: '2018',
@@ -660,9 +721,9 @@ export const chartWithMarker: ApexChartType = {
               value: 54,
               strokeWidth: 5,
               strokeHeight: 10,
-              strokeColor: '#22c55e'
-            }
-          ]
+              strokeColor: '#22c55e',
+            },
+          ],
         },
         {
           x: '2019',
@@ -674,9 +735,9 @@ export const chartWithMarker: ApexChartType = {
               strokeWidth: 10,
               strokeHeight: 0,
               strokeLineCap: 'round',
-              strokeColor: '#22c55e'
-            }
-          ]
+              strokeColor: '#22c55e',
+            },
+          ],
         },
         {
           x: '2020',
@@ -688,9 +749,9 @@ export const chartWithMarker: ApexChartType = {
               strokeWidth: 10,
               strokeHeight: 0,
               strokeLineCap: 'round',
-              strokeColor: '#22c55e'
-            }
-          ]
+              strokeColor: '#22c55e',
+            },
+          ],
         },
         {
           x: '2021',
@@ -702,9 +763,9 @@ export const chartWithMarker: ApexChartType = {
               strokeWidth: 10,
               strokeHeight: 0,
               strokeLineCap: 'round',
-              strokeColor: '#22c55e'
-            }
-          ]
+              strokeColor: '#22c55e',
+            },
+          ],
         },
         {
           x: '2022',
@@ -715,44 +776,44 @@ export const chartWithMarker: ApexChartType = {
               value: 70,
               strokeWidth: 5,
               strokeHeight: 10,
-              strokeColor: '#22c55e'
-            }
-          ]
-        }
-      ]
-    }
+              strokeColor: '#22c55e',
+            },
+          ],
+        },
+      ],
+    },
   ],
   options: {
     chart: {
       height: 380,
       type: 'bar',
       toolbar: {
-        show: false
-      }
+        show: false,
+      },
     },
     plotOptions: {
       bar: {
-        horizontal: true
-      }
+        horizontal: true,
+      },
     },
-    colors: ["#f9b931", "#1bb394"],
+    colors: ['#f9b931', '#1bb394'],
     dataLabels: {
       formatter: function (val: string, opt) {
-        var goals = opt.w.config.series[opt.seriesIndex].data[opt.dataPointIndex].goals
+        var goals = opt.w.config.series[opt.seriesIndex].data[opt.dataPointIndex].goals;
 
         // if (goals && goals.length) {
         //   return `${val} / ${goals[0].value}`
         // }
-        return val
-      }
+        return val;
+      },
     },
     legend: {
       show: true,
       showForSingleSeries: true,
       customLegendItems: ['Actual', 'Expected'],
       markers: {
-        fillColors: ["#f9b931", "#1bb394"]
-      }
-    }
-  }
-}
+        fillColors: ['#f9b931', '#1bb394'],
+      },
+    },
+  },
+};

@@ -285,12 +285,42 @@ const NORMAL_MENU_ITEMS = [
     key: 'qualifications-group',
     label: 'Qualification',
     children: [
-      { key: 'profile-financial', label: 'Financial Information', route: { name: 'profile.financial' }, parentKey: 'qualifications-group' },
-      { key: 'profile-litigation', label: 'Litigation', route: { name: 'profile.litigation' }, parentKey: 'qualifications-group' },
-      { key: 'profile-officelocation', label: 'Office Location', route: { name: 'profile.officelocation' }, parentKey: 'qualifications-group' },
-      { key: 'profile-personalinformation', label: 'Personal Information', route: { name: 'profile.personalinformation' }, parentKey: 'qualifications-group' },
-      { key: 'profile-source-of-funds', label: 'Source of Funds', route: { name: 'profile.source-of-funds' }, parentKey: 'qualifications-group' },
-      { key: 'profile-turnover', label: 'Turnover', route: { name: 'profile.turnover' }, parentKey: 'qualifications-group' },
+      {
+        key: 'profile-financial',
+        label: 'Financial Information',
+        route: { name: 'profile.financial' },
+        parentKey: 'qualifications-group',
+      },
+      {
+        key: 'profile-litigation',
+        label: 'Litigation',
+        route: { name: 'profile.litigation' },
+        parentKey: 'qualifications-group',
+      },
+      {
+        key: 'profile-officelocation',
+        label: 'Office Location',
+        route: { name: 'profile.officelocation' },
+        parentKey: 'qualifications-group',
+      },
+      {
+        key: 'profile-personalinformation',
+        label: 'Personal Information',
+        route: { name: 'profile.personalinformation' },
+        parentKey: 'qualifications-group',
+      },
+      {
+        key: 'profile-source-of-funds',
+        label: 'Source of Funds',
+        route: { name: 'profile.source-of-funds' },
+        parentKey: 'qualifications-group',
+      },
+      {
+        key: 'profile-turnover',
+        label: 'Turnover',
+        route: { name: 'profile.turnover' },
+        parentKey: 'qualifications-group',
+      },
     ],
   },
   {
@@ -303,10 +333,30 @@ const NORMAL_MENU_ITEMS = [
     icon: 'solar:cart-large-2-bold',
     label: 'Market Place',
     children: [
-      { key: 'marketplace-list', label: 'Market Place', route: { name: 'user.marketplace-list' }, parentKey: 'apps-marketplace' },
-      { key: 'add-product', label: 'Add Products or Services', route: { name: 'user.marketplace-list.add-product' }, parentKey: 'apps-marketplace' },
-      { key: 'my-invoices', label: 'My invoices', route: { name: 'user.marketplace-list' }, parentKey: 'apps-marketplace' },
-      { key: 'requested-quotes', label: 'Requested Quotes', route: { name: 'user.quote-request.list' }, parentKey: 'apps-marketplace' },
+      {
+        key: 'marketplace-list',
+        label: 'Market Place',
+        route: { name: 'user.marketplace-list' },
+        parentKey: 'apps-marketplace',
+      },
+      {
+        key: 'add-product',
+        label: 'Add Products or Services',
+        route: { name: 'user.marketplace-list.add-product' },
+        parentKey: 'apps-marketplace',
+      },
+      {
+        key: 'my-invoices',
+        label: 'My invoices',
+        route: { name: 'user.marketplace-list' },
+        parentKey: 'apps-marketplace',
+      },
+      {
+        key: 'requested-quotes',
+        label: 'Requested Quotes',
+        route: { name: 'user.quote-request.list' },
+        parentKey: 'apps-marketplace',
+      },
     ],
   },
   {
@@ -319,10 +369,30 @@ const NORMAL_MENU_ITEMS = [
     icon: 'solar:robot-broken',
     label: 'Automation',
     children: [
-      { key: 'power-of-attorney', label: 'Power Of Attorney', route: { name: 'automation.power-of-attorney' }, parentKey: 'automation-items' },
-      { key: 'tender-securing-declaration', label: 'Tender Securing Declaration', route: { name: 'automation.tender-securing-declaration' }, parentKey: 'automation-items' },
-      { key: 'litigation-history', label: 'Litigation History', route: { name: 'automation.litigation-history' }, parentKey: 'automation-items' },
-      { key: 'cover-letter', label: 'Cover Letter', route: { name: 'automation.cover-letter' }, parentKey: 'automation-items' },
+      {
+        key: 'power-of-attorney',
+        label: 'Power Of Attorney',
+        route: { name: 'automation.power-of-attorney' },
+        parentKey: 'automation-items',
+      },
+      {
+        key: 'tender-securing-declaration',
+        label: 'Tender Securing Declaration',
+        route: { name: 'automation.tender-securing-declaration' },
+        parentKey: 'automation-items',
+      },
+      {
+        key: 'litigation-history',
+        label: 'Litigation History',
+        route: { name: 'automation.litigation-history' },
+        parentKey: 'automation-items',
+      },
+      {
+        key: 'cover-letter',
+        label: 'Cover Letter',
+        route: { name: 'automation.cover-letter' },
+        parentKey: 'automation-items',
+      },
     ],
   },
 ];
@@ -334,10 +404,30 @@ const UNAUTHENTICATED_MENU_ITEMS = [
     label: 'Authentication',
     icon: 'solar:lock-password-unlocked-broken',
     children: [
-      { key: 'sign-in', label: 'Sign In', route: { name: 'auth.sign-in' }, parentKey: 'page-authentication' },
-      { key: 'signup', label: 'Sign Up', route: { name: 'auth.sign-up' }, parentKey: 'page-authentication' },
-      { key: 'reset-pass', label: 'Reset Password', route: { name: 'auth.reset-password' }, parentKey: 'page-authentication' },
-      { key: 'lock-screen', label: 'Lock Screen', route: { name: 'auth.lock-screen' }, parentKey: 'page-authentication' },
+      {
+        key: 'sign-in',
+        label: 'Sign In',
+        route: { name: 'auth.sign-in' },
+        parentKey: 'page-authentication',
+      },
+      {
+        key: 'signup',
+        label: 'Sign Up',
+        route: { name: 'auth.sign-up' },
+        parentKey: 'page-authentication',
+      },
+      {
+        key: 'reset-pass',
+        label: 'Reset Password',
+        route: { name: 'auth.reset-password' },
+        parentKey: 'page-authentication',
+      },
+      {
+        key: 'lock-screen',
+        label: 'Lock Screen',
+        route: { name: 'auth.lock-screen' },
+        parentKey: 'page-authentication',
+      },
     ],
   },
 ];
@@ -349,7 +439,13 @@ export const getMenuItems = () => {
 
   if (authStore.isSuperAdmin) return ADMIN_MENU_ITEMS;
   if (authStore.isStaffUser) return STAFF_MENU_ITEMS;
-  if (authStore.isNormalUser || authStore.isCompanyOwner || authStore.isCompanyAdmin || authStore.isCompanyMember) return NORMAL_MENU_ITEMS;
+  if (
+    authStore.isNormalUser ||
+    authStore.isCompanyOwner ||
+    authStore.isCompanyAdmin ||
+    authStore.isCompanyMember
+  )
+    return NORMAL_MENU_ITEMS;
   return UNAUTHENTICATED_MENU_ITEMS;
 };
 
@@ -358,7 +454,7 @@ let activeMenuItem = [];
 const getMatchingMenuItems = (data, currentRouteName) => {
   const matchingItems = [];
   const traverse = (item) => {
-    if (item.children?.some(child => child.route?.name === currentRouteName)) {
+    if (item.children?.some((child) => child.route?.name === currentRouteName)) {
       matchingItems.push(item.key);
       if (item.parentKey) matchingItems.push(item.parentKey);
     }

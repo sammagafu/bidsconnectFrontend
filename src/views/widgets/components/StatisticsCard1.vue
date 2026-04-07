@@ -25,13 +25,13 @@
 </template>
 
 <script lang="ts" setup>
-import type { PropType } from 'vue'
-import type { StatisticCardType } from '@/types'
+import type { PropType } from 'vue';
+import type { StatisticCardType } from '@/types';
 
 defineProps({
   item: {
     type: Object as PropType<StatisticCardType>,
-    required: true
-  }
-})
+    required: true,
+  },
+});
 </script>

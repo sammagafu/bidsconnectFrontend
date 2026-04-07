@@ -6,7 +6,12 @@
 
     <b-card-body class="p-0 pb-3">
       <simplebar class="p-3 pb-0" data-simplebar style="max-height: 400px">
-        <div v-for="(friend, idx) in friendRequests" :key="idx" class="d-flex align-items-center" :class="{ 'mb-3': idx !== friendRequests.length - 1 }">
+        <div
+          v-for="(friend, idx) in friendRequests"
+          :key="idx"
+          class="d-flex align-items-center"
+          :class="{ 'mb-3': idx !== friendRequests.length - 1 }"
+        >
           <div class="flex-shrink-0">
             <img :src="friend.avatar" class="img-fluid avatar-sm rounded me-2" alt="avatar-5" />
           </div>
@@ -19,14 +24,27 @@
           </div>
 
           <DropDown>
-            <a href="javascript:void(0);" class="dropdown-toggle arrow-none text-dark" data-bs-toggle="dropdown" aria-expanded="false">
+            <a
+              href="javascript:void(0);"
+              class="dropdown-toggle arrow-none text-dark"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
               <i class="bx bx-dots-vertical-rounded fs-18"></i>
             </a>
             <div class="dropdown-menu dropdown-menu-end">
-              <a href="javascript:void(0);" class="dropdown-item"> <i class="bx bxs-user-detail me-1"></i>See Profile </a>
-              <a href="javascript:void(0);" class="dropdown-item"> <i class="bx bxl-telegram me-1"></i>Message to Victoria </a>
-              <a href="javascript:void(0);" class="dropdown-item"> <i class="bx bx-user-x me-1"></i>Unfriend Victoria </a>
-              <a href="javascript:void(0);" class="dropdown-item"> <i class="bx bx-block me-1"></i>Block Victoria </a>
+              <a href="javascript:void(0);" class="dropdown-item">
+                <i class="bx bxs-user-detail me-1"></i>See Profile
+              </a>
+              <a href="javascript:void(0);" class="dropdown-item">
+                <i class="bx bxl-telegram me-1"></i>Message to Victoria
+              </a>
+              <a href="javascript:void(0);" class="dropdown-item">
+                <i class="bx bx-user-x me-1"></i>Unfriend Victoria
+              </a>
+              <a href="javascript:void(0);" class="dropdown-item">
+                <i class="bx bx-block me-1"></i>Block Victoria
+              </a>
             </div>
           </DropDown>
         </div>
@@ -36,7 +54,7 @@
 </template>
 
 <script setup lang="ts">
-import simplebar from 'simplebar-vue'
-import DropDown from '@/components/DropDown.vue'
-import { friendRequests } from '@/views/widgets/components/data'
+import simplebar from 'simplebar-vue';
+import DropDown from '@/components/DropDown.vue';
+import { friendRequests } from '@/views/widgets/components/data';
 </script>

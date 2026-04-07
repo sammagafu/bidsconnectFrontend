@@ -16,8 +16,10 @@
                   <br />
                   <p class="text-muted">Drag and drop your event or click in the calendar</p>
                   <template v-for="(event, idx) in externalEvents" :key="idx">
-                    <div :class="`external-event bg-soft-${event.className} text-${event.className}`"
-                      :data-class="`bg-${event.className}`">
+                    <div
+                      :class="`external-event bg-soft-${event.className} text-${event.className}`"
+                      :data-class="`bg-${event.className}`"
+                    >
                       <i class="bx bxs-circle me-2 vertical-middle"></i>
                       {{ event.title }}
                     </div>
@@ -28,7 +30,11 @@
               <b-col xl="9">
                 <div class="mt-4 mt-lg-0">
                   <div id="calendar">
-                    <FullCalendar ref="fullCalendar" :bootstrap-font-awesome="false" :options="calendarOptions" />
+                    <FullCalendar
+                      ref="fullCalendar"
+                      :bootstrap-font-awesome="false"
+                      :options="calendarOptions"
+                    />
                   </div>
                 </div>
               </b-col>
@@ -36,15 +42,22 @@
           </b-card-body>
         </b-card>
 
-        <b-modal v-model="modal" :title="isEditEvent ? 'Edit Event' : 'Add Event'" header-class="p-3 border-bottom-0"
-          body-class="px-3 pb-3 pt-0" hide-footer>
+        <b-modal
+          v-model="modal"
+          :title="isEditEvent ? 'Edit Event' : 'Add Event'"
+          header-class="p-3 border-bottom-0"
+          body-class="px-3 pb-3 pt-0"
+          hide-footer
+        >
           <b-form @submit.prevent="handleVuelidateSubmit">
             <b-row>
               <b-col cols="12">
                 <div class="mb-3">
                   <b-form-group label="Event Name">
                     <b-form-input type="text" v-model="v.eventName.$model" />
-                    <div v-if="v.eventName.$error" class="text-danger">Please provide a valid event name</div>
+                    <div v-if="v.eventName.$error" class="text-danger">
+                      Please provide a valid event name
+                    </div>
                   </b-form-group>
                 </div>
               </b-col>
@@ -56,19 +69,29 @@
                         {{ option.text }}
                       </option>
                     </b-form-select>
-                    <div v-if="v.eventCategory.$error" class="text-danger">Please select a valid event category</div>
+                    <div v-if="v.eventCategory.$error" class="text-danger">
+                      Please select a valid event category
+                    </div>
                   </b-form-group>
                 </div>
               </b-col>
             </b-row>
             <b-row>
               <b-col cols="6">
-                <b-button type="button" variant="danger" id="btn-delete-event" @click="deleteEvent" v-if="isEditEvent">
+                <b-button
+                  type="button"
+                  variant="danger"
+                  id="btn-delete-event"
+                  @click="deleteEvent"
+                  v-if="isEditEvent"
+                >
                   Delete
                 </b-button>
               </b-col>
               <b-col cols="6" class="text-end">
-                <b-button type="button" variant="light" class="me-1" @click="toggleModal"> Close</b-button>
+                <b-button type="button" variant="light" class="me-1" @click="toggleModal">
+                  Close</b-button
+                >
                 <b-button type="submit" variant="primary" id="btn-save-event"> Save</b-button>
               </b-col>
             </b-row>
@@ -80,7 +103,7 @@
 </template>
 
 <script setup lang="ts">
-import VerticalLayout from "@/layouts/VerticalLayout.vue";
+import VerticalLayout from '@/layouts/VerticalLayout.vue';
 import { ref, onMounted, reactive, computed } from 'vue';
 import FullCalendar from '@fullcalendar/vue3';
 import dayGridPlugin from '@fullcalendar/daygrid';
@@ -91,7 +114,11 @@ import listPlugin from '@fullcalendar/list';
 import { type CalendarOptions } from '@fullcalendar/core';
 import { useVuelidate } from '@vuelidate/core';
 import { required } from '@vuelidate/validators';
-import { externalEvents, options, initialEvents } from '@/views/apps/calendar/schedule/components/data';
+import {
+  externalEvents,
+  options,
+  initialEvents,
+} from '@/views/apps/calendar/schedule/components/data';
 
 const modal = ref(false);
 const eventData = ref();
@@ -139,21 +166,21 @@ const calendarOptions = ref<CalendarOptions>({
     day: 'Day',
     list: 'List',
     prev: 'Prev',
-    next: 'Next'
+    next: 'Next',
   },
   handleWindowResize: true,
   // height: window.innerHeight - 200,
   headerToolbar: {
     left: 'prev,next today',
     center: 'title',
-    right: 'dayGridMonth,timeGridWeek,timeGridDay,listMonth'
+    right: 'dayGridMonth,timeGridWeek,timeGridDay,listMonth',
   },
   droppable: true,
   editable: true,
   selectable: true,
   events: initialEvents,
   eventClick: editEvent,
-  dateClick: dateEvent
+  dateClick: dateEvent,
 });
 
 onMounted(() => {
@@ -166,9 +193,9 @@ onMounted(() => {
         return {
           title: eventEl.innerText,
           start: new Date(),
-          className: eventEl.getAttribute('data-class')
+          className: eventEl.getAttribute('data-class'),
         };
-      }
+      },
     });
   }
 });
@@ -183,7 +210,7 @@ const vuelidateState = reactive<{
 
 const vuelidateRules = computed(() => ({
   eventName: { required },
-  eventCategory: { required }
+  eventCategory: { required },
 }));
 
 const v = useVuelidate(vuelidateRules, vuelidateState);
@@ -199,7 +226,7 @@ const handleVuelidateSubmit = async () => {
         id: (Math.floor(Math.random() * 100 + 20) - 20).toString(),
         title: vuelidateState.eventName,
         className: vuelidateState.eventCategory,
-        start: isDateClick.value || new Date()
+        start: isDateClick.value || new Date(),
       });
     } else {
       eventData.value.setProp('title', vuelidateState.eventName);

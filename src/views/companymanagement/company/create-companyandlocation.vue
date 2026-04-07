@@ -45,11 +45,7 @@
 
         <!-- Founded Date -->
         <b-form-group label="Founded Date" label-for="founded_date">
-          <b-form-input
-            id="founded_date"
-            v-model="form.founded_date"
-            type="date"
-          />
+          <b-form-input id="founded_date" v-model="form.founded_date" type="date" />
         </b-form-group>
 
         <!-- Country -->
@@ -64,11 +60,7 @@
 
         <!-- Key Activities -->
         <b-form-group label="Key Activities" label-for="key_activities">
-          <b-form-textarea
-            id="key_activities"
-            v-model="form.key_activities"
-            rows="2"
-          />
+          <b-form-textarea id="key_activities" v-model="form.key_activities" rows="2" />
         </b-form-group>
 
         <!-- NAICS Code & Employee Count -->
@@ -103,11 +95,11 @@
 </template>
 
 <script setup>
-import { ref, reactive } from 'vue'
-import { useToast } from 'primevue/usetoast'
-import { useRouter } from 'vue-router'
-import VerticalLayout from '@/layouts/VerticalLayout.vue'
-import { companiesService, parseApiError } from '@/services'
+import { ref, reactive } from 'vue';
+import { useToast } from 'primevue/usetoast';
+import { useRouter } from 'vue-router';
+import VerticalLayout from '@/layouts/VerticalLayout.vue';
+import { companiesService, parseApiError } from '@/services';
 import {
   BFormGroup,
   BForm,
@@ -118,18 +110,18 @@ import {
   BButton,
   BRow,
   BCol,
-  BCard
-} from 'bootstrap-vue-next'
+  BCard,
+} from 'bootstrap-vue-next';
 
-const toast = useToast()
-const router = useRouter()
-const loading = ref(false)
+const toast = useToast();
+const router = useRouter();
+const loading = ref(false);
 
 const countryOptions = [
   { value: 'Tanzania', text: 'Tanzania' },
-  { value: 'Kenya',    text: 'Kenya'    },
-  { value: 'Uganda',   text: 'Uganda'   },
-]
+  { value: 'Kenya', text: 'Kenya' },
+  { value: 'Uganda', text: 'Uganda' },
+];
 
 const form = reactive({
   name: '',
@@ -144,7 +136,7 @@ const form = reactive({
   key_activities: '',
   naics_code: '',
   employee_count: null,
-})
+});
 
 function reset() {
   Object.assign(form, {
@@ -160,31 +152,37 @@ function reset() {
     key_activities: '',
     naics_code: '',
     employee_count: null,
-  })
+  });
 }
 
 async function submit() {
   if (!form.name) {
-    toast.add({ severity: 'warn', summary: 'Validation', detail: 'Name is required.' })
-    return
+    toast.add({ severity: 'warn', summary: 'Validation', detail: 'Name is required.' });
+    return;
   }
-  loading.value = true
+  loading.value = true;
   try {
-    const payload = new FormData()
-    Object.entries(form).forEach(([k,v]) => {
-      if (v !== null && v !== '') payload.append(k, v)
-    })
-    const data = await companiesService.create(payload)
-    toast.add({ severity: 'success', summary: 'Created', detail: data?.name || 'Company created' })
-    router.push({ name: 'profile.financial', params: { companyId: data?.id } })
+    const payload = new FormData();
+    Object.entries(form).forEach(([k, v]) => {
+      if (v !== null && v !== '') payload.append(k, v);
+    });
+    const data = await companiesService.create(payload);
+    toast.add({ severity: 'success', summary: 'Created', detail: data?.name || 'Company created' });
+    router.push({ name: 'profile.financial', params: { companyId: data?.id } });
   } catch (err) {
-    toast.add({ severity: 'error', summary: 'Error', detail: parseApiError(err) || 'Create failed.' })
+    toast.add({
+      severity: 'error',
+      summary: 'Error',
+      detail: parseApiError(err) || 'Create failed.',
+    });
   } finally {
-    loading.value = false
+    loading.value = false;
   }
 }
 </script>
 
 <style scoped>
-.form-control { max-width: 100%; }
+.form-control {
+  max-width: 100%;
+}
 </style>

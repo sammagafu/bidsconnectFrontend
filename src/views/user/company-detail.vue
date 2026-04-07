@@ -13,12 +13,18 @@
                     :src="company.logo"
                     :alt="company.name"
                     class="rounded mb-3"
-                    style="width: 150px; height: 150px; object-fit: cover;"
+                    style="width: 150px; height: 150px; object-fit: cover"
                   />
                   <p v-else class="text-muted">No Logo Available</p>
                   <h4>{{ company.name }}</h4>
                   <b-badge
-                    :variant="company.status === 'active' ? 'success' : company.status === 'pending' ? 'warning' : 'danger'"
+                    :variant="
+                      company.status === 'active'
+                        ? 'success'
+                        : company.status === 'pending'
+                          ? 'warning'
+                          : 'danger'
+                    "
                     class="mt-2"
                   >
                     {{ company.status.charAt(0).toUpperCase() + company.status.slice(1) }}
@@ -62,7 +68,13 @@
                   </div>
                   <div class="mb-3">
                     <strong>Founded Date:</strong>
-                    <p>{{ company.founded_date ? new Date(company.founded_date).toLocaleDateString() : 'N/A' }}</p>
+                    <p>
+                      {{
+                        company.founded_date
+                          ? new Date(company.founded_date).toLocaleDateString()
+                          : 'N/A'
+                      }}
+                    </p>
                   </div>
                   <div class="mb-3">
                     <strong>Country:</strong>
@@ -82,15 +94,33 @@
                   </div>
                   <div class="mb-3">
                     <strong>Verification Date:</strong>
-                    <p>{{ company.verification_date ? new Date(company.verification_date).toLocaleDateString() : 'N/A' }}</p>
+                    <p>
+                      {{
+                        company.verification_date
+                          ? new Date(company.verification_date).toLocaleDateString()
+                          : 'N/A'
+                      }}
+                    </p>
                   </div>
                   <div class="mb-3">
                     <strong>Created At:</strong>
-                    <p>{{ company.created_at ? new Date(company.created_at).toLocaleDateString() : 'N/A' }}</p>
+                    <p>
+                      {{
+                        company.created_at
+                          ? new Date(company.created_at).toLocaleDateString()
+                          : 'N/A'
+                      }}
+                    </p>
                   </div>
                   <div class="mb-3">
                     <strong>Updated At:</strong>
-                    <p>{{ company.updated_at ? new Date(company.updated_at).toLocaleDateString() : 'N/A' }}</p>
+                    <p>
+                      {{
+                        company.updated_at
+                          ? new Date(company.updated_at).toLocaleDateString()
+                          : 'N/A'
+                      }}
+                    </p>
                   </div>
                   <div v-if="company.decline_reason" class="mb-3">
                     <strong>Decline Reason:</strong>

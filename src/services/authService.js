@@ -16,7 +16,7 @@ const REFRESH_TOKEN_KEY = 'refresh_token';
 const USER_KEY = 'user_data';
 
 // Request: attach token from storage; for FormData do NOT set Content-Type (browser sets boundary)
-api.interceptors.request.use(config => {
+api.interceptors.request.use((config) => {
   const token = localStorage.getItem(TOKEN_KEY) || sessionStorage.getItem(TOKEN_KEY);
   if (token) config.headers.Authorization = `Bearer ${token}`;
   if (config.data instanceof FormData) {
@@ -27,15 +27,16 @@ api.interceptors.request.use(config => {
 
 // 401: try refresh token, then retry request; otherwise logout
 api.interceptors.response.use(
-  response => response,
-  async error => {
+  (response) => response,
+  async (error) => {
     const originalRequest = error.config;
     const status = error.response?.status;
 
     if (status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
 
-      const refresh = localStorage.getItem(REFRESH_TOKEN_KEY) || sessionStorage.getItem(REFRESH_TOKEN_KEY);
+      const refresh =
+        localStorage.getItem(REFRESH_TOKEN_KEY) || sessionStorage.getItem(REFRESH_TOKEN_KEY);
       if (refresh) {
         try {
           const { data } = await axios.post(
@@ -96,7 +97,7 @@ const authService = {
       phone_number: credentials.phone_number || '',
       first_name: credentials.first_name ?? '',
       last_name: credentials.last_name ?? '',
-      invitation_token: credentials.invitation_token ?? ''
+      invitation_token: credentials.invitation_token ?? '',
     };
     await api.post('accounts/users/', payload);
     return this.login({ email: credentials.email, password: credentials.password }, true);
@@ -139,7 +140,8 @@ const authService = {
   },
 
   async refreshToken() {
-    const refresh = localStorage.getItem(REFRESH_TOKEN_KEY) || sessionStorage.getItem(REFRESH_TOKEN_KEY);
+    const refresh =
+      localStorage.getItem(REFRESH_TOKEN_KEY) || sessionStorage.getItem(REFRESH_TOKEN_KEY);
     if (!refresh) {
       throw new Error('No refresh token available');
     }

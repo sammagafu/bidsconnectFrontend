@@ -1,75 +1,74 @@
 <template>
   <VerticalLayout>
-      <b-row>
-        <b-col xl="9">
-          <UIComponentCard id="basic-range" title="Basic Range Slider">
-            <div class="mt-3">
-              <div id="rangeslider_basic"></div>
+    <b-row>
+      <b-col xl="9">
+        <UIComponentCard id="basic-range" title="Basic Range Slider">
+          <div class="mt-3">
+            <div id="rangeslider_basic"></div>
+          </div>
+        </UIComponentCard>
+
+        <UIComponentCard id="vertical-range" title="Vertical Range Slider">
+          <div class="mt-3">
+            <div id="rangeslider_vertical" style="height: 150px"></div>
+          </div>
+        </UIComponentCard>
+
+        <UIComponentCard id="multi-range" title="Multi Elements Range">
+          <div class="mt-3">
+            <div id="rangeslider_multielement"></div>
+          </div>
+        </UIComponentCard>
+
+        <UIComponentCard id="colorpicker-range" title="Colorpicker">
+          <div class="mt-3">
+            <div class="sliders" id="red"></div>
+            <div class="sliders" id="green"></div>
+            <div class="sliders" id="blue"></div>
+
+            <div id="result"></div>
+          </div>
+        </UIComponentCard>
+
+        <UIComponentCard id="value-range" title="Value Range Slider">
+          <div class="mt-3">
+            <div id="nonlinear"></div>
+            <div class="d-flex justify-content-between">
+              <div class="example-val" id="lower-value"></div>
+              <div class="example-val" id="upper-value"></div>
             </div>
-          </UIComponentCard>
+          </div>
+        </UIComponentCard>
 
-          <UIComponentCard id="vertical-range" title="Vertical Range Slider">
-            <div class="mt-3">
-              <div id="rangeslider_vertical" style="height: 150px"></div>
-            </div>
-          </UIComponentCard>
+        <UIComponentCard id="locking-together" title="Locking Sliders Together">
+          <div class="mt-3">
+            <div class="slider" id="slider1"></div>
+            <span class="example-val mt-2" id="slider1-span"></span>
 
-          <UIComponentCard id="multi-range" title="Multi Elements Range">
-            <div class="mt-3">
-              <div id="rangeslider_multielement"></div>
-            </div>
-          </UIComponentCard>
+            <div class="slider" id="slider2"></div>
+            <span class="example-val mt-2" id="slider2-span"></span>
 
-          <UIComponentCard id="colorpicker-range" title="Colorpicker">
-            <div class="mt-3">
-              <div class="sliders" id="red"></div>
-              <div class="sliders" id="green"></div>
-              <div class="sliders" id="blue"></div>
+            <b-button id="lockbutton" variant="primary"> Lock</b-button>
+          </div>
+        </UIComponentCard>
 
-              <div id="result"></div>
-            </div>
-          </UIComponentCard>
+        <UIComponentCard id="tooltip" title="Tooltip">
+          <div class="p-3">
+            <div class="slider" id="slider-merging-tooltips"></div>
+          </div>
+        </UIComponentCard>
 
-          <UIComponentCard id="value-range" title="Value Range Slider">
-            <div class="mt-3">
-              <div id="nonlinear"></div>
-              <div class="d-flex justify-content-between">
-                <div class="example-val" id="lower-value"></div>
-                <div class="example-val" id="upper-value"></div>
-              </div>
-            </div>
-          </UIComponentCard>
+        <UIComponentCard id="soft-limits" title="Soft Limits">
+          <div class="mb-3 pb-3">
+            <div class="slider" id="soft"></div>
+          </div>
+        </UIComponentCard>
+      </b-col>
 
-          <UIComponentCard id="locking-together" title="Locking Sliders Together">
-            <div class="mt-3">
-              <div class="slider" id="slider1"></div>
-              <span class="example-val mt-2" id="slider1-span"></span>
-
-              <div class="slider" id="slider2"></div>
-              <span class="example-val mt-2" id="slider2-span"></span>
-
-              <b-button id="lockbutton" variant="primary"> Lock</b-button>
-            </div>
-          </UIComponentCard>
-
-          <UIComponentCard id="tooltip" title="Tooltip">
-            <div class="p-3">
-              <div class="slider" id="slider-merging-tooltips"></div>
-            </div>
-          </UIComponentCard>
-
-          <UIComponentCard id="soft-limits" title="Soft Limits">
-            <div class="mb-3 pb-3">
-              <div class="slider" id="soft"></div>
-            </div>
-          </UIComponentCard>
-
-        </b-col>
-
-        <b-col xl="3">
-          <AnchorNavigation :elements="anchorNavigation" />
-        </b-col>
-      </b-row>
+      <b-col xl="3">
+        <AnchorNavigation :elements="anchorNavigation" />
+      </b-col>
+    </b-row>
   </VerticalLayout>
 </template>
 
@@ -78,9 +77,9 @@ import { onMounted } from 'vue';
 import noUiSlider from 'nouislider';
 import type { Options } from 'nouislider';
 import wNumb from 'wnumb';
-import VerticalLayout from "@/layouts/VerticalLayout.vue";
+import VerticalLayout from '@/layouts/VerticalLayout.vue';
 import AnchorNavigation from '@/components/AnchorNavigation.vue';
-import UIComponentCard from "@/components/UIComponentCard.vue";
+import UIComponentCard from '@/components/UIComponentCard.vue';
 
 onMounted(() => {
   // Basic
@@ -91,8 +90,8 @@ onMounted(() => {
       connect: 'lower',
       range: {
         min: 0,
-        max: 255
-      }
+        max: 255,
+      },
     } as Options);
   }
 
@@ -105,8 +104,8 @@ onMounted(() => {
       orientation: 'vertical',
       range: {
         min: 0,
-        max: 200
-      }
+        max: 200,
+      },
     });
 
   // multi range handle
@@ -117,8 +116,8 @@ onMounted(() => {
       connect: true,
       range: {
         min: 0,
-        max: 100
-      }
+        max: 100,
+      },
     });
 
   // Colorpicker
@@ -133,11 +132,11 @@ onMounted(() => {
         orientation: 'vertical',
         range: {
           min: 0,
-          max: 255
+          max: 255,
         },
         format: wNumb({
-          decimals: 0
-        })
+          decimals: 0,
+        }),
       } as Options);
 
       // Bind the color changing function to the update event.
@@ -164,20 +163,23 @@ onMounted(() => {
         min: [0],
         '10%': [500, 500],
         '50%': [4000, 1000],
-        max: [10000]
-      }
+        max: [10000],
+      },
     } as Options);
 
     const nodes = [
       document.getElementById('lower-value'), // 0
-      document.getElementById('upper-value') // 1
+      document.getElementById('upper-value'), // 1
     ] as HTMLElement[];
 
     // Display the slider value and how far the handle moved
     // from the left edge of the slider.
-    nonLinearSlider.noUiSlider.on('update', function (values: string, handle: number, positions: number[]) {
-      nodes[handle].textContent = values[handle] + ', ' + positions[handle].toFixed(2) + '%';
-    });
+    nonLinearSlider.noUiSlider.on(
+      'update',
+      function (values: string, handle: number, positions: number[]) {
+        nodes[handle].textContent = values[handle] + ', ' + positions[handle].toFixed(2) + '%';
+      }
+    );
   }
 
   // Locking sliders together
@@ -226,8 +228,8 @@ onMounted(() => {
     animate: false,
     range: {
       min: 50,
-      max: 100
-    }
+      max: 100,
+    },
   } as Options);
 
   noUiSlider.create(slider2, {
@@ -235,8 +237,8 @@ onMounted(() => {
     animate: false,
     range: {
       min: 50,
-      max: 100
-    }
+      max: 100,
+    },
   } as Options);
 
   if (slider1 && slider2) {
@@ -272,8 +274,8 @@ onMounted(() => {
       tooltips: [true, true],
       range: {
         min: 0,
-        max: 100
-      }
+        max: 100,
+      },
     });
 
     mergeTooltips(mergingTooltipSlider, 5, ' - ');
@@ -364,13 +366,13 @@ onMounted(() => {
       start: 50,
       range: {
         min: 0,
-        max: 100
+        max: 100,
       },
       pips: {
         mode: 'values',
         values: [20, 80],
-        density: 4
-      }
+        density: 4,
+      },
     } as Options);
 
     softSlider.noUiSlider.on('change', function (values: number[], handle: number) {
@@ -386,35 +388,35 @@ onMounted(() => {
 const anchorNavigation = [
   {
     id: 'basic-range',
-    title: 'Basic Range Slider'
+    title: 'Basic Range Slider',
   },
   {
     id: 'vertical-range',
-    title: 'Vertical Range Slider'
+    title: 'Vertical Range Slider',
   },
   {
     id: 'multi-range',
-    title: 'Multi Elements Range'
+    title: 'Multi Elements Range',
   },
   {
     id: 'colorpicker-range',
-    title: 'Colorpicker'
+    title: 'Colorpicker',
   },
   {
     id: 'value-range',
-    title: 'Value Range Slider'
+    title: 'Value Range Slider',
   },
   {
     id: 'locking-together',
-    title: 'Locking Sliders Together'
+    title: 'Locking Sliders Together',
   },
   {
     id: 'tooltip',
-    title: 'Tooltip'
+    title: 'Tooltip',
   },
   {
     id: 'soft-limits',
-    title: 'Soft Limits'
-  }
+    title: 'Soft Limits',
+  },
 ];
 </script>

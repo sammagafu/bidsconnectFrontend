@@ -3,10 +3,7 @@
     <b-card>
       <!-- Progress bar -->
       <b-progress :value="progress" max="100" class="mb-3">
-        <b-progress-bar
-          :value="progress"
-          :label="`Step ${store.step}/4`"
-        />
+        <b-progress-bar :value="progress" :label="`Step ${store.step}/4`" />
       </b-progress>
 
       <!-- Step 1: Basic Info -->
@@ -40,7 +37,12 @@
           />
         </b-form-group>
 
-        <b-form-group v-if="auth.isSuperAdmin || auth.isStaffUser" class="mb-3" label="Company" label-for="company">
+        <b-form-group
+          v-if="auth.isSuperAdmin || auth.isStaffUser"
+          class="mb-3"
+          label="Company"
+          label-for="company"
+        >
           <b-form-select
             id="company"
             v-model="store.product.company"
@@ -82,12 +84,8 @@
 
       <!-- Step 2: Prices -->
       <b-form v-else-if="store.step === 2" novalidate>
-        <div
-          v-for="(price, i) in prices"
-          :key="i"
-          class="mb-3 border p-2 rounded"
-        >
-          <b-form-group class="mb-2" :label="`Price ${i+1} Unit Price`">
+        <div v-for="(price, i) in prices" :key="i" class="mb-3 border p-2 rounded">
+          <b-form-group class="mb-2" :label="`Price ${i + 1} Unit Price`">
             <b-form-input
               type="number"
               step="0.01"
@@ -96,90 +94,41 @@
             />
           </b-form-group>
           <b-form-group class="mb-2" :label="`Unit`">
-            <b-form-input
-              v-model="prices[i].unit"
-            />
+            <b-form-input v-model="prices[i].unit" />
           </b-form-group>
           <b-form-group class="mb-2" :label="`Minimum Quantity`">
-            <b-form-input
-              type="number"
-              v-model.number="prices[i].minimum_quantity"
-              required
-            />
+            <b-form-input type="number" v-model.number="prices[i].minimum_quantity" required />
           </b-form-group>
           <b-form-group class="mb-2" :label="`Description`">
-            <b-form-textarea
-              v-model="prices[i].description"
-              rows="2"
-            />
+            <b-form-textarea v-model="prices[i].description" rows="2" />
           </b-form-group>
-          <b-button
-            size="sm"
-            variant="danger"
-            @click="removePrice(i)"
-          >
-            Remove
-          </b-button>
+          <b-button size="sm" variant="danger" @click="removePrice(i)"> Remove </b-button>
         </div>
-        <b-button
-          size="sm"
-          variant="outline-primary"
-          @click="addPrice"
-        >
-          + Add Price
-        </b-button>
+        <b-button size="sm" variant="outline-primary" @click="addPrice"> + Add Price </b-button>
       </b-form>
 
       <!-- Step 3: Images -->
       <b-form v-else-if="store.step === 3" novalidate>
-        <div
-          v-for="(image, i) in images"
-          :key="i"
-          class="mb-3 border p-2 rounded"
-        >
-          <b-form-group class="mb-2" :label="`Image ${i+1} File`">
-            <b-form-file
-              accept="image/*"
-              v-model="images[i].image"
-              required
-            />
+        <div v-for="(image, i) in images" :key="i" class="mb-3 border p-2 rounded">
+          <b-form-group class="mb-2" :label="`Image ${i + 1} File`">
+            <b-form-file accept="image/*" v-model="images[i].image" required />
           </b-form-group>
           <b-form-group class="mb-2" :label="`Caption`">
-            <b-form-input
-              v-model="images[i].caption"
-            />
+            <b-form-input v-model="images[i].caption" />
           </b-form-group>
           <b-form-group class="mb-2" :label="`Is Primary`">
-            <b-form-checkbox
-              v-model="images[i].is_primary"
-            />
+            <b-form-checkbox v-model="images[i].is_primary" />
           </b-form-group>
-          <b-button
-            size="sm"
-            variant="danger"
-            @click="removeImage(i)"
-          >
-            Remove
-          </b-button>
+          <b-button size="sm" variant="danger" @click="removeImage(i)"> Remove </b-button>
         </div>
-        <b-button
-          size="sm"
-          variant="outline-primary"
-          @click="addImage"
-        >
-          + Add Image
-        </b-button>
+        <b-button size="sm" variant="outline-primary" @click="addImage"> + Add Image </b-button>
       </b-form>
 
       <!-- Step 4: Success -->
       <div v-else class="text-center py-4">
         <h4 class="text-success mb-4">✅ Product created!</h4>
-        <b-button class="me-2" variant="outline-primary" @click="resetAll">
-          New Product
-        </b-button>
-        <b-button variant="primary" @click="goToList">
-          Go to Products
-        </b-button>
+        <b-button class="me-2" variant="outline-primary" @click="resetAll"> New Product </b-button>
+        <b-button variant="primary" @click="goToList"> Go to Products </b-button>
       </div>
 
       <!-- Footer -->
@@ -199,18 +148,8 @@
           >
             Skip Section
           </b-button>
-          <b-button
-            v-if="store.step < 4"
-            variant="primary"
-            @click="nextStep"
-          >
-            Next
-          </b-button>
-          <b-button
-            v-if="store.step === 3"
-            variant="success"
-            @click="submitProduct"
-          >
+          <b-button v-if="store.step < 4" variant="primary" @click="nextStep"> Next </b-button>
+          <b-button v-if="store.step === 3" variant="success" @click="submitProduct">
             Submit Product
           </b-button>
         </div>
@@ -232,8 +171,18 @@ const router = useRouter();
 const auth = useAuthStore();
 const store = ref({
   step: 1,
-  product: { name: '', type: '', description: '', company: null, category_id: null, subcategory_id: null, featured_image: null },
-  back: () => { if (store.value.step > 1) store.value.step--; }
+  product: {
+    name: '',
+    type: '',
+    description: '',
+    company: null,
+    category_id: null,
+    subcategory_id: null,
+    featured_image: null,
+  },
+  back: () => {
+    if (store.value.step > 1) store.value.step--;
+  },
 });
 const progress = computed(() => ((store.value.step - 1) / 3) * 100);
 const errors = ref({});
@@ -245,7 +194,7 @@ const prices = ref([]);
 const images = ref([]);
 const typeOptions = [
   { value: 'Product', text: 'Product' },
-  { value: 'Service', text: 'Service' }
+  { value: 'Service', text: 'Service' },
 ];
 
 function validateStep1() {
@@ -253,7 +202,8 @@ function validateStep1() {
   if (!store.value.product.name) errors.value.name = true;
   if (!store.value.product.type) errors.value.type = true;
   if (!store.value.product.description) errors.value.description = true;
-  if ((auth.isSuperAdmin || auth.isStaffUser) && !store.value.product.company) errors.value.company = true;
+  if ((auth.isSuperAdmin || auth.isStaffUser) && !store.value.product.company)
+    errors.value.company = true;
   if (!store.value.product.category_id) errors.value.category_id = true;
   if (!store.value.product.subcategory_id) errors.value.subcategory_id = true;
   return Object.keys(errors.value).length === 0;
@@ -261,7 +211,11 @@ function validateStep1() {
 
 function nextStep() {
   if (store.value.step === 1 && !validateStep1()) {
-    toast.add({ severity: 'error', summary: 'Validation Error', detail: 'Please fill all required fields.' });
+    toast.add({
+      severity: 'error',
+      summary: 'Validation Error',
+      detail: 'Please fill all required fields.',
+    });
     return;
   }
   if (store.value.step < 4) store.value.step++;
@@ -291,7 +245,15 @@ function removeImage(i) {
 
 function resetAll() {
   store.value.step = 1;
-  store.value.product = { name: '', type: '', description: '', company: null, category_id: null, subcategory_id: null, featured_image: null };
+  store.value.product = {
+    name: '',
+    type: '',
+    description: '',
+    company: null,
+    category_id: null,
+    subcategory_id: null,
+    featured_image: null,
+  };
   prices.value = [];
   images.value = [];
 }
@@ -305,16 +267,21 @@ function onCategoryChange() {
   store.value.product.subcategory_id = null;
 }
 
-watch(() => store.value.product.category_id, id => {
-  const cat = categoriesWithSubs.value.find(c => c.id === id);
-  subcategories.value = cat ? cat.subcategories.map(sc => ({ value: sc.id, text: sc.name })) : [];
-});
+watch(
+  () => store.value.product.category_id,
+  (id) => {
+    const cat = categoriesWithSubs.value.find((c) => c.id === id);
+    subcategories.value = cat
+      ? cat.subcategories.map((sc) => ({ value: sc.id, text: sc.name }))
+      : [];
+  }
+);
 
 async function fetchCategoriesWithSubcategories() {
   try {
     const res = await api.get('marketplaces/categories-with-subcategories/');
     categoriesWithSubs.value = res.data;
-    categories.value = res.data.map(c => ({ value: c.id, text: c.name }));
+    categories.value = res.data.map((c) => ({ value: c.id, text: c.name }));
   } catch {
     toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to load categories' });
   }
@@ -324,8 +291,8 @@ async function fetchCompanies() {
   if (auth.isSuperAdmin || auth.isStaffUser) {
     try {
       const list = await companiesService.list();
-      const arr = Array.isArray(list) ? list : list?.results ?? list ?? [];
-      companiesList.value = arr.map(c => ({ value: c.id, text: c.name }));
+      const arr = Array.isArray(list) ? list : (list?.results ?? list ?? []);
+      companiesList.value = arr.map((c) => ({ value: c.id, text: c.name }));
     } catch {
       toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to load companies' });
     }
@@ -341,9 +308,12 @@ async function submitProduct() {
     if (store.value.product.company) productData.append('company', store.value.product.company);
     productData.append('category_id', store.value.product.category_id);
     productData.append('subcategory_id', store.value.product.subcategory_id);
-    if (store.value.product.featured_image) productData.append('featured_image', store.value.product.featured_image);
+    if (store.value.product.featured_image)
+      productData.append('featured_image', store.value.product.featured_image);
 
-    const resProduct = await api.post('marketplaces/products/', productData, { headers: { 'Content-Type': 'multipart/form-data' } });
+    const resProduct = await api.post('marketplaces/products/', productData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
     const productId = resProduct.data.id;
 
     for (const price of prices.value) {
@@ -356,7 +326,9 @@ async function submitProduct() {
       imgData.append('image', img.image);
       imgData.append('caption', img.caption);
       imgData.append('is_primary', img.is_primary);
-      await api.post('marketplaces/product-images/', imgData, { headers: { 'Content-Type': 'multipart/form-data' } });
+      await api.post('marketplaces/product-images/', imgData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
     }
 
     toast.add({ severity: 'success', summary: 'Done', detail: 'Product created' });

@@ -60,9 +60,9 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, computed } from 'vue'
-import { required } from '@vuelidate/validators'
-import { useVuelidate } from '@vuelidate/core'
+import { reactive, computed } from 'vue';
+import { required } from '@vuelidate/validators';
+import { useVuelidate } from '@vuelidate/core';
 
 const vuelidateState = reactive({
   firstName: undefined,
@@ -71,8 +71,8 @@ const vuelidateState = reactive({
   city: undefined,
   state: undefined,
   zip: undefined,
-  isAgree: undefined
-})
+  isAgree: undefined,
+});
 
 const vuelidateRules = computed(() => ({
   firstName: { required },
@@ -81,12 +81,12 @@ const vuelidateRules = computed(() => ({
   city: { required },
   state: { required },
   zip: { required },
-  isAgree: { required }
-}))
+  isAgree: { required },
+}));
 
-const v = useVuelidate(vuelidateRules, vuelidateState)
+const v = useVuelidate(vuelidateRules, vuelidateState);
 
 const handleVuelidateSubmit = async () => {
-  const result = await v.value.$validate()
-}
+  const result = await v.value.$validate();
+};
 </script>

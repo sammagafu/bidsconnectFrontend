@@ -6,5 +6,4 @@
 // Add any logic later
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>

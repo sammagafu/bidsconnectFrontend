@@ -8,10 +8,10 @@ import { api } from '@/services/authService';
 
 export const tenderNotificationsService = {
   list(params = {}) {
-    return api.get('tenders/tender-notifications/', { params }).then(r => r.data);
+    return api.get('tenders/tender-notifications/', { params }).then((r) => r.data);
   },
 
   markAsRead(id) {
-    return api.patch(`tenders/tender-notifications/${id}/`, { is_read: true }).then(r => r.data);
+    return api.patch(`tenders/tender-notifications/${id}/`, { is_read: true }).then((r) => r.data);
   },
 };

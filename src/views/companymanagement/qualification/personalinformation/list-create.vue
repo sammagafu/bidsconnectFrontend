@@ -182,19 +182,19 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted, watch } from 'vue'
-import { useToast } from 'primevue/usetoast'
-import { useAuthStore } from '@/stores/auth'
-import { api } from '@/services/authService'
-import VerticalLayout from '@/layouts/VerticalLayout.vue'
+import { ref, reactive, onMounted, watch } from 'vue';
+import { useToast } from 'primevue/usetoast';
+import { useAuthStore } from '@/stores/auth';
+import { api } from '@/services/authService';
+import VerticalLayout from '@/layouts/VerticalLayout.vue';
 
-const toast = useToast()
-const authStore = useAuthStore()
-const companyId = ref(authStore.user?.companies?.[0]?.id || null)
+const toast = useToast();
+const authStore = useAuthStore();
+const companyId = ref(authStore.user?.companies?.[0]?.id || null);
 
-const items = ref([])
-const showDialog = ref(false)
-const editing = ref(false)
+const items = ref([]);
+const showDialog = ref(false);
+const editing = ref(false);
 
 // form model
 const form = reactive({
@@ -207,11 +207,11 @@ const form = reactive({
   years_of_experience: 0,
   qualifications: '',
   resume: null,
-  resume_url: null // for display when editing
-})
+  resume_url: null, // for display when editing
+});
 
 // form errors
-const formErrors = reactive({})
+const formErrors = reactive({});
 
 const tableFields = [
   { key: 'index', label: 'No', thStyle: { width: '4em' } },
@@ -223,33 +223,39 @@ const tableFields = [
   { key: 'years_of_experience', label: 'Years Exp.' },
   { key: 'is_verified', label: 'Verified' },
   { key: 'uploaded_at', label: 'Uploaded At', formatter: 'formatDateTime' },
-  { key: 'actions', label: '', thStyle: { width: '8em' } }
-]
+  { key: 'actions', label: '', thStyle: { width: '8em' } },
+];
 
 function formatDateTime(value) {
-  if (!value) return '—'
-  const date = new Date(value)
-  return date.toLocaleString('en-US', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })
+  if (!value) return '—';
+  const date = new Date(value);
+  return date.toLocaleString('en-US', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  });
 }
 
 async function fetchItems(id) {
-  if (!id) return
+  if (!id) return;
   try {
-    const { data } = await api.get(`accounts/companies/${id}/personnel/`)
-    items.value = data.map(item => ({
+    const { data } = await api.get(`accounts/companies/${id}/personnel/`);
+    items.value = data.map((item) => ({
       ...item,
-      resume_url: item.resume // assume serializer exposes absolute URL
-    }))
+      resume_url: item.resume, // assume serializer exposes absolute URL
+    }));
   } catch {
-    toast.add({ severity: 'error', summary: 'Error', detail: 'Could not load personnel.' })
+    toast.add({ severity: 'error', summary: 'Error', detail: 'Could not load personnel.' });
   }
 }
 
-onMounted(() => fetchItems(companyId.value))
-watch(companyId, fetchItems)
+onMounted(() => fetchItems(companyId.value));
+watch(companyId, fetchItems);
 
 function openNew() {
-  editing.value = false
+  editing.value = false;
   Object.assign(form, {
     uuid: null,
     first_name: '',
@@ -260,14 +266,14 @@ function openNew() {
     years_of_experience: 0,
     qualifications: '',
     resume: null,
-    resume_url: null
-  })
-  Object.assign(formErrors, {})
-  showDialog.value = true
+    resume_url: null,
+  });
+  Object.assign(formErrors, {});
+  showDialog.value = true;
 }
 
 function onEdit(item) {
-  editing.value = true
+  editing.value = true;
   Object.assign(form, {
     uuid: item.uuid,
     first_name: item.first_name,
@@ -278,74 +284,78 @@ function onEdit(item) {
     years_of_experience: item.years_of_experience,
     qualifications: item.qualifications,
     resume: null, // reset file input
-    resume_url: item.resume
-  })
-  Object.assign(formErrors, {})
-  showDialog.value = true
+    resume_url: item.resume,
+  });
+  Object.assign(formErrors, {});
+  showDialog.value = true;
 }
 
 async function save() {
-  formErrors.first_name = form.first_name ? undefined : 'First name is required'
-  formErrors.last_name = form.last_name ? undefined : 'Last name is required'
-  formErrors.position = form.position ? undefined : 'Position is required'
-  formErrors.email = undefined
-  formErrors.phone_number = undefined
-  formErrors.years_of_experience = undefined
-  formErrors.qualifications = undefined
+  formErrors.first_name = form.first_name ? undefined : 'First name is required';
+  formErrors.last_name = form.last_name ? undefined : 'Last name is required';
+  formErrors.position = form.position ? undefined : 'Position is required';
+  formErrors.email = undefined;
+  formErrors.phone_number = undefined;
+  formErrors.years_of_experience = undefined;
+  formErrors.qualifications = undefined;
 
   if (form.years_of_experience < 0) {
-    formErrors.years_of_experience = 'Years of experience cannot be negative'
+    formErrors.years_of_experience = 'Years of experience cannot be negative';
   }
 
-  if (Object.values(formErrors).some(err => err)) {
-    toast.add({ severity: 'warn', summary: 'Validation Error', detail: 'Please fill all required fields correctly.' })
-    return
+  if (Object.values(formErrors).some((err) => err)) {
+    toast.add({
+      severity: 'warn',
+      summary: 'Validation Error',
+      detail: 'Please fill all required fields correctly.',
+    });
+    return;
   }
 
-  const base = `accounts/companies/${companyId.value}/personnel`
-  const formData = new FormData()
-  formData.append('first_name', form.first_name)
-  formData.append('last_name', form.last_name)
-  formData.append('position', form.position)
-  if (form.email) formData.append('email', form.email)
-  if (form.phone_number) formData.append('phone_number', form.phone_number)
-  formData.append('years_of_experience', form.years_of_experience)
-  if (form.qualifications) formData.append('qualifications', form.qualifications)
-  if (form.resume instanceof File) formData.append('resume', form.resume)
+  const base = `accounts/companies/${companyId.value}/personnel`;
+  const formData = new FormData();
+  formData.append('first_name', form.first_name);
+  formData.append('last_name', form.last_name);
+  formData.append('position', form.position);
+  if (form.email) formData.append('email', form.email);
+  if (form.phone_number) formData.append('phone_number', form.phone_number);
+  formData.append('years_of_experience', form.years_of_experience);
+  if (form.qualifications) formData.append('qualifications', form.qualifications);
+  if (form.resume instanceof File) formData.append('resume', form.resume);
 
   try {
     if (editing.value) {
       await api.patch(`${base}/${form.uuid}/`, formData, {
-        headers: { 'Content-Type': 'multipart/form-data' }
-      })
-      toast.add({ severity: 'success', summary: 'Updated' })
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      toast.add({ severity: 'success', summary: 'Updated' });
     } else {
       await api.post(`${base}/`, formData, {
-        headers: { 'Content-Type': 'multipart/form-data' }
-      })
-      toast.add({ severity: 'success', summary: 'Created' })
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      toast.add({ severity: 'success', summary: 'Created' });
     }
-    showDialog.value = false
-    fetchItems(companyId.value)
+    showDialog.value = false;
+    fetchItems(companyId.value);
   } catch {
-    toast.add({ severity: 'error', summary: 'Error', detail: 'Save failed.' })
+    toast.add({ severity: 'error', summary: 'Error', detail: 'Save failed.' });
   }
 }
 
 async function onDelete(item) {
-  if (!confirm(`Delete ${item.first_name} ${item.last_name}?`)) return
-  const base = `accounts/companies/${companyId.value}/personnel`
+  if (!confirm(`Delete ${item.first_name} ${item.last_name}?`)) return;
+  const base = `accounts/companies/${companyId.value}/personnel`;
   try {
-    await api.delete(`${base}/${item.uuid}/`)
-    toast.add({ severity: 'success', summary: 'Deleted' })
-    fetchItems(companyId.value)
+    await api.delete(`${base}/${item.uuid}/`);
+    toast.add({ severity: 'success', summary: 'Deleted' });
+    fetchItems(companyId.value);
   } catch {
-    toast.add({ severity: 'error', summary: 'Error', detail: 'Delete failed.' })
+    toast.add({ severity: 'error', summary: 'Error', detail: 'Delete failed.' });
   }
 }
 
 function cancel() {
-  showDialog.value = false
+  showDialog.value = false;
 }
 </script>
 

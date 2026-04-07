@@ -34,7 +34,6 @@
             <b-button variant="primary" id="sweetalert-params">Click me</b-button>
           </div>
         </UIComponentCard>
-
       </b-col>
 
       <b-col xl="3">
@@ -46,36 +45,36 @@
 
 <script setup lang="ts">
 import { onMounted } from 'vue';
-import VerticalLayout from "@/layouts/VerticalLayout.vue";
+import VerticalLayout from '@/layouts/VerticalLayout.vue';
 import AnchorNavigation from '@/components/AnchorNavigation.vue';
 
 import Swal from 'sweetalert2/dist/sweetalert2.js';
 import 'sweetalert2/dist/sweetalert2.css';
-import UIComponentCard from "@/components/UIComponentCard.vue";
+import UIComponentCard from '@/components/UIComponentCard.vue';
 
 type TVueSwalInstance = typeof Swal & typeof Swal.fire;
 
 const anchorNavigation = [
   {
     id: 'basic',
-    title: 'Basic Example'
+    title: 'Basic Example',
   },
   {
     id: 'title',
-    title: 'A Title with a Text Under'
+    title: 'A Title with a Text Under',
   },
   {
     id: 'message',
-    title: 'Message'
+    title: 'Message',
   },
   {
     id: 'longcontent',
-    title: 'Long content Images Message'
+    title: 'Long content Images Message',
   },
   {
     id: 'parameter',
-    title: 'Parameter'
-  }
+    title: 'Parameter',
+  },
 ];
 
 onMounted(() => {
@@ -83,12 +82,12 @@ onMounted(() => {
   const basic = document.getElementById('sweetalert-basic');
   if (basic) {
     basic.addEventListener('click', function () {
-      ; (Swal as TVueSwalInstance).fire({
+      (Swal as TVueSwalInstance).fire({
         title: 'Any fool can use a computer',
         confirmButtonClass: 'btn btn-primary w-xs mt-2',
         // buttonsStyling: false,
         confirmButtonColor: '#ff6c2f',
-        showCloseButton: false
+        showCloseButton: false,
       });
     });
   }
@@ -97,14 +96,14 @@ onMounted(() => {
   const sweetalertTitle = document.getElementById('sweetalert-title');
   if (sweetalertTitle) {
     sweetalertTitle.addEventListener('click', function () {
-      ; (Swal as TVueSwalInstance).fire({
+      (Swal as TVueSwalInstance).fire({
         title: 'The Internet?',
         text: 'That thing is still around?',
         icon: 'question',
         confirmButtonClass: 'btn btn-primary w-xs mt-2',
         confirmButtonColor: '#ff6c2f',
         // buttonsStyling: false,
-        showCloseButton: false
+        showCloseButton: false,
       });
     });
   }
@@ -113,7 +112,7 @@ onMounted(() => {
   const success = document.getElementById('sweetalert-success');
   if (success) {
     success.addEventListener('click', function () {
-      ; (Swal as TVueSwalInstance).fire({
+      (Swal as TVueSwalInstance).fire({
         title: 'Good job!',
         text: 'You clicked the button!',
         icon: 'success',
@@ -123,7 +122,7 @@ onMounted(() => {
         confirmButtonColor: '#ff6c2f',
         cancelButtonColor: '#ef5f5f',
         // buttonsStyling: false,
-        showCloseButton: false
+        showCloseButton: false,
       });
     });
   }
@@ -132,7 +131,7 @@ onMounted(() => {
   const error = document.getElementById('sweetalert-error');
   if (error) {
     error.addEventListener('click', function () {
-      ; (Swal as TVueSwalInstance).fire({
+      (Swal as TVueSwalInstance).fire({
         title: 'Oops...',
         text: 'Something went wrong!',
         icon: 'error',
@@ -140,7 +139,7 @@ onMounted(() => {
         confirmButtonColor: '#ff6c2f',
         // buttonsStyling: false,
         footer: '<a href="">Why do I have this issue?</a>',
-        showCloseButton: false
+        showCloseButton: false,
       });
     });
   }
@@ -149,7 +148,7 @@ onMounted(() => {
   const info = document.getElementById('sweetalert-info');
   if (info) {
     info.addEventListener('click', function () {
-      ; (Swal as TVueSwalInstance).fire({
+      (Swal as TVueSwalInstance).fire({
         title: 'Oops...',
         text: 'Something went wrong!',
         icon: 'info',
@@ -157,7 +156,7 @@ onMounted(() => {
         confirmButtonColor: '#ff6c2f',
         // buttonsStyling: false,
         footer: '<a href="">Why do I have this issue?</a>',
-        showCloseButton: false
+        showCloseButton: false,
       });
     });
   }
@@ -166,7 +165,7 @@ onMounted(() => {
   const warning = document.getElementById('sweetalert-warning');
   if (warning) {
     warning.addEventListener('click', function () {
-      ; (Swal as TVueSwalInstance).fire({
+      (Swal as TVueSwalInstance).fire({
         title: 'Oops...',
         text: 'Something went wrong!',
         icon: 'warning',
@@ -174,7 +173,7 @@ onMounted(() => {
         confirmButtonColor: '#ff6c2f',
         // buttonsStyling: false,
         footer: '<a href="">Why do I have this issue?</a>',
-        showCloseButton: false
+        showCloseButton: false,
       });
     });
   }
@@ -183,14 +182,14 @@ onMounted(() => {
   const longContent = document.getElementById('sweetalert-longcontent');
   if (longContent) {
     longContent.addEventListener('click', function () {
-      ; (Swal as TVueSwalInstance).fire({
+      (Swal as TVueSwalInstance).fire({
         imageUrl: 'https://placeholder.pics/svg/300x1500',
         imageHeight: 1500,
         imageAlt: 'A tall image',
         confirmButtonClass: 'btn btn-primary w-xs mt-2',
         confirmButtonColor: '#ff6c2f',
         // buttonsStyling: false,
-        showCloseButton: false
+        showCloseButton: false,
       });
     });
   }
@@ -199,7 +198,7 @@ onMounted(() => {
   const params = document.getElementById('sweetalert-params');
   if (params) {
     params.addEventListener('click', function () {
-      ; (Swal as TVueSwalInstance)
+      (Swal as TVueSwalInstance)
         .fire({
           title: 'Are you sure?',
           text: "You won't be able to revert this!",
@@ -212,28 +211,28 @@ onMounted(() => {
           confirmButtonColor: '#ff6c2f',
           cancelButtonColor: '#ef5f5f',
           // buttonsStyling: false,
-          showCloseButton: false
+          showCloseButton: false,
         })
         .then(function (result: any) {
           if (result.value) {
-            ; (Swal as TVueSwalInstance).fire({
+            (Swal as TVueSwalInstance).fire({
               title: 'Deleted!',
               text: 'Your file has been deleted.',
               icon: 'success',
               confirmButtonClass: 'btn btn-primary w-xs mt-2',
-              confirmButtonColor: '#ff6c2f'
+              confirmButtonColor: '#ff6c2f',
               // buttonsStyling: false
             });
           } else if (
             // Read more about handling dismissals
             result.dismiss === (Swal as TVueSwalInstance).DismissReason.cancel
           ) {
-            ; (Swal as TVueSwalInstance).fire({
+            (Swal as TVueSwalInstance).fire({
               title: 'Cancelled',
               text: 'Your imaginary file is safe :)',
               icon: 'error',
               confirmButtonClass: 'btn btn-primary mt-2',
-              confirmButtonColor: '#ff6c2f'
+              confirmButtonColor: '#ff6c2f',
               // buttonsStyling: false
             });
           }

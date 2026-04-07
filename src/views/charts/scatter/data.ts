@@ -1,20 +1,24 @@
-import type { ApexChartType } from '@/types'
+import type { ApexChartType } from '@/types';
 
-import dribbble from '@/assets/images/brands/dribbble.svg'
-import github from '@/assets/images/brands/github.svg'
+import dribbble from '@/assets/images/brands/dribbble.svg';
+import github from '@/assets/images/brands/github.svg';
 
-function generateDayWiseTimeSeries(baseval: number, count: number, yrange: { max: number; min: number }): any[] {
-  let i = 0
-  const series = []
+function generateDayWiseTimeSeries(
+  baseval: number,
+  count: number,
+  yrange: { max: number; min: number }
+): any[] {
+  let i = 0;
+  const series = [];
   while (i < count) {
-    const x = baseval
-    const y = Math.floor(Math.random() * (yrange.max - yrange.min + 1)) + yrange.min
+    const x = baseval;
+    const y = Math.floor(Math.random() * (yrange.max - yrange.min + 1)) + yrange.min;
 
-    series.push([x, y])
-    baseval += 86400000
-    i++
+    series.push([x, y]);
+    baseval += 86400000;
+    i++;
   }
-  return series
+  return series;
 }
 
 export const scatterXYChart: ApexChartType = {
@@ -54,8 +58,8 @@ export const scatterXYChart: ApexChartType = {
         [27.1, 0],
         [29.9, 1.5],
         [27.1, 0.8],
-        [22.1, 2]
-      ]
+        [22.1, 2],
+      ],
     },
     {
       name: 'Sample B',
@@ -90,8 +94,8 @@ export const scatterXYChart: ApexChartType = {
         [27.1, 10],
         [2.9, 11.5],
         [7.1, 10.8],
-        [2.1, 12]
-      ]
+        [2.1, 12],
+      ],
     },
     {
       name: 'Sample C',
@@ -126,36 +130,36 @@ export const scatterXYChart: ApexChartType = {
         [15.4, 0],
         [18.1, 0],
         [33.4, 0],
-        [16.4, 0]
-      ]
-    }
+        [16.4, 0],
+      ],
+    },
   ],
   options: {
     chart: {
       height: 380,
       type: 'scatter',
       zoom: {
-        enabled: false
+        enabled: false,
       },
       toolbar: {
-        show: false
-      }
+        show: false,
+      },
     },
     xaxis: {
-      tickAmount: 10
+      tickAmount: 10,
     },
     yaxis: {
-      tickAmount: 7
+      tickAmount: 7,
     },
     colors: ['#1c84ee', '#f9b931', '#4ecac2'],
     grid: {
       borderColor: '#f1f3fa',
       padding: {
-        bottom: 5
-      }
+        bottom: 5,
+      },
     },
     legend: {
-      offsetY: 7
+      offsetY: 7,
     },
     responsive: [
       {
@@ -163,17 +167,17 @@ export const scatterXYChart: ApexChartType = {
         options: {
           chart: {
             toolbar: {
-              show: false
-            }
+              show: false,
+            },
           },
           legend: {
-            show: false
-          }
-        }
-      }
-    ]
-  }
-}
+            show: false,
+          },
+        },
+      },
+    ],
+  },
+};
 
 export const dateTimeChart: ApexChartType = {
   height: 380,
@@ -183,73 +187,73 @@ export const dateTimeChart: ApexChartType = {
       name: 'Team 1',
       data: generateDayWiseTimeSeries(new Date('11 Feb 2017 GMT').getTime(), 20, {
         min: 10,
-        max: 60
-      })
+        max: 60,
+      }),
     },
     {
       name: 'Team 2',
       data: generateDayWiseTimeSeries(new Date('11 Feb 2017 GMT').getTime(), 20, {
         min: 10,
-        max: 60
-      })
+        max: 60,
+      }),
     },
     {
       name: 'Team 3',
       data: generateDayWiseTimeSeries(new Date('11 Feb 2017 GMT').getTime(), 30, {
         min: 10,
-        max: 60
-      })
+        max: 60,
+      }),
     },
     {
       name: 'Team 4',
       data: generateDayWiseTimeSeries(new Date('11 Feb 2017 GMT').getTime(), 10, {
         min: 10,
-        max: 60
-      })
+        max: 60,
+      }),
     },
     {
       name: 'Team 5',
       data: generateDayWiseTimeSeries(new Date('11 Feb 2017 GMT').getTime(), 30, {
         min: 10,
-        max: 60
-      })
-    }
+        max: 60,
+      }),
+    },
   ],
   options: {
     chart: {
       height: 380,
       type: 'scatter',
       zoom: {
-        type: 'xy'
+        type: 'xy',
       },
       toolbar: {
-        show: false
-      }
+        show: false,
+      },
     },
     dataLabels: {
-      enabled: false
+      enabled: false,
     },
     colors: ['#1c84ee', '#7f56da', '#ef5f5f', '#f9b931', '#22c55e'],
     grid: {
       borderColor: '#f1f3fa',
       padding: {
-        bottom: 5
+        bottom: 5,
       },
       xaxis: {
-        lines: { show: true }
+        lines: { show: true },
       },
       yaxis: {
-        lines: { show: true }
-      }
+        lines: { show: true },
+      },
     },
     legend: {
-      offsetY: 10
+      offsetY: 10,
     },
     xaxis: {
-      type: 'datetime'
+      type: 'datetime',
     },
     yaxis: {
-      max: 70
+      max: 70,
     },
     responsive: [
       {
@@ -257,17 +261,17 @@ export const dateTimeChart: ApexChartType = {
         options: {
           chart: {
             toolbar: {
-              show: false
-            }
+              show: false,
+            },
           },
           legend: {
-            show: false
-          }
-        }
-      }
-    ]
-  }
-}
+            show: false,
+          },
+        },
+      },
+    ],
+  },
+};
 
 export const scatterWithImagesChart: ApexChartType = {
   height: 380,
@@ -300,8 +304,8 @@ export const scatterWithImagesChart: ApexChartType = {
         [27.1, 3],
         [29.9, 11.5],
         [27.1, 0.8],
-        [22.1, 2]
-      ]
+        [22.1, 2],
+      ],
     },
     {
       name: 'Github',
@@ -314,35 +318,35 @@ export const scatterWithImagesChart: ApexChartType = {
         [20.9, 7],
         [12.9, 8.2],
         [6.4, 14],
-        [11.6, 12]
-      ]
-    }
+        [11.6, 12],
+      ],
+    },
   ],
   options: {
     chart: {
       height: 380,
       type: 'scatter',
       animations: {
-        enabled: false
+        enabled: false,
       },
       zoom: {
-        enabled: false
+        enabled: false,
       },
       toolbar: {
-        show: false
-      }
+        show: false,
+      },
     },
     colors: ['#1c84ee', '#7f56da', '#ef5f5f', '#f9b931', '#22c55e'],
     xaxis: {
       tickAmount: 10,
       min: 0,
-      max: 40
+      max: 40,
     },
     yaxis: {
-      tickAmount: 7
+      tickAmount: 7,
     },
     markers: {
-      size: 20
+      size: 20,
     },
     fill: {
       type: 'image',
@@ -350,14 +354,14 @@ export const scatterWithImagesChart: ApexChartType = {
       image: {
         src: [dribbble, github],
         width: 40,
-        height: 40
-      }
+        height: 40,
+      },
     },
     legend: {
       labels: {
-        useSeriesColors: true
+        useSeriesColors: true,
       },
-      offsetY: 7
-    }
-  }
-}
+      offsetY: 7,
+    },
+  },
+};

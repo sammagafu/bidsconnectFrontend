@@ -11,19 +11,42 @@
       <p class="text-muted mb-3">Complete these steps to get the most out of BidsConnect:</p>
       <div class="d-flex flex-wrap gap-3">
         <div class="d-flex align-items-center gap-2">
-          <i :class="['bx fs-4', onboardingSteps.company ? 'bx-check-circle text-success' : 'bx-circle']"></i>
-          <router-link v-if="!onboardingSteps.company" to="/company/create-company">Create or join a company</router-link>
+          <i
+            :class="[
+              'bx fs-4',
+              onboardingSteps.company ? 'bx-check-circle text-success' : 'bx-circle',
+            ]"
+          ></i>
+          <router-link v-if="!onboardingSteps.company" to="/company/create-company"
+            >Create or join a company</router-link
+          >
           <span v-else>Company created</span>
         </div>
         <div class="d-flex align-items-center gap-2">
-          <i :class="['bx fs-4', onboardingSteps.documents ? 'bx-check-circle text-success' : 'bx-circle']"></i>
-          <router-link v-if="!onboardingSteps.documents && onboardingSteps.company" :to="{ name: 'user.company-management' }">Upload company documents</router-link>
+          <i
+            :class="[
+              'bx fs-4',
+              onboardingSteps.documents ? 'bx-check-circle text-success' : 'bx-circle',
+            ]"
+          ></i>
+          <router-link
+            v-if="!onboardingSteps.documents && onboardingSteps.company"
+            :to="{ name: 'user.company-management' }"
+            >Upload company documents</router-link
+          >
           <span v-else-if="onboardingSteps.documents">Documents uploaded</span>
           <span v-else class="text-muted">Upload documents (after company)</span>
         </div>
         <div class="d-flex align-items-center gap-2">
-          <i :class="['bx fs-4', onboardingSteps.tenders ? 'bx-check-circle text-success' : 'bx-circle']"></i>
-          <router-link v-if="!onboardingSteps.tenders" :to="{ name: 'company.tenders-list' }">Browse tenders</router-link>
+          <i
+            :class="[
+              'bx fs-4',
+              onboardingSteps.tenders ? 'bx-check-circle text-success' : 'bx-circle',
+            ]"
+          ></i>
+          <router-link v-if="!onboardingSteps.tenders" :to="{ name: 'company.tenders-list' }"
+            >Browse tenders</router-link
+          >
           <span v-else>Exploring tenders</span>
         </div>
       </div>
@@ -66,7 +89,9 @@
               </thead>
               <tbody>
                 <tr v-for="(item, idx) in companyTenders" :key="idx">
-                  <td><a href="#" class="text-muted">{{ item.title }}</a></td>
+                  <td>
+                    <a href="#" class="text-muted">{{ item.title }}</a>
+                  </td>
                   <td>{{ item.status }}</td>
                   <td>{{ item.submission_deadline }}</td>
                 </tr>
@@ -94,7 +119,9 @@
               </thead>
               <tbody>
                 <tr v-for="(item, idx) in companyBids" :key="idx">
-                  <td><a href="#" class="text-muted">{{ item.tender.title }}</a></td>
+                  <td>
+                    <a href="#" class="text-muted">{{ item.tender.title }}</a>
+                  </td>
                   <td>{{ item.status }}</td>
                   <td>{{ item.submission_date }}</td>
                 </tr>
@@ -125,7 +152,9 @@
               </thead>
               <tbody>
                 <tr v-for="(item, idx) in marketplaceItems" :key="idx">
-                  <td><a href="#" class="text-muted">{{ item.name }}</a></td>
+                  <td>
+                    <a href="#" class="text-muted">{{ item.name }}</a>
+                  </td>
                   <td>{{ item.description }}</td>
                   <td>{{ item.price }}</td>
                 </tr>
@@ -139,62 +168,62 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
-import { api, companiesService, tendersService, bidsService, parseApiError } from '@/services'
-import VerticalLayout from '@/layouts/VerticalLayout.vue'
-import { useToast } from 'primevue/usetoast' // If using PrimeVue toast, else replace
-import { useAuthStore } from '@/stores/auth'
-import StatisticsCard from '@/views/dashboards/admin/components/StatisticsCard.vue'
-import ConversionsChart from '@/views/dashboards/admin/components/ConversionsChart.vue'
-import PerformanceChart from '@/views/dashboards/admin/components/PerformanceChart.vue'
-import SessionByBrowser from '@/views/dashboards/admin/components/SessionByBrowser.vue'
-import SessionsByCountry from '@/views/dashboards/admin/components/SessionsByCountry.vue'
-import TopPages from '@/views/dashboards/admin/components/TopPages.vue'
+import { ref, computed, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
+import { api, companiesService, tendersService, bidsService, parseApiError } from '@/services';
+import VerticalLayout from '@/layouts/VerticalLayout.vue';
+import { useToast } from 'primevue/usetoast'; // If using PrimeVue toast, else replace
+import { useAuthStore } from '@/stores/auth';
+import StatisticsCard from '@/views/dashboards/admin/components/StatisticsCard.vue';
+import ConversionsChart from '@/views/dashboards/admin/components/ConversionsChart.vue';
+import PerformanceChart from '@/views/dashboards/admin/components/PerformanceChart.vue';
+import SessionByBrowser from '@/views/dashboards/admin/components/SessionByBrowser.vue';
+import SessionsByCountry from '@/views/dashboards/admin/components/SessionsByCountry.vue';
+import TopPages from '@/views/dashboards/admin/components/TopPages.vue';
 
-const toast = useToast()
-const router = useRouter()
-const authStore = useAuthStore()
+const toast = useToast();
+const router = useRouter();
+const authStore = useAuthStore();
 
-const ONBOARDING_DISMISSED_KEY = 'bidsconnect_onboarding_dismissed'
+const ONBOARDING_DISMISSED_KEY = 'bidsconnect_onboarding_dismissed';
 
-const documentCount = ref(0)
+const documentCount = ref(0);
 const onboardingSteps = computed(() => {
-  const companies = authStore.companies || []
-  const hasCompany = companies.length > 0
+  const companies = authStore.companies || [];
+  const hasCompany = companies.length > 0;
   return {
     company: hasCompany,
     documents: hasCompany && documentCount.value > 0,
     tenders: true,
-  }
-})
+  };
+});
 
 const showOnboarding = computed(() => {
-  if (isAdmin.value) return false
-  if (localStorage.getItem(ONBOARDING_DISMISSED_KEY)) return false
-  const allDone = onboardingSteps.value.company && onboardingSteps.value.documents
-  return !allDone
-})
+  if (isAdmin.value) return false;
+  if (localStorage.getItem(ONBOARDING_DISMISSED_KEY)) return false;
+  const allDone = onboardingSteps.value.company && onboardingSteps.value.documents;
+  return !allDone;
+});
 
 const dismissOnboarding = () => {
-  localStorage.setItem(ONBOARDING_DISMISSED_KEY, '1')
-}
+  localStorage.setItem(ONBOARDING_DISMISSED_KEY, '1');
+};
 
-const isAdmin = ref(false)
-const stats = ref<any[]>([])
-const conversionsData = ref<any>({}) // Adapt to ApexChart data for bids/tenders
-const performanceData = ref<any>({})
-const browserData = ref<any[]>([])
-const countryData = ref<any[]>([])
-const pagesData = ref<any[]>([])
-const companyTenders = ref<any[]>([])
-const companyBids = ref<any[]>([])
-const marketplaceItems = ref<any[]>([])
+const isAdmin = ref(false);
+const stats = ref<any[]>([]);
+const conversionsData = ref<any>({}); // Adapt to ApexChart data for bids/tenders
+const performanceData = ref<any>({});
+const browserData = ref<any[]>([]);
+const countryData = ref<any[]>([]);
+const pagesData = ref<any[]>([]);
+const companyTenders = ref<any[]>([]);
+const companyBids = ref<any[]>([]);
+const marketplaceItems = ref<any[]>([]);
 
 onMounted(async () => {
   try {
-    if (!authStore.isAuthenticated) await authStore.initialize()
-    isAdmin.value = authStore.isSuperAdmin || authStore.isStaffUser
+    if (!authStore.isAuthenticated) await authStore.initialize();
+    isAdmin.value = authStore.isSuperAdmin || authStore.isStaffUser;
 
     if (isAdmin.value) {
       const [usersRes, companiesData, tendersData, bidsData, auditRes] = await Promise.all([
@@ -202,58 +231,133 @@ onMounted(async () => {
         companiesService.list(),
         tendersService.list(),
         bidsService.list(),
-        api.get('accounts/audit-logs/')
-      ])
+        api.get('accounts/audit-logs/'),
+      ]);
 
-      const companiesList = Array.isArray(companiesData) ? companiesData : companiesData?.results ?? []
-      const tendersList = Array.isArray(tendersData) ? tendersData : tendersData?.results ?? []
-      const bidsList = Array.isArray(bidsData) ? bidsData : bidsData?.results ?? []
+      const companiesList = Array.isArray(companiesData)
+        ? companiesData
+        : (companiesData?.results ?? []);
+      const tendersList = Array.isArray(tendersData) ? tendersData : (tendersData?.results ?? []);
+      const bidsList = Array.isArray(bidsData) ? bidsData : (bidsData?.results ?? []);
 
       stats.value = [
-        { title: 'Total Users', statistic: usersRes.data?.length ?? 0, icon: 'users', prefix: '', suffix: '', growth: 5 },
-        { title: 'Total Companies', statistic: companiesList.length, icon: 'building', prefix: '', suffix: '', growth: -2 },
-        { title: 'Total Tenders', statistic: tendersList.length, icon: 'file-text', prefix: '', suffix: '', growth: 10 },
-        { title: 'Total Bids', statistic: bidsList.length, icon: 'briefcase', prefix: '', suffix: '', growth: 3 }
-      ]
+        {
+          title: 'Total Users',
+          statistic: usersRes.data?.length ?? 0,
+          icon: 'users',
+          prefix: '',
+          suffix: '',
+          growth: 5,
+        },
+        {
+          title: 'Total Companies',
+          statistic: companiesList.length,
+          icon: 'building',
+          prefix: '',
+          suffix: '',
+          growth: -2,
+        },
+        {
+          title: 'Total Tenders',
+          statistic: tendersList.length,
+          icon: 'file-text',
+          prefix: '',
+          suffix: '',
+          growth: 10,
+        },
+        {
+          title: 'Total Bids',
+          statistic: bidsList.length,
+          icon: 'briefcase',
+          prefix: '',
+          suffix: '',
+          growth: 3,
+        },
+      ];
 
-      conversionsData.value = {}
-      performanceData.value = {}
-      browserData.value = bidsList.reduce((acc: any[], _b: any) => acc, [])
-      countryData.value = companiesList.reduce((acc: any[], _c: any) => acc, [])
-      pagesData.value = tendersList.map((t: any) => ({ path: t.title, views: 100, avgTime: '2m', exitRate: 20, variant: 'success' }))
+      conversionsData.value = {};
+      performanceData.value = {};
+      browserData.value = bidsList.reduce((acc: any[], _b: any) => acc, []);
+      countryData.value = companiesList.reduce((acc: any[], _c: any) => acc, []);
+      pagesData.value = tendersList.map((t: any) => ({
+        path: t.title,
+        views: 100,
+        avgTime: '2m',
+        exitRate: 20,
+        variant: 'success',
+      }));
 
-      marketplaceItems.value = tendersList.map((t: any) => ({ name: t.title, description: t.description, price: t.estimated_value }))
+      marketplaceItems.value = tendersList.map((t: any) => ({
+        name: t.title,
+        description: t.description,
+        price: t.estimated_value,
+      }));
     } else {
       if (authStore.companies?.length > 0) {
-        const companyId = authStore.companies[0].id
+        const companyId = authStore.companies[0].id;
         const [dashRes, tendersData, bidsData] = await Promise.all([
           api.get(`accounts/companies/${companyId}/dashboard/`),
           tendersService.list({ status: 'published' }),
-          bidsService.listByCompany(companyId)
-        ])
+          bidsService.listByCompany(companyId),
+        ]);
 
-        const tendersList = Array.isArray(tendersData) ? tendersData : tendersData?.results ?? []
-        const bidsList = Array.isArray(bidsData) ? bidsData : bidsData?.results ?? []
+        const tendersList = Array.isArray(tendersData) ? tendersData : (tendersData?.results ?? []);
+        const bidsList = Array.isArray(bidsData) ? bidsData : (bidsData?.results ?? []);
 
-        documentCount.value = dashRes.data?.total_documents ?? 0
+        documentCount.value = dashRes.data?.total_documents ?? 0;
         stats.value = [
-          { title: 'Company Users', statistic: dashRes.data?.total_users ?? 0, icon: 'users', prefix: '', suffix: '', growth: 0 },
-          { title: 'Company Documents', statistic: documentCount.value, icon: 'file', prefix: '', suffix: '', growth: 0 },
-          { title: 'Company Experiences', statistic: dashRes.data?.total_experiences ?? 0, icon: 'award', prefix: '', suffix: '', growth: 0 }
-        ]
+          {
+            title: 'Company Users',
+            statistic: dashRes.data?.total_users ?? 0,
+            icon: 'users',
+            prefix: '',
+            suffix: '',
+            growth: 0,
+          },
+          {
+            title: 'Company Documents',
+            statistic: documentCount.value,
+            icon: 'file',
+            prefix: '',
+            suffix: '',
+            growth: 0,
+          },
+          {
+            title: 'Company Experiences',
+            statistic: dashRes.data?.total_experiences ?? 0,
+            icon: 'award',
+            prefix: '',
+            suffix: '',
+            growth: 0,
+          },
+        ];
 
-        companyTenders.value = tendersList.filter((t: any) => t.agency === authStore.companies[0].name)
-        companyBids.value = bidsList
-        marketplaceItems.value = companyTenders.value.map((t: any) => ({ name: t.title, description: t.description, price: t.estimated_value }))
+        companyTenders.value = tendersList.filter(
+          (t: any) => t.agency === authStore.companies[0].name
+        );
+        companyBids.value = bidsList;
+        marketplaceItems.value = companyTenders.value.map((t: any) => ({
+          name: t.title,
+          description: t.description,
+          price: t.estimated_value,
+        }));
       } else {
-        toast.add({ severity: 'warn', summary: 'No Company', detail: 'You are not associated with any company.' })
-        router.push({ name: 'user.create-company' })
+        toast.add({
+          severity: 'warn',
+          summary: 'No Company',
+          detail: 'You are not associated with any company.',
+        });
+        router.push({ name: 'user.create-company' });
       }
     }
   } catch (e) {
-    toast.add({ severity: 'error', summary: 'Error', detail: parseApiError(e) || 'Failed to load dashboard data.' })
+    toast.add({
+      severity: 'error',
+      summary: 'Error',
+      detail: parseApiError(e) || 'Failed to load dashboard data.',
+    });
   }
-})
+});
 </script>
 
 <style scoped>

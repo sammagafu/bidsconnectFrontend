@@ -54,10 +54,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from 'vue'
-import { boolean, type InferType, object, string } from 'yup'
+import { ref, reactive } from 'vue';
+import { boolean, type InferType, object, string } from 'yup';
 
-const error = ref('')
+const error = ref('');
 const yupSchema = object({
   isAgree: boolean().required('Please agree with our terms'),
   zip: string().min(6, 'Must be at least 6 characters').required('Zip code is Required'),
@@ -65,9 +65,9 @@ const yupSchema = object({
   city: string().required('City is Required'),
   username: string().required('Username is Required'),
   lastName: string().required('Last name is Required'),
-  firstName: string().required('First name is Required')
-})
-type Schema = InferType<typeof yupSchema>
+  firstName: string().required('First name is Required'),
+});
+type Schema = InferType<typeof yupSchema>;
 const yupState = reactive({
   firstName: undefined,
   lastName: undefined,
@@ -75,16 +75,16 @@ const yupState = reactive({
   city: undefined,
   state: undefined,
   zip: undefined,
-  isAgree: undefined
-})
+  isAgree: undefined,
+});
 const handleYupSubmit = async (event: Event) => {
   await yupSchema
     .validate(yupState)
     .then(() => {
-      error.value = ''
+      error.value = '';
     })
     .catch((e) => {
-      error.value = e.message
-    })
-}
+      error.value = e.message;
+    });
+};
 </script>

@@ -213,12 +213,14 @@
     </div>
 
     <div class="my-4 text-center">
-      <a href="https://icon-sets.iconify.design/solar/" target="_blank" class="btn btn-primary">View All Icons</a>
+      <a href="https://icon-sets.iconify.design/solar/" target="_blank" class="btn btn-primary"
+        >View All Icons</a
+      >
     </div>
   </VerticalLayout>
 </template>
 
 <script setup lang="ts">
-import VerticalLayout from "@/layouts/VerticalLayout.vue";
+import VerticalLayout from '@/layouts/VerticalLayout.vue';
 import { Icon } from '@iconify/vue';
 </script>

@@ -22,19 +22,16 @@
 
         <b-row>
           <b-col md="4" class="text-center">
-            <img 
-              v-if="company.logo" 
-              :src="company.logo" 
-              :alt="company.name" 
-              class="rounded mb-3" 
-              style="width:150px;height:150px;object-fit:cover" 
+            <img
+              v-if="company.logo"
+              :src="company.logo"
+              :alt="company.name"
+              class="rounded mb-3"
+              style="width: 150px; height: 150px; object-fit: cover"
             />
             <p v-else class="text-muted">No Logo</p>
             <h4>{{ company.name }}</h4>
-            <b-badge 
-              :variant="company.status === 'active' ? 'success' : 'danger'"
-              class="mt-2"
-            >
+            <b-badge :variant="company.status === 'active' ? 'success' : 'danger'" class="mt-2">
               {{ capitalize(company.status) }}
             </b-badge>
           </b-col>
@@ -51,12 +48,15 @@
               </li>
               <li><strong>Tax ID:</strong> {{ company.tax_id || 'N/A' }}</li>
               <li><strong>Registration #:</strong> {{ company.registration_number || 'N/A' }}</li>
-              <li><strong>Founded:</strong> {{ company.founded_date ? formatDate(company.founded_date) : 'N/A' }}</li>
+              <li>
+                <strong>Founded:</strong>
+                {{ company.founded_date ? formatDate(company.founded_date) : 'N/A' }}
+              </li>
               <li><strong>Country:</strong> {{ company.country || 'N/A' }}</li>
               <li><strong>Employees:</strong> {{ company.employee_count ?? 'N/A' }}</li>
               <li><strong>Verified:</strong> {{ company.is_verified ? 'Yes' : 'No' }}</li>
               <li>
-                <strong>Verified At:</strong> 
+                <strong>Verified At:</strong>
                 {{ company.verification_date ? formatDate(company.verification_date) : 'N/A' }}
               </li>
             </ul>
@@ -70,8 +70,8 @@
         :items="company.company_users"
         labelFn="user_email"
         subLabel="role"
-        :createRoute="{ name: 'user.user-management'}"
-        :editRoute="{ name: 'user.user-management'}"
+        :createRoute="{ name: 'user.user-management' }"
+        :editRoute="{ name: 'user.user-management' }"
       />
 
       <RelatedListCard
@@ -80,8 +80,8 @@
         labelFn="invited_email"
         subLabel="expires_at"
         dateSub
-        :createRoute="{ name: 'user.user-management'}"
-        :editRoute="{ name: 'user.user-management'}"
+        :createRoute="{ name: 'user.user-management' }"
+        :editRoute="{ name: 'user.user-management' }"
       />
 
       <RelatedListCard
@@ -90,8 +90,8 @@
         labelFn="document_type"
         linkField="document_file"
         linkText="Download"
-        :createRoute="{ name: 'user.user-management'}"
-        :editRoute="{ name: 'user.user-management'}"
+        :createRoute="{ name: 'user.user-management' }"
+        :editRoute="{ name: 'user.user-management' }"
       />
 
       <RelatedListCard
@@ -99,8 +99,8 @@
         :items="company.offices"
         labelFn="director_title"
         subFields="region,district"
-        :createRoute="{ name: 'profile.officelocation'}"
-        :editRoute="{ name: 'user.user-management'}"
+        :createRoute="{ name: 'profile.officelocation' }"
+        :editRoute="{ name: 'user.user-management' }"
       />
 
       <RelatedListCard
@@ -109,8 +109,8 @@
         labelFn="cert_type"
         linkField="file"
         linkText="Download"
-        :createRoute="{ name: 'user.user-management'}"
-        :editRoute="{ name: 'user.user-management'}"
+        :createRoute="{ name: 'user.user-management' }"
+        :editRoute="{ name: 'user.user-management' }"
       />
 
       <RelatedListCard
@@ -118,8 +118,8 @@
         :items="company.sources_of_funds"
         labelFn="source_type"
         subFields="amount,currency"
-        :createRoute="{ name: 'profile.source-of-funds'}"
-        :editRoute="{ name: 'user.user-management'}"
+        :createRoute="{ name: 'profile.source-of-funds' }"
+        :editRoute="{ name: 'user.user-management' }"
       />
 
       <RelatedListCard
@@ -127,8 +127,8 @@
         :items="company.annual_turnovers"
         labelFn="year"
         subFields="amount,currency"
-        :createRoute="{ name: 'profile.turnover'}"
-        :editRoute="{ name: 'user.user-management'}"
+        :createRoute="{ name: 'profile.turnover' }"
+        :editRoute="{ name: 'user.user-management' }"
       />
 
       <RelatedListCard
@@ -139,8 +139,8 @@
         linkText="FS"
         extraLinkField="audit_report"
         extraLinkText="AR"
-        :createRoute="{ name: 'profile.financial'}"
-        :editRoute="{ name: 'user.user-management'}"
+        :createRoute="{ name: 'profile.financial' }"
+        :editRoute="{ name: 'user.user-management' }"
       />
 
       <RelatedListCard
@@ -148,8 +148,8 @@
         :items="company.litigations"
         labelFn="title"
         subLabel="status"
-        :createRoute="{ name: 'profile.litigation'}"
-        :editRoute="{ name: 'user.user-management'}"
+        :createRoute="{ name: 'profile.litigation' }"
+        :editRoute="{ name: 'user.user-management' }"
       />
 
       <RelatedListCard
@@ -157,8 +157,8 @@
         :items="company.equipment"
         labelFn="name"
         subLabel="quantity"
-        :createRoute="{ name: 'user.user-management'}"
-        :editRoute="{ name: 'user.user-management'}"
+        :createRoute="{ name: 'user.user-management' }"
+        :editRoute="{ name: 'user.user-management' }"
       />
 
       <RelatedListCard
@@ -166,56 +166,60 @@
         :items="company.personnel"
         labelFn="first_name"
         subLabel="job_title"
-        :createRoute="{ name: 'profile.personalinformation'}"
-        :editRoute="{ name: 'user.user-management'}"
+        :createRoute="{ name: 'profile.personalinformation' }"
+        :editRoute="{ name: 'user.user-management' }"
       />
     </div>
   </VerticalLayout>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
-import { useToast } from 'primevue/usetoast'
-import { useAuthStore } from '@/stores/auth'
-import { companiesService, parseApiError } from '@/services'
-import VerticalLayout from '@/layouts/VerticalLayout.vue'
-import {
-  BRow,
-  BCol,
-  BCard,
-  BButton,
-  BBadge,
-  BSpinner
-} from 'bootstrap-vue-next'
-import RelatedListCard from '@/components/RelatedListCard.vue'
+import { ref, onMounted } from 'vue';
+import { useToast } from 'primevue/usetoast';
+import { useAuthStore } from '@/stores/auth';
+import { companiesService, parseApiError } from '@/services';
+import VerticalLayout from '@/layouts/VerticalLayout.vue';
+import { BRow, BCol, BCard, BButton, BBadge, BSpinner } from 'bootstrap-vue-next';
+import RelatedListCard from '@/components/RelatedListCard.vue';
 
-const toast     = useToast()
-const auth      = useAuthStore()
-const companyId = ref(auth.user?.companies?.[0]?.id || null)
-const company   = ref(null)
+const toast = useToast();
+const auth = useAuthStore();
+const companyId = ref(auth.user?.companies?.[0]?.id || null);
+const company = ref(null);
 
 async function fetchCompany() {
-  if (!companyId.value) return
+  if (!companyId.value) return;
   try {
-    company.value = await companiesService.get(companyId.value)
+    company.value = await companiesService.get(companyId.value);
   } catch (e) {
-    toast.add({ severity:'error', summary:'Error', detail: parseApiError(e) || 'Could not load company.' })
+    toast.add({
+      severity: 'error',
+      summary: 'Error',
+      detail: parseApiError(e) || 'Could not load company.',
+    });
   }
 }
 
-onMounted(fetchCompany)
+onMounted(fetchCompany);
 
 function formatDate(d) {
-  return d ? new Date(d).toLocaleDateString() : ''
+  return d ? new Date(d).toLocaleDateString() : '';
 }
 
 function capitalize(str) {
-  return str.charAt(0).toUpperCase() + str.slice(1)
+  return str.charAt(0).toUpperCase() + str.slice(1);
 }
 </script>
 
 <style scoped>
-.mb-4 { margin-bottom: 1.5rem; }
-.py-5 { padding-top: 3rem; padding-bottom: 3rem; }
-.text-center { text-align: center; }
+.mb-4 {
+  margin-bottom: 1.5rem;
+}
+.py-5 {
+  padding-top: 3rem;
+  padding-bottom: 3rem;
+}
+.text-center {
+  text-align: center;
+}
 </style>

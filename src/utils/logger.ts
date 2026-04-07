@@ -34,5 +34,5 @@ export const logger = {
     if (isDevelopment) {
       console.debug(...args);
     }
-  }
+  },
 };

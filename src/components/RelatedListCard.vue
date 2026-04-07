@@ -41,32 +41,24 @@
 
         <!-- Optional multiple fields -->
         <template v-if="subFields">
-          — 
-          <span
-            v-for="(f,i) in subFields.split(',')"
-            :key="i"
-          >
-            {{ item[f] }}<span v-if="i+1<subFields.split(',').length">, </span>
+          —
+          <span v-for="(f, i) in subFields.split(',')" :key="i">
+            {{ item[f] }}<span v-if="i + 1 < subFields.split(',').length">, </span>
           </span>
         </template>
 
         <!-- Link field -->
         <template v-if="linkField">
-          — 
-          <a
-            :href="item[linkField]"
-            target="_blank"
-          >{{ linkText }}</a>
+          —
+          <a :href="item[linkField]" target="_blank">{{ linkText }}</a>
         </template>
 
         <!-- Extra link field -->
         <template v-if="extraLinkField">
-          , 
-          <a
-            v-if="item[extraLinkField]"
-            :href="item[extraLinkField]"
-            target="_blank"
-          >{{ extraLinkText }}</a>
+          ,
+          <a v-if="item[extraLinkField]" :href="item[extraLinkField]" target="_blank">{{
+            extraLinkText
+          }}</a>
         </template>
       </b-list-group-item>
 
@@ -79,39 +71,39 @@
 </template>
 
 <script setup>
-import { defineProps, computed } from 'vue'
-import { RouterLink } from 'vue-router'
-import { BCard, BListGroup, BListGroupItem } from 'bootstrap-vue-next'
+import { defineProps, computed } from 'vue';
+import { RouterLink } from 'vue-router';
+import { BCard, BListGroup, BListGroupItem } from 'bootstrap-vue-next';
 
 const props = defineProps({
-  title:          String,
-  items:          { type: Array, default: () => [] },
-  labelFn:        { type: String, default: 'id' },
-  subLabel:       String,
-  dateSub:        Boolean,
-  subFields:      String,
-  linkField:      String,
-  linkText:       { type: String, default: 'View' },
+  title: String,
+  items: { type: Array, default: () => [] },
+  labelFn: { type: String, default: 'id' },
+  subLabel: String,
+  dateSub: Boolean,
+  subFields: String,
+  linkField: String,
+  linkText: { type: String, default: 'View' },
   extraLinkField: String,
-  extraLinkText:  String,
-  createRoute:    {
+  extraLinkText: String,
+  createRoute: {
     type: Object,
-    default: null
+    default: null,
     // e.g. { name: 'company.documents.create', params: { companyId: 123 } }
   },
-  editRoute:      {
+  editRoute: {
     type: Object,
-    default: null
+    default: null,
     // e.g. { name: 'company.documents.edit', params: { companyId: 123 } }
-  }
-})
+  },
+});
 
 // Expose computed so we can pass the full object directly to <router-link>
-const createRouteParams = computed(() => props.createRoute)
-const editRouteParams   = computed(() => props.editRoute)
+const createRouteParams = computed(() => props.createRoute);
+const editRouteParams = computed(() => props.editRoute);
 
 function formatDate(d) {
-  return d ? new Date(d).toLocaleDateString() : ''
+  return d ? new Date(d).toLocaleDateString() : '';
 }
 </script>
 

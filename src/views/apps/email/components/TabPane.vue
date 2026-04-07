@@ -15,7 +15,9 @@
       <hr />
       <div class="text-center mt-2">
         <p class="mb-0">You don't have any saved drafts.</p>
-        <p class="mb-0">Saving a draft allows you to keep a message you aren't ready to send yet.</p>
+        <p class="mb-0">
+          Saving a draft allows you to keep a message you aren't ready to send yet.
+        </p>
       </div>
       <hr class="mb-0" />
     </template>
@@ -30,7 +32,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import MailCard from '@/views/apps/email/components/MailCard.vue'
+import MailCard from '@/views/apps/email/components/MailCard.vue';
 
-defineProps(['tab', 'filteredMails', 'showTab', 'toggleReadOffcanvas'])
+defineProps(['tab', 'filteredMails', 'showTab', 'toggleReadOffcanvas']);
 </script>

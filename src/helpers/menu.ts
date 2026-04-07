@@ -1,36 +1,45 @@
-import { MENU_ITEMS } from '@/assets/data/menu'
-import type { MenuItemType } from '@/types/menu'
-import type { RouteRecordName } from 'vue-router'
+import { MENU_ITEMS } from '@/assets/data/menu';
+import type { MenuItemType } from '@/types/menu';
+import type { RouteRecordName } from 'vue-router';
 
-let activeMenuItem = {}
+let activeMenuItem = {};
 
 export const getMenuItems = () => {
   // NOTE - You can fetch from server and return here as well
-  return MENU_ITEMS
-}
+  return MENU_ITEMS;
+};
 
-const getMatchingMenuItems = (data: MenuItemType[], currentRouteName: RouteRecordName | null | undefined) => {
-  const matchingItems: string[] = []
+const getMatchingMenuItems = (
+  data: MenuItemType[],
+  currentRouteName: RouteRecordName | null | undefined
+) => {
+  const matchingItems: string[] = [];
 
   const traverse = (item: MenuItemType) => {
-    if (item.children && item.children.some((child) => child.route?.name && child.route.name === currentRouteName)) {
-      matchingItems.push(item.key) // Add parent's key if a child matches
+    if (
+      item.children &&
+      item.children.some((child) => child.route?.name && child.route.name === currentRouteName)
+    ) {
+      matchingItems.push(item.key); // Add parent's key if a child matches
       if (item.parentKey) {
-        matchingItems.push(item.parentKey)
+        matchingItems.push(item.parentKey);
       }
     }
 
     if (item.children) {
-      item.children.forEach((child) => traverse(child))
+      item.children.forEach((child) => traverse(child));
     }
-  }
+  };
 
-  data.forEach(traverse)
+  data.forEach(traverse);
 
-  return matchingItems
-}
+  return matchingItems;
+};
 
-export const menuItemActive = (key: string, currentRouteName: RouteRecordName | null | undefined) => {
-  activeMenuItem = getMatchingMenuItems(MENU_ITEMS, currentRouteName)
-  return activeMenuItem && Object.values(activeMenuItem).includes(key)
-}
+export const menuItemActive = (
+  key: string,
+  currentRouteName: RouteRecordName | null | undefined
+) => {
+  activeMenuItem = getMatchingMenuItems(MENU_ITEMS, currentRouteName);
+  return activeMenuItem && Object.values(activeMenuItem).includes(key);
+};

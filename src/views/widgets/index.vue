@@ -48,7 +48,9 @@
                     </b-col>
                   </b-row>
                   <div class="text-center">
-                    <b-button variant="light" type="button" class="shadow-none w-100"> View Details</b-button>
+                    <b-button variant="light" type="button" class="shadow-none w-100">
+                      View Details</b-button
+                    >
                   </div>
                 </div>
               </b-col>
@@ -63,8 +65,13 @@
                       <b-button variant="outline-light" size="sm" class="active">1Y</b-button>
                     </div>
                   </div>
-                  <b-alert v-model="performanceAlert" variant="info" class="mt-3 text text-truncate mb-0"> We regret
-                    to inform you that our server is currently experiencing technical difficulties.
+                  <b-alert
+                    v-model="performanceAlert"
+                    variant="info"
+                    class="mt-3 text text-truncate mb-0"
+                  >
+                    We regret to inform you that our server is currently experiencing technical
+                    difficulties.
                   </b-alert>
                   <div dir="ltr">
                     <ApexChart :chart="performanceChart" class="apex-charts" />
@@ -94,7 +101,7 @@
 </template>
 
 <script setup lang="ts">
-import VerticalLayout from "@/layouts/VerticalLayout.vue";
+import VerticalLayout from '@/layouts/VerticalLayout.vue';
 import ApexChart from '@/components/ApexChart.vue';
 import StatisticsCard1 from '@/views/widgets/components/StatisticsCard1.vue';
 import StatisticsCard2 from '@/views/widgets/components/StatisticsCard2.vue';
@@ -110,7 +117,7 @@ import {
   statistics2,
   statistics3,
   conversionsChart,
-  performanceChart
+  performanceChart,
 } from '@/views/widgets/components/data';
 
 import { ref } from 'vue';

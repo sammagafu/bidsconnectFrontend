@@ -23,8 +23,12 @@
         <template #list="slotProps">
           <div class="flex flex-col">
             <div v-for="item in slotProps.items" :key="item.id">
-              <div class="flex flex-col xl:flex-row xl:items-start p-6 gap-6 border-t border-surface-200 dark:border-surface-700">
-                <div class="flex flex-col sm:flex-row justify-between items-center xl:items-start flex-1 gap-6">
+              <div
+                class="flex flex-col xl:flex-row xl:items-start p-6 gap-6 border-t border-surface-200 dark:border-surface-700"
+              >
+                <div
+                  class="flex flex-col sm:flex-row justify-between items-center xl:items-start flex-1 gap-6"
+                >
                   <div class="flex flex-col items-center sm:items-start gap-4">
                     <h3 class="text-xl">{{ item.company_name }}</h3>
                     <p class="text-sm">{{ item.tender_description.substring(0, 100) }}...</p>
@@ -40,8 +44,14 @@
         </template>
         <template #grid="slotProps">
           <div class="grid grid-cols-12 gap-4">
-            <div v-for="item in slotProps.items" :key="item.id" class="col-span-12 sm:col-span-6 xl:col-span-4 p-2">
-              <div class="p-6 border border-surface-200 dark:border-surface-700 bg-surface-0 dark:bg-surface-900 rounded">
+            <div
+              v-for="item in slotProps.items"
+              :key="item.id"
+              class="col-span-12 sm:col-span-6 xl:col-span-4 p-2"
+            >
+              <div
+                class="p-6 border border-surface-200 dark:border-surface-700 bg-surface-0 dark:bg-surface-900 rounded"
+              >
                 <div class="flex flex-wrap items-center justify-between gap-2">
                   <h3 class="text-lg">{{ item.company_name }}</h3>
                 </div>
@@ -58,27 +68,38 @@
         </template>
       </DataView>
     </div>
-    <Dialog v-model:visible="showAddDialog" header="Add Litigation History" modal :style="{ width: '50vw' }">
+    <Dialog
+      v-model:visible="showAddDialog"
+      header="Add Litigation History"
+      modal
+      :style="{ width: '50vw' }"
+    >
       <div class="p-fluid">
         <div class="p-field">
           <label for="company_name">Company Name</label>
-          <InputText id="company_name" v-model="newItem.company_name" class="w-full" fluid/>
+          <InputText id="company_name" v-model="newItem.company_name" class="w-full" fluid />
         </div>
         <div class="p-field">
           <label for="address">Address</label>
-          <Textarea id="address" v-model="newItem.address" rows="3" class="w-full" fluid/>
+          <Textarea id="address" v-model="newItem.address" rows="3" class="w-full" fluid />
         </div>
         <div class="p-field">
           <label for="po_box">PO Box</label>
-          <InputText id="po_box" v-model="newItem.po_box" class="w-full" fluid/>
+          <InputText id="po_box" v-model="newItem.po_box" class="w-full" fluid />
         </div>
         <div class="p-field">
           <label for="tender_description">Tender Description</label>
-          <Textarea id="tender_description" v-model="newItem.tender_description" rows="3" class="w-full"fluid />
+          <Textarea
+            id="tender_description"
+            v-model="newItem.tender_description"
+            rows="3"
+            class="w-full"
+            fluid
+          />
         </div>
         <div class="p-field">
           <label for="date">Date</label>
-          <DatePicker id="date" v-model="newItem.date" showIcon class="w-full" fluid/>
+          <DatePicker id="date" v-model="newItem.date" showIcon class="w-full" fluid />
         </div>
       </div>
       <Button label="Submit" @click="submitNew" />
@@ -111,13 +132,13 @@ const newItem = ref({
   address: '',
   po_box: '',
   tender_description: '',
-  date: null
+  date: null,
 });
 
 const filteredItems = computed(() => {
   if (!Array.isArray(items.value)) return [];
-  return items.value.filter(i => {
-    return (!search.value || i.company_name.toLowerCase().includes(search.value.toLowerCase()));
+  return items.value.filter((i) => {
+    return !search.value || i.company_name.toLowerCase().includes(search.value.toLowerCase());
   });
 });
 
@@ -139,30 +160,47 @@ async function submitNew() {
     items.value.push(res.data);
     toast.add({ severity: 'success', summary: 'Success', detail: 'Added' });
     showAddDialog.value = false;
-    newItem.value = { company_name: '', address: '', po_box: '', tender_description: '', date: null };
+    newItem.value = {
+      company_name: '',
+      address: '',
+      po_box: '',
+      tender_description: '',
+      date: null,
+    };
   } catch (err) {
     toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to add' });
   }
 }
 
 function generatePDF(item) {
-  api.get(`automation/litigation-history/${item.id}/`, { responseType: 'blob' }).then(response => {
-    const blob = new Blob([response.data], { type: 'application/pdf' });
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.download = 'litigation_history.pdf';
-    link.click();
-    URL.revokeObjectURL(link.href);
-  }).catch(err => {
-    toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to generate PDF' });
-  });
+  api
+    .get(`automation/litigation-history/${item.id}/`, { responseType: 'blob' })
+    .then((response) => {
+      const blob = new Blob([response.data], { type: 'application/pdf' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = 'litigation_history.pdf';
+      link.click();
+      URL.revokeObjectURL(link.href);
+    })
+    .catch((err) => {
+      toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to generate PDF' });
+    });
 }
 
 onMounted(fetchItems);
 </script>
 
 <style scoped>
-.mb-4 { margin-bottom: 1rem !important; }
-.p-field { margin-bottom: 1.5rem; padding: 0.5rem; }
-.p-field label { display: block; margin-bottom: 0.5rem; }
+.mb-4 {
+  margin-bottom: 1rem !important;
+}
+.p-field {
+  margin-bottom: 1.5rem;
+  padding: 0.5rem;
+}
+.p-field label {
+  display: block;
+  margin-bottom: 0.5rem;
+}
 </style>

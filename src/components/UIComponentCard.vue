@@ -7,18 +7,18 @@
       </b-card-title>
       <p class="text-muted" v-if="caption">{{ caption }}</p>
 
-      <slot/>
+      <slot />
     </b-card-body>
   </b-card>
 </template>
 
 <script setup lang="ts">
 type CardPropsType = {
-  id?: string
-  title?: string
-  caption?: string
-  titleClass?: string
-}
+  id?: string;
+  title?: string;
+  caption?: string;
+  titleClass?: string;
+};
 
-defineProps<CardPropsType>()
+defineProps<CardPropsType>();
 </script>

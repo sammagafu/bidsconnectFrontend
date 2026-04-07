@@ -1,4 +1,4 @@
-import type { EmailType, NavLinkType } from '@/views/apps/email/components/types'
+import type { EmailType, NavLinkType } from '@/views/apps/email/components/types';
 
 export const emailData: EmailType[] = [
   {
@@ -14,7 +14,7 @@ export const emailData: EmailType[] = [
     isSent: false,
     isTrash: false,
     type: 'social',
-    categories: ['social', 'important']
+    categories: ['social', 'important'],
   },
   {
     id: 'InboxChk2',
@@ -32,7 +32,7 @@ export const emailData: EmailType[] = [
     isSent: true,
     isTrash: true,
     type: 'promotions',
-    categories: ['promotions', 'starred', 'important', 'sent', 'trash']
+    categories: ['promotions', 'starred', 'important', 'sent', 'trash'],
   },
   {
     id: 'InboxChk3',
@@ -47,7 +47,7 @@ export const emailData: EmailType[] = [
     isSent: false,
     isTrash: false,
     type: 'updates',
-    categories: ['updates']
+    categories: ['updates'],
   },
   {
     id: 'InboxChk4',
@@ -62,7 +62,7 @@ export const emailData: EmailType[] = [
     isSent: true,
     isTrash: true,
     type: 'forums',
-    categories: ['forums', 'sent', 'trash']
+    categories: ['forums', 'sent', 'trash'],
   },
   {
     id: 'InboxChk5',
@@ -79,7 +79,7 @@ export const emailData: EmailType[] = [
     isSent: false,
     isTrash: false,
     type: 'social',
-    categories: ['social', 'starred']
+    categories: ['social', 'starred'],
   },
   {
     id: 'InboxChk6',
@@ -96,7 +96,7 @@ export const emailData: EmailType[] = [
     isSent: false,
     isTrash: true,
     type: 'promotions',
-    categories: ['promotions', 'important', 'trash']
+    categories: ['promotions', 'important', 'trash'],
   },
   {
     id: 'InboxChk7',
@@ -111,7 +111,7 @@ export const emailData: EmailType[] = [
     isSent: true,
     isTrash: false,
     type: 'social',
-    categories: ['social', 'starred', 'sent']
+    categories: ['social', 'starred', 'sent'],
   },
   {
     id: 'InboxChk8',
@@ -126,7 +126,7 @@ export const emailData: EmailType[] = [
     isSent: true,
     isTrash: false,
     type: 'updates',
-    categories: ['updates', 'starred', 'sent']
+    categories: ['updates', 'starred', 'sent'],
   },
   {
     id: 'InboxChk9',
@@ -141,7 +141,7 @@ export const emailData: EmailType[] = [
     isSent: true,
     isTrash: false,
     type: 'updates',
-    categories: ['updates', 'important', 'sent']
+    categories: ['updates', 'important', 'sent'],
   },
   {
     id: 'InboxChk10',
@@ -156,13 +156,14 @@ export const emailData: EmailType[] = [
     isSent: true,
     isTrash: false,
     type: 'forums',
-    categories: ['forums', 'starred', 'important', 'sent']
+    categories: ['forums', 'starred', 'important', 'sent'],
   },
   {
     id: 'InboxChk11',
     sender: 'Stack Exchange',
     subject: '1 new items in your Stackexchange inbox',
-    message: 'The following items were added to your Stack Exchange global inbox since you last checked it.',
+    message:
+      'The following items were added to your Stack Exchange global inbox since you last checked it.',
     date: 'Feb 21',
     status: 'read',
     isRead: true,
@@ -171,7 +172,7 @@ export const emailData: EmailType[] = [
     isSent: true,
     isTrash: true,
     type: 'social',
-    categories: ['social', 'starred', 'sent', 'trash']
+    categories: ['social', 'starred', 'sent', 'trash'],
   },
   {
     id: 'InboxChk12',
@@ -186,13 +187,14 @@ export const emailData: EmailType[] = [
     isSent: false,
     isTrash: true,
     type: 'promotions',
-    categories: ['promotions', 'starred', 'trash']
+    categories: ['promotions', 'starred', 'trash'],
   },
   {
     id: 'InboxChk13',
     sender: 'Peter, me (3)',
     subject: 'Hello',
-    message: 'Trip home from Colombo has been arranged, then Jenna will come get me from Stockholm. :)',
+    message:
+      'Trip home from Colombo has been arranged, then Jenna will come get me from Stockholm. :)',
     date: 'Mar 6',
     status: 'read',
     isRead: true,
@@ -201,7 +203,7 @@ export const emailData: EmailType[] = [
     isSent: true,
     isTrash: true,
     type: 'updates',
-    categories: ['updates', 'important', 'sent', 'trash']
+    categories: ['updates', 'important', 'sent', 'trash'],
   },
   {
     id: 'InboxChk14',
@@ -216,22 +218,52 @@ export const emailData: EmailType[] = [
     isSent: false,
     isTrash: true,
     type: 'forums',
-    categories: ['forums', 'trash']
-  }
-]
+    categories: ['forums', 'trash'],
+  },
+];
 
-export const emailTabs: string[] = ['email-starred', 'email-draft', 'email-sent', 'email-trash', 'email-important', 'email-updates', 'email-social', 'email-promotion', 'email-forums']
+export const emailTabs: string[] = [
+  'email-starred',
+  'email-draft',
+  'email-sent',
+  'email-trash',
+  'email-important',
+  'email-updates',
+  'email-social',
+  'email-promotion',
+  'email-forums',
+];
 
 export const navLinkData: NavLinkType[] = [
-  { title: 'Inbox', link: 'email-inbox', category: '', badge: '7', badgeVariant: 'danger', icon: 'bxs-inbox' },
+  {
+    title: 'Inbox',
+    link: 'email-inbox',
+    category: '',
+    badge: '7',
+    badgeVariant: 'danger',
+    icon: 'bxs-inbox',
+  },
   { title: 'Starred', link: 'email-starred', category: 'isStarred', icon: 'bx-star' },
-  { title: 'Draft', link: 'email-draft', category: '', badge: '32', badgeVariant: 'info', icon: 'bxs-file' },
+  {
+    title: 'Draft',
+    link: 'email-draft',
+    category: '',
+    badge: '32',
+    badgeVariant: 'info',
+    icon: 'bxs-file',
+  },
   { title: 'Sent Mail', link: 'email-sent', category: 'isSent', icon: ' bx-send' },
   { title: 'Trash Mail', link: 'email-trash', category: 'isTrash', icon: 'bx-trash' },
   { title: 'Important', link: 'email-important', category: 'isImportant', icon: 'bx-tag' },
   { title: 'Labels', isTitle: true },
   { title: 'Updates', link: 'email-updates', category: 'updates', isLabel: true, variant: 'info' },
   { title: 'Social', link: 'email-social', category: 'social', isLabel: true, variant: 'primary' },
-  { title: 'Promotions', link: 'email-promotion', category: 'promotions', isLabel: true, variant: 'secondary' },
-  { title: 'Forums', link: 'email-forums', category: 'forums', isLabel: true, variant: 'success' }
-]
+  {
+    title: 'Promotions',
+    link: 'email-promotion',
+    category: 'promotions',
+    isLabel: true,
+    variant: 'secondary',
+  },
+  { title: 'Forums', link: 'email-forums', category: 'forums', isLabel: true, variant: 'success' },
+];

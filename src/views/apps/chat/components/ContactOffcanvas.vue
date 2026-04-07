@@ -19,26 +19,56 @@
       <SwiperSlide class="avatar-sm" v-for="(item, idx) in onlineContact" :key="idx">
         <div class="chat-user-status-box">
           <span>
-            <img :src="item" alt="avatar-1" class="img-fluid avatar-sm rounded-circle avatar-border" />
+            <img
+              :src="item"
+              alt="avatar-1"
+              class="img-fluid avatar-sm rounded-circle avatar-border"
+            />
           </span>
         </div>
       </SwiperSlide>
     </Swiper>
     <ul class="nav nav-tabs nav-justified nav-bordered border-top mt-2">
       <li class="nav-item">
-        <a href="#" class="nav-link py-2" :class="contactTab === 'chat-list' && 'active'" @click="contactTab = 'chat-list'"> Chat </a>
+        <a
+          href="#"
+          class="nav-link py-2"
+          :class="contactTab === 'chat-list' && 'active'"
+          @click="contactTab = 'chat-list'"
+        >
+          Chat
+        </a>
       </li>
       <li class="nav-item">
-        <a href="#" class="nav-link py-2" :class="contactTab === 'group-list' && 'active'" @click="contactTab = 'group-list'"> Group </a>
+        <a
+          href="#"
+          class="nav-link py-2"
+          :class="contactTab === 'group-list' && 'active'"
+          @click="contactTab = 'group-list'"
+        >
+          Group
+        </a>
       </li>
       <li class="nav-item">
-        <a href="#" class="nav-link py-2" :class="contactTab === 'contact-list' && 'active'" @click="contactTab = 'contact-list'"> Contact </a>
+        <a
+          href="#"
+          class="nav-link py-2"
+          :class="contactTab === 'contact-list' && 'active'"
+          @click="contactTab = 'contact-list'"
+        >
+          Contact
+        </a>
       </li>
     </ul>
     <div class="tab-content">
       <div class="tab-pane" :class="contactTab === 'chat-list' && 'show active'" id="chat-list">
         <simplebar class="px-3 mb-3 chat-setting-height" data-simplebar>
-          <a href="javascript:void(0);" class="text-body" v-for="(contact, idx) in contactList" :key="idx">
+          <a
+            href="javascript:void(0);"
+            class="text-body"
+            v-for="(contact, idx) in contactList"
+            :key="idx"
+          >
             <div class="d-flex align-items-center p-2 chat-item">
               <div class="flex-shrink-0 position-relative">
                 <img :src="contact.image" class="me-2 rounded-circle" height="36" alt="avatar-2" />
@@ -48,7 +78,9 @@
                   <span class="float-end text-muted fs-13">{{ contact.timeStamp }}</span>
                   {{ contact.name }}
                 </h5>
-                <p class="mt-1 mb-0 fs-13 text-muted d-flex align-items-end justify-content-between">
+                <p
+                  class="mt-1 mb-0 fs-13 text-muted d-flex align-items-end justify-content-between"
+                >
                   <span class="w-75">{{ contact.lastMsg }}</span>
                   <i class="bx bx-check-double text-success" v-if="contact.isRead"></i>
                 </p>
@@ -61,7 +93,10 @@
       <div class="tab-pane" :class="contactTab === 'group-list' && 'show active'" id="group-list">
         <simplebar class="px-3 mb-3 chat-setting-height" data-simplebar>
           <div class="d-flex align-items-center position-relative mb-3">
-            <a href="javascript:void(0);" class="me-2 stretched-link rounded text-bg-primary avatar d-flex align-items-center justify-content-center fs-18">
+            <a
+              href="javascript:void(0);"
+              class="me-2 stretched-link rounded text-bg-primary avatar d-flex align-items-center justify-content-center fs-18"
+            >
               <i class="bx bxs-user"></i>
             </a>
             <div class="flex-grow-1">
@@ -69,8 +104,16 @@
             </div>
           </div>
 
-          <div class="chat-item d-flex mb-3 align-items-center position-relative" v-for="(group, idx) in groupList" :key="idx">
-            <a href="javascript:void(0);" class="me-2 stretched-link rounded bg-soft-primary text-primary avatar d-flex align-items-center justify-content-center fs-18">{{ group.name.charAt(0).toUpperCase() }}</a>
+          <div
+            class="chat-item d-flex mb-3 align-items-center position-relative"
+            v-for="(group, idx) in groupList"
+            :key="idx"
+          >
+            <a
+              href="javascript:void(0);"
+              class="me-2 stretched-link rounded bg-soft-primary text-primary avatar d-flex align-items-center justify-content-center fs-18"
+              >{{ group.name.charAt(0).toUpperCase() }}</a
+            >
             <div class="flex-grow-1 ps-1 overflow-hidden">
               <div class="float-end" v-if="group.badge">
                 <b-badge :variant="null" class="badge-outline-danger">+{{ group.badge }}</b-badge>
@@ -81,10 +124,17 @@
         </simplebar>
       </div>
 
-      <div class="tab-pane" :class="contactTab === 'contact-list' && 'show active'" id="contact-list">
+      <div
+        class="tab-pane"
+        :class="contactTab === 'contact-list' && 'show active'"
+        id="contact-list"
+      >
         <simplebar class="px-3 mb-3 chat-setting-height" data-simplebar>
           <div class="chat-item d-flex align-items-center position-relative py-2">
-            <a href="javascript:void(0);" class="me-2 stretched-link rounded-circle text-bg-primary avatar d-flex align-items-center justify-content-center fs-18">
+            <a
+              href="javascript:void(0);"
+              class="me-2 stretched-link rounded-circle text-bg-primary avatar d-flex align-items-center justify-content-center fs-18"
+            >
               <i class="bx bx-group"></i>
             </a>
             <div class="flex-grow-1">
@@ -92,14 +142,21 @@
             </div>
           </div>
           <div class="chat-item d-flex align-items-center position-relative py-2">
-            <a href="javascript:void(0);" class="me-2 stretched-link rounded-circle text-bg-primary avatar d-flex align-items-center justify-content-center fs-18">
+            <a
+              href="javascript:void(0);"
+              class="me-2 stretched-link rounded-circle text-bg-primary avatar d-flex align-items-center justify-content-center fs-18"
+            >
               <i class="bx bx-user-plus"></i>
             </a>
             <div class="flex-grow-1">
               <h5 class="my-0 fs-14">New Contact</h5>
             </div>
           </div>
-          <div class="chat-item d-flex align-items-center position-relative py-2" v-for="(contact, idx) in userContact" :key="idx">
+          <div
+            class="chat-item d-flex align-items-center position-relative py-2"
+            v-for="(contact, idx) in userContact"
+            :key="idx"
+          >
             <a href="#!" class="stretched-link">
               <img :src="contact.avatar" class="me-2 rounded-circle" height="36" alt="avatar-2" />
             </a>
@@ -116,7 +173,13 @@
       </div>
     </div>
 
-    <b-offcanvas v-model="userSetting" class="position-absolute shadow" placement="start" body-class="p-0 h-100" title="Setting">
+    <b-offcanvas
+      v-model="userSetting"
+      class="position-absolute shadow"
+      placement="start"
+      body-class="p-0 h-100"
+      title="Setting"
+    >
       <simplebar data-simplebar>
         <div class="d-flex align-items-center px-3 pb-3 border-bottom">
           <img :src="avatar1" class="me-2 rounded-circle" height="36" alt="avatar-1" />
@@ -133,7 +196,13 @@
 
         <div class="px-3 my-3 app-chat-setting">
           <b-accordion class="custom-accordion" id="accordionSetting">
-            <b-accordion-item class="border-0" header-tag="h5" header-class="my-0" button-class="px-0 pt-0" body-class="pb-0">
+            <b-accordion-item
+              class="border-0"
+              header-tag="h5"
+              header-class="my-0"
+              button-class="px-0 pt-0"
+              body-class="pb-0"
+            >
               <template #title>
                 <span class="d-flex align-items-center">
                   <i class="bx bx-key me-3 fs-20"></i>
@@ -148,23 +217,39 @@
                   <a href="javascript:void(0);"><i class="bx bx-lock-alt fs-18 me-2"></i>Privacy</a>
                 </li>
                 <li class="mb-2">
-                  <a href="javascript:void(0);"><i class="bx bx-check-Reback fs-18 me-2"></i>Security</a>
+                  <a href="javascript:void(0);"
+                    ><i class="bx bx-check-Reback fs-18 me-2"></i>Security</a
+                  >
                 </li>
                 <li class="mb-2">
-                  <a href="javascript:void(0);"><i class="bx bx-badge-check fs-18 me-2"></i>Two-step verification</a>
+                  <a href="javascript:void(0);"
+                    ><i class="bx bx-badge-check fs-18 me-2"></i>Two-step verification</a
+                  >
                 </li>
                 <li class="mb-2">
-                  <a href="javascript:void(0);"><i class="bx bx-arrow-from-left fs-18 me-2"></i>Change number</a>
+                  <a href="javascript:void(0);"
+                    ><i class="bx bx-arrow-from-left fs-18 me-2"></i>Change number</a
+                  >
                 </li>
                 <li class="mb-2">
-                  <a href="javascript:void(0);"><i class="bx bx-info-circle fs-18 me-2"></i>Request account info</a>
+                  <a href="javascript:void(0);"
+                    ><i class="bx bx-info-circle fs-18 me-2"></i>Request account info</a
+                  >
                 </li>
                 <li>
-                  <a href="javascript:void(0);"><i class="bx bx-trash fs-18 me-2"></i>Delete my account</a>
+                  <a href="javascript:void(0);"
+                    ><i class="bx bx-trash fs-18 me-2"></i>Delete my account</a
+                  >
                 </li>
               </ul>
             </b-accordion-item>
-            <b-accordion-item class="border-0" header-tag="h5" header-class="my-0" button-class="px-0" body-class="pb-0">
+            <b-accordion-item
+              class="border-0"
+              header-tag="h5"
+              header-class="my-0"
+              button-class="px-0"
+              body-class="pb-0"
+            >
               <template #title>
                 <span class="d-flex align-items-center">
                   <i class="bx bx-message-dots me-3 fs-20"></i>
@@ -197,7 +282,9 @@
                     </div>
                   </div>
                   <a href="javascript:void(0);">Media Visibility</a>
-                  <p class="mb-0 text-muted fs-12">Show Newly downloaded media in your phone's gallery</p>
+                  <p class="mb-0 text-muted fs-12">
+                    Show Newly downloaded media in your phone's gallery
+                  </p>
                 </li>
                 <li class="mb-2 ms-2">
                   <div class="float-end">
@@ -225,14 +312,24 @@
                   </div>
                 </li>
                 <li class="mb-2">
-                  <a href="javascript:void(0);"><i class="bx bx-cloud-upload fs-16 me-2"></i>Chat Backup</a>
+                  <a href="javascript:void(0);"
+                    ><i class="bx bx-cloud-upload fs-16 me-2"></i>Chat Backup</a
+                  >
                 </li>
                 <li>
-                  <a href="javascript:void(0);"><i class="bx bx-history fs-16 me-2"></i>Chat History</a>
+                  <a href="javascript:void(0);"
+                    ><i class="bx bx-history fs-16 me-2"></i>Chat History</a
+                  >
                 </li>
               </ul>
             </b-accordion-item>
-            <b-accordion-item class="border-0" header-tag="h5" header-class="my-0" button-class="px-0" body-class="pb-0">
+            <b-accordion-item
+              class="border-0"
+              header-tag="h5"
+              header-class="my-0"
+              button-class="px-0"
+              body-class="pb-0"
+            >
               <template #title>
                 <span class="d-flex align-items-center">
                   <i class="bx bx-bell me-3 fs-20"></i>
@@ -298,7 +395,13 @@
                 </li>
               </ul>
             </b-accordion-item>
-            <b-accordion-item class="border-0" header-tag="h5" header-class="my-0" button-class="px-0" body-class="pb-0">
+            <b-accordion-item
+              class="border-0"
+              header-tag="h5"
+              header-class="my-0"
+              button-class="px-0"
+              body-class="pb-0"
+            >
               <template #title>
                 <span class="d-flex align-items-center">
                   <i class="bx bx-history me-3 fs-20"></i>
@@ -354,19 +457,29 @@
                 </li>
               </ul>
             </b-accordion-item>
-            <b-accordion-item class="border-0" header-tag="h5" header-class="my-0" button-class="px-0" body-class="pb-0">
+            <b-accordion-item
+              class="border-0"
+              header-tag="h5"
+              header-class="my-0"
+              button-class="px-0"
+              body-class="pb-0"
+            >
               <template #title>
                 <span class="d-flex align-items-center">
                   <i class="bx bx-info-circle me-3 fs-20"></i>
                   <span class="flex-grow-1">
                     <span class="fs-14 h5 mt-0 mb-1 d-block">Help</span>
-                    <span class="mt-1 mb-0 text-muted w-75">Help center, contact us, privacy policy</span>
+                    <span class="mt-1 mb-0 text-muted w-75"
+                      >Help center, contact us, privacy policy</span
+                    >
                   </span>
                 </span>
               </template>
               <ul class="list-unstyled mb-0">
                 <li class="mb-2">
-                  <a href="javascript:void(0);"><i class="bx bx-info-circle fs-16 me-2"></i>Help center</a>
+                  <a href="javascript:void(0);"
+                    ><i class="bx bx-info-circle fs-16 me-2"></i>Help center</a
+                  >
                 </li>
                 <li class="mb-2 d-flex">
                   <i class="bx bxs-contact fs-16 me-2"></i>
@@ -376,10 +489,14 @@
                   </div>
                 </li>
                 <li class="mb-2">
-                  <a href="javascript:void(0);"><i class="bx bx-book-content fs-16 me-2"></i>Teams and Privacy Policy</a>
+                  <a href="javascript:void(0);"
+                    ><i class="bx bx-book-content fs-16 me-2"></i>Teams and Privacy Policy</a
+                  >
                 </li>
                 <li>
-                  <a href="javascript:void(0);"><i class="bx bx-info-circle fs-16 me-2"></i>App info</a>
+                  <a href="javascript:void(0);"
+                    ><i class="bx bx-info-circle fs-16 me-2"></i>App info</a
+                  >
                 </li>
               </ul>
             </b-accordion-item>
@@ -390,28 +507,39 @@
   </b-card>
 </template>
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref } from 'vue';
 
-const userSetting = ref(false)
+const userSetting = ref(false);
 
-const contactTab = ref('chat-list')
+const contactTab = ref('chat-list');
 
-import simplebar from 'simplebar-vue'
-import { Swiper, SwiperSlide } from 'swiper/vue'
-import 'swiper/css'
+import simplebar from 'simplebar-vue';
+import { Swiper, SwiperSlide } from 'swiper/vue';
+import 'swiper/css';
 
-import { contactList, groupList, userContact } from '@/views/apps/chat/components/data'
+import { contactList, groupList, userContact } from '@/views/apps/chat/components/data';
 
-import avatar1 from '@/assets/images/users/avatar-1.jpg'
-import avatar2 from '@/assets/images/users/avatar-2.jpg'
-import avatar3 from '@/assets/images/users/avatar-3.jpg'
-import avatar4 from '@/assets/images/users/avatar-4.jpg'
-import avatar5 from '@/assets/images/users/avatar-5.jpg'
-import avatar6 from '@/assets/images/users/avatar-6.jpg'
-import avatar7 from '@/assets/images/users/avatar-7.jpg'
-import avatar8 from '@/assets/images/users/avatar-8.jpg'
-import avatar9 from '@/assets/images/users/avatar-9.jpg'
-import avatar10 from '@/assets/images/users/avatar-10.jpg'
+import avatar1 from '@/assets/images/users/avatar-1.jpg';
+import avatar2 from '@/assets/images/users/avatar-2.jpg';
+import avatar3 from '@/assets/images/users/avatar-3.jpg';
+import avatar4 from '@/assets/images/users/avatar-4.jpg';
+import avatar5 from '@/assets/images/users/avatar-5.jpg';
+import avatar6 from '@/assets/images/users/avatar-6.jpg';
+import avatar7 from '@/assets/images/users/avatar-7.jpg';
+import avatar8 from '@/assets/images/users/avatar-8.jpg';
+import avatar9 from '@/assets/images/users/avatar-9.jpg';
+import avatar10 from '@/assets/images/users/avatar-10.jpg';
 
-const onlineContact = [avatar1, avatar2, avatar3, avatar4, avatar5, avatar6, avatar7, avatar8, avatar9, avatar10]
+const onlineContact = [
+  avatar1,
+  avatar2,
+  avatar3,
+  avatar4,
+  avatar5,
+  avatar6,
+  avatar7,
+  avatar8,
+  avatar9,
+  avatar10,
+];
 </script>

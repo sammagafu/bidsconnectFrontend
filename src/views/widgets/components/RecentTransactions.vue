@@ -15,7 +15,9 @@
               <b-td>{{ transaction.date }}</b-td>
               <b-td>{{ transaction.amount }}</b-td>
               <b-td>
-                <b-badge :class="transaction.status === 'cr' ? 'bg-success' : 'bg-danger'">{{ toSentenceCase(transaction.status) }} </b-badge>
+                <b-badge :class="transaction.status === 'cr' ? 'bg-success' : 'bg-danger'"
+                  >{{ toSentenceCase(transaction.status) }}
+                </b-badge>
               </b-td>
               <b-td>{{ transaction.description }}</b-td>
             </b-tr>
@@ -27,7 +29,7 @@
 </template>
 
 <script setup lang="ts">
-import simplebar from 'simplebar-vue'
-import { recentTransaction } from '@/views/widgets/components/data'
-import { toSentenceCase } from '@/helpers/change-casing'
+import simplebar from 'simplebar-vue';
+import { recentTransaction } from '@/views/widgets/components/data';
+import { toSentenceCase } from '@/helpers/change-casing';
 </script>

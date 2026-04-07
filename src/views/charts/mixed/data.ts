@@ -1,4 +1,4 @@
-import type { ApexChartType } from '@/types'
+import type { ApexChartType } from '@/types';
 
 export const lineColumnChart: ApexChartType = {
   height: 380,
@@ -7,54 +7,67 @@ export const lineColumnChart: ApexChartType = {
     {
       name: 'Website Blog',
       type: 'column',
-      data: [440, 505, 414, 671, 227, 413, 201, 352, 752, 320, 257, 160]
+      data: [440, 505, 414, 671, 227, 413, 201, 352, 752, 320, 257, 160],
     },
     {
       name: 'Social Media',
       type: 'line',
-      data: [23, 42, 35, 27, 43, 22, 17, 31, 22, 22, 12, 16]
-    }
+      data: [23, 42, 35, 27, 43, 22, 17, 31, 22, 22, 12, 16],
+    },
   ],
   options: {
     chart: {
       height: 380,
       type: 'line',
       toolbar: {
-        show: false
-      }
+        show: false,
+      },
     },
     stroke: {
-      width: [0, 4]
+      width: [0, 4],
     },
-    labels: ['01 Jan 2001', '02 Jan 2001', '03 Jan 2001', '04 Jan 2001', '05 Jan 2001', '06 Jan 2001', '07 Jan 2001', '08 Jan 2001', '09 Jan 2001', '10 Jan 2001', '11 Jan 2001', '12 Jan 2001'],
+    labels: [
+      '01 Jan 2001',
+      '02 Jan 2001',
+      '03 Jan 2001',
+      '04 Jan 2001',
+      '05 Jan 2001',
+      '06 Jan 2001',
+      '07 Jan 2001',
+      '08 Jan 2001',
+      '09 Jan 2001',
+      '10 Jan 2001',
+      '11 Jan 2001',
+      '12 Jan 2001',
+    ],
     xaxis: {
-      type: 'datetime'
+      type: 'datetime',
     },
-    colors: ["#1e84c4", "#1bb394"],
+    colors: ['#1e84c4', '#1bb394'],
     yaxis: [
       {
         title: {
-          text: 'Website Blog'
-        }
+          text: 'Website Blog',
+        },
       },
       {
         opposite: true,
         title: {
-          text: 'Social Media'
-        }
-      }
+          text: 'Social Media',
+        },
+      },
     ],
     legend: {
-      offsetY: 7
+      offsetY: 7,
     },
     grid: {
       borderColor: '#f1f3fa',
       padding: {
-        bottom: 5
-      }
-    }
-  }
-}
+        bottom: 5,
+      },
+    },
+  },
+};
 
 export const multipleYAxisChart: ApexChartType = {
   height: 380,
@@ -63,18 +76,18 @@ export const multipleYAxisChart: ApexChartType = {
     {
       name: 'Income',
       type: 'column',
-      data: [1.4, 2, 2.5, 1.5, 2.5, 2.8, 3.8, 4.6]
+      data: [1.4, 2, 2.5, 1.5, 2.5, 2.8, 3.8, 4.6],
     },
     {
       name: 'Cashflow',
       type: 'column',
-      data: [1.1, 3, 3.1, 4, 4.1, 4.9, 6.5, 8.5]
+      data: [1.1, 3, 3.1, 4, 4.1, 4.9, 6.5, 8.5],
     },
     {
       name: 'Revenue',
       type: 'line',
-      data: [20, 29, 37, 36, 44, 45, 50, 58]
-    }
+      data: [20, 29, 37, 36, 44, 45, 50, 58],
+    },
   ],
   options: {
     chart: {
@@ -82,109 +95,109 @@ export const multipleYAxisChart: ApexChartType = {
       type: 'line',
       stacked: false,
       toolbar: {
-        show: false
-      }
+        show: false,
+      },
     },
     dataLabels: {
-      enabled: false
+      enabled: false,
     },
     stroke: {
-      width: [0, 0, 3]
+      width: [0, 0, 3],
     },
-    colors: ["#1e84c4", "#1bb394", "#f9b931"],
+    colors: ['#1e84c4', '#1bb394', '#f9b931'],
     xaxis: {
-      categories: [2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016]
+      categories: [2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016],
     },
     yaxis: [
       {
         axisTicks: {
-          show: true
+          show: true,
         },
         axisBorder: {
           show: true,
-          color: '#1c84ee'
+          color: '#1c84ee',
         },
         labels: {
           style: {
-            colors: ['#1c84ee']
-          }
+            colors: ['#1c84ee'],
+          },
         },
         title: {
-          text: 'Income (thousand crores)'
-        }
+          text: 'Income (thousand crores)',
+        },
       },
       {
         axisTicks: {
-          show: true
+          show: true,
         },
         axisBorder: {
           show: true,
-          color: '#4ecac2'
+          color: '#4ecac2',
         },
         labels: {
           style: {
-            colors: '#4ecac2'
+            colors: '#4ecac2',
           },
-          offsetX: 10
+          offsetX: 10,
         },
         title: {
-          text: 'Operating Cashflow (thousand crores)'
-        }
+          text: 'Operating Cashflow (thousand crores)',
+        },
       },
       {
         opposite: true,
         axisTicks: {
-          show: true
+          show: true,
         },
         axisBorder: {
           show: true,
-          color: '#f9b931'
+          color: '#f9b931',
         },
         labels: {
           style: {
-            colors: '#f9b931'
-          }
+            colors: '#f9b931',
+          },
         },
         title: {
-          text: 'Revenue (thousand crores)'
-        }
-      }
+          text: 'Revenue (thousand crores)',
+        },
+      },
     ],
     tooltip: {
       followCursor: true,
       y: {
         formatter: function (y) {
           if (typeof y !== 'undefined') {
-            return y + ' thousand crores'
+            return y + ' thousand crores';
           }
-          return y
-        }
-      }
+          return y;
+        },
+      },
     },
     grid: {
       borderColor: '#f1f3fa',
       padding: {
-        bottom: 5
-      }
+        bottom: 5,
+      },
     },
     legend: {
-      offsetY: 7
+      offsetY: 7,
     },
     responsive: [
       {
         breakpoint: 600,
         options: {
           yaxis: {
-            show: false
+            show: false,
           },
           legend: {
-            show: false
-          }
-        }
-      }
-    ]
-  }
-}
+            show: false,
+          },
+        },
+      },
+    ],
+  },
+};
 
 export const lineAreaChart: ApexChartType = {
   height: 380,
@@ -193,50 +206,62 @@ export const lineAreaChart: ApexChartType = {
     {
       name: 'Team A',
       type: 'area',
-      data: [44, 55, 31, 47, 31, 43, 26, 41, 31, 47, 33]
+      data: [44, 55, 31, 47, 31, 43, 26, 41, 31, 47, 33],
     },
     {
       name: 'Team B',
       type: 'line',
-      data: [55, 69, 45, 61, 43, 54, 37, 52, 44, 61, 43]
-    }
+      data: [55, 69, 45, 61, 43, 54, 37, 52, 44, 61, 43],
+    },
   ],
   options: {
     chart: {
       height: 380,
       type: 'line',
       toolbar: {
-        show: false
-      }
+        show: false,
+      },
     },
     stroke: {
       curve: 'smooth',
-      width: 2
+      width: 2,
     },
     fill: {
       type: 'solid',
-      opacity: [0.35, 1]
+      opacity: [0.35, 1],
     },
-    labels: ['Dec 01', 'Dec 02', 'Dec 03', 'Dec 04', 'Dec 05', 'Dec 06', 'Dec 07', 'Dec 08', 'Dec 09 ', 'Dec 10', 'Dec 11'],
+    labels: [
+      'Dec 01',
+      'Dec 02',
+      'Dec 03',
+      'Dec 04',
+      'Dec 05',
+      'Dec 06',
+      'Dec 07',
+      'Dec 08',
+      'Dec 09 ',
+      'Dec 10',
+      'Dec 11',
+    ],
     markers: {
-      size: 0
+      size: 0,
     },
     legend: {
-      offsetY: 7
+      offsetY: 7,
     },
-    colors: ["#1bb394", "#1e84c4"],
+    colors: ['#1bb394', '#1e84c4'],
     yaxis: [
       {
         title: {
-          text: 'Series A'
-        }
+          text: 'Series A',
+        },
       },
       {
         opposite: true,
         title: {
-          text: 'Series B'
-        }
-      }
+          text: 'Series B',
+        },
+      },
     ],
     tooltip: {
       shared: true,
@@ -244,33 +269,33 @@ export const lineAreaChart: ApexChartType = {
       y: {
         formatter: function (y) {
           if (typeof y !== 'undefined') {
-            return y.toFixed(0) + ' points'
+            return y.toFixed(0) + ' points';
           }
-          return y
-        }
-      }
+          return y;
+        },
+      },
     },
     grid: {
       borderColor: '#f1f3fa',
       padding: {
-        bottom: 5
-      }
+        bottom: 5,
+      },
     },
     responsive: [
       {
         breakpoint: 600,
         options: {
           yaxis: {
-            show: false
+            show: false,
           },
           legend: {
-            show: false
-          }
-        }
-      }
-    ]
-  }
-}
+            show: false,
+          },
+        },
+      },
+    ],
+  },
+};
 
 export const lineColumnAreaChart: ApexChartType = {
   height: 380,
@@ -279,18 +304,18 @@ export const lineColumnAreaChart: ApexChartType = {
     {
       name: 'Team A',
       type: 'column',
-      data: [23, 11, 22, 27, 13, 22, 37, 21, 44, 22, 30]
+      data: [23, 11, 22, 27, 13, 22, 37, 21, 44, 22, 30],
     },
     {
       name: 'Team B',
       type: 'area',
-      data: [44, 55, 41, 67, 22, 43, 21, 41, 56, 27, 43]
+      data: [44, 55, 41, 67, 22, 43, 21, 41, 56, 27, 43],
     },
     {
       name: 'Team C',
       type: 'line',
-      data: [30, 25, 36, 30, 45, 35, 64, 52, 59, 36, 39]
-    }
+      data: [30, 25, 36, 30, 45, 35, 64, 52, 59, 36, 39],
+    },
   ],
   options: {
     chart: {
@@ -298,19 +323,19 @@ export const lineColumnAreaChart: ApexChartType = {
       type: 'line',
       stacked: false,
       toolbar: {
-        show: false
-      }
+        show: false,
+      },
     },
     stroke: {
       width: [0, 2, 4],
-      curve: 'smooth'
+      curve: 'smooth',
     },
     plotOptions: {
       bar: {
-        columnWidth: '50%'
-      }
+        columnWidth: '50%',
+      },
     },
-    colors: ["#1bb394", "#f9b931", "#ed5565"],
+    colors: ['#1bb394', '#f9b931', '#ed5565'],
     fill: {
       opacity: [0.85, 0.25, 1],
       gradient: {
@@ -319,23 +344,35 @@ export const lineColumnAreaChart: ApexChartType = {
         type: 'vertical',
         opacityFrom: 0.85,
         opacityTo: 0.55,
-        stops: [0, 100, 100, 100]
-      }
+        stops: [0, 100, 100, 100],
+      },
     },
-    labels: ['01/01/2003', '02/01/2003', '03/01/2003', '04/01/2003', '05/01/2003', '06/01/2003', '07/01/2003', '08/01/2003', '09/01/2003', '10/01/2003', '11/01/2003'],
+    labels: [
+      '01/01/2003',
+      '02/01/2003',
+      '03/01/2003',
+      '04/01/2003',
+      '05/01/2003',
+      '06/01/2003',
+      '07/01/2003',
+      '08/01/2003',
+      '09/01/2003',
+      '10/01/2003',
+      '11/01/2003',
+    ],
     markers: {
-      size: 0
+      size: 0,
     },
     legend: {
-      offsetY: 7
+      offsetY: 7,
     },
     xaxis: {
-      type: 'datetime'
+      type: 'datetime',
     },
     yaxis: {
       title: {
-        text: 'Points'
-      }
+        text: 'Points',
+      },
     },
     tooltip: {
       shared: true,
@@ -343,17 +380,17 @@ export const lineColumnAreaChart: ApexChartType = {
       y: {
         formatter: function (y) {
           if (typeof y !== 'undefined') {
-            return y.toFixed(0) + ' points'
+            return y.toFixed(0) + ' points';
           }
-          return y
-        }
-      }
+          return y;
+        },
+      },
     },
     grid: {
       borderColor: '#f1f3fa',
       padding: {
-        bottom: 5
-      }
-    }
-  }
-}
+        bottom: 5,
+      },
+    },
+  },
+};
