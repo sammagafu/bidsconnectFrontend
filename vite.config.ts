@@ -1,5 +1,5 @@
 import { fileURLToPath, URL } from 'node:url';
-import { defineConfig } from 'vitest/config';
+import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import Components from 'unplugin-vue-components/vite';
 import { BootstrapVueNextResolver } from 'unplugin-vue-components/resolvers';
@@ -56,7 +56,7 @@ export default defineConfig({
         target: 'https://bidsconnect.co.tz',
         changeOrigin: true,
         secure: true, // accepts valid Let's Encrypt cert
-        rewrite: (path) => path.replace(/^\/api/, '/api'), // keeps /api/v1/... intact
+        rewrite: (path: string) => path.replace(/^\/api/, '/api'), // keeps /api/v1/... intact
       },
       // Optional: proxy static files too (admin + DRF styling)
       '/static': {
