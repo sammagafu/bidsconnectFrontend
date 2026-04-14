@@ -1,5 +1,5 @@
 import { fileURLToPath, URL } from 'node:url';
-import { defineConfig } from 'vite';
+import { defineConfig } from 'vitest/config';
 import vue from '@vitejs/plugin-vue';
 import Components from 'unplugin-vue-components/vite';
 import { BootstrapVueNextResolver } from 'unplugin-vue-components/resolvers';
@@ -46,12 +46,6 @@ export default defineConfig({
         silenceDeprecations: ['import', 'if-function', 'global-builtin', 'color-functions'],
       },
     },
-  },
-
-  test: {
-    globals: true,
-    environment: 'jsdom',
-    include: ['src/**/*.spec.ts', 'src/**/*.test.ts', 'src/**/*.spec.tsx', 'src/**/*.test.tsx'],
   },
 
   // THIS IS THE MAGIC — PROXIES ALL /api/v1/ CALLS TO YOUR LIVE SERVER

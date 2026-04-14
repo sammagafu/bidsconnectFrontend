@@ -7,7 +7,7 @@
             <b-col lg="6" class="mt-2">
               <Swiper
                 :modules="[Autoplay]"
-                :autoplay="{ delay: 2500, disableOnInteraction: false }"
+                :autoplay="defaultAutoplay"
                 :loop="true"
                 class="rounded"
               >
@@ -30,10 +30,10 @@
             <b-col lg="6" class="mt-2">
               <Swiper
                 :modules="[Autoplay, Navigation, Pagination]"
-                :autoplay="{ delay: 2500, disableOnInteraction: false }"
+                :autoplay="defaultAutoplay"
                 :loop="true"
-                :navigation="{ nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' }"
-                :pagination="{ clickable: true, el: '.swiper-pagination' }"
+                :navigation="defaultNavigation"
+                :pagination="defaultPagination"
                 class="rounded"
               >
                 <SwiperSlide>
@@ -59,9 +59,9 @@
             <b-col lg="6" class="mt-2">
               <Swiper
                 :modules="[Autoplay, Pagination]"
-                :autoplay="{ delay: 2500, disableOnInteraction: false }"
+                :autoplay="defaultAutoplay"
                 :loop="true"
-                :pagination="{ clickable: true, el: '.swiper-pagination', dynamicBullets: true }"
+                :pagination="defaultDynamicPagination"
                 class="rounded"
               >
                 <SwiperSlide>
@@ -86,10 +86,10 @@
               <Swiper
                 class="rounded"
                 :modules="[Autoplay, Pagination, EffectFade]"
-                :autoplay="{ delay: 2500, disableOnInteraction: false }"
+                :autoplay="defaultAutoplay"
                 :effect="'fade'"
                 :loop="true"
-                :pagination="{ el: '.swiper-pagination', clickable: true }"
+                :pagination="defaultPagination"
               >
                 <SwiperSlide>
                   <img :src="smallImg3" alt="" class="img-fluid" />
@@ -114,10 +114,10 @@
                 class="rounded"
                 :modules="[Autoplay, Pagination, EffectCreative]"
                 :grabCursor="true"
-                :autoplay="{ delay: 2500, disableOnInteraction: false }"
+                :autoplay="defaultAutoplay"
                 :effect="'creative'"
                 :loop="true"
-                :pagination="{ el: '.swiper-pagination', clickable: true }"
+                :pagination="defaultPagination"
                 :creativeEffect="{
                   prev: {
                     shadow: true,
@@ -150,10 +150,10 @@
               <Swiper
                 :modules="[Autoplay, Pagination, EffectFlip]"
                 :grabCursor="true"
-                :autoplay="{ delay: 2500, disableOnInteraction: false }"
+                :autoplay="defaultAutoplay"
                 :effect="'flip'"
                 :loop="true"
-                :pagination="{ el: '.swiper-pagination', clickable: true }"
+                :pagination="defaultPagination"
               >
                 <SwiperSlide>
                   <img :src="smallImg3" alt="" class="img-fluid rounded" />
@@ -176,10 +176,10 @@
             <b-col lg="6" class="mt-2">
               <Swiper
                 :modules="[Autoplay, Pagination, Scrollbar]"
-                :scrollbar="{ hide: true }"
-                :autoplay="{ delay: 2500, disableOnInteraction: false }"
+                :scrollbar="defaultScrollbar"
+                :autoplay="defaultAutoplay"
                 :loop="true"
-                :pagination="{ el: '.swiper-pagination', clickable: true }"
+                :pagination="defaultPagination"
               >
                 <SwiperSlide>
                   <img :src="smallImg3" alt="" class="img-fluid rounded" />
@@ -205,9 +205,9 @@
               <Swiper
                 :modules="[Autoplay, Pagination]"
                 :direction="'vertical'"
-                :autoplay="{ delay: 2500, disableOnInteraction: false }"
+                :autoplay="defaultAutoplay"
                 :loop="true"
-                :pagination="{ el: '.swiper-pagination', clickable: true }"
+                :pagination="defaultPagination"
                 style="height: 320px"
               >
                 <SwiperSlide>
@@ -233,10 +233,10 @@
                 class="rounded"
                 :modules="[Autoplay, Pagination, Mousewheel]"
                 :direction="'vertical'"
-                :mousewheel="true"
-                :autoplay="{ delay: 2500, disableOnInteraction: false }"
+                :mousewheel="mousewheelEnabled"
+                :autoplay="defaultAutoplay"
                 :loop="true"
-                :pagination="{ el: '.swiper-pagination', clickable: true }"
+                :pagination="defaultPagination"
                 style="height: 324px"
               >
                 <SwiperSlide>
@@ -263,7 +263,7 @@
               :loop="true"
               :slidesPerView="1"
               :spaceBetween="10"
-              :pagination="{ el: '.swiper-pagination', clickable: true }"
+              :pagination="defaultPagination"
               :breakpoints="{
                 768: {
                   slidesPerView: 2,
@@ -374,4 +374,11 @@ const anchorNavigation = [
     title: 'Responsive Breakpoints Swiper',
   },
 ];
+
+const defaultAutoplay = { delay: 2500, disableOnInteraction: false } as any;
+const defaultNavigation = { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' } as any;
+const defaultPagination = { el: '.swiper-pagination', clickable: true } as any;
+const defaultDynamicPagination = { el: '.swiper-pagination', clickable: true, dynamicBullets: true } as any;
+const defaultScrollbar = { hide: true } as any;
+const mousewheelEnabled = true as any;
 </script>
